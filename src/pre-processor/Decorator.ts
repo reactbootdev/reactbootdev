@@ -23,14 +23,16 @@ const compilerOptions: ts.CompilerOptions = {
 // if param test is true, use test file
 const args = process.argv.slice(2); // Exclude the first two default arguments
 
-let PRE_SOURCE_PATH = '../../src'
+let PRE_SOURCE_PATH = './src'
 if (args[0] === 'test') {
   PRE_SOURCE_PATH = './test'
 }
 
 const SOURCE_PATH = `${PRE_SOURCE_PATH}/**/*.ts`
-const TARGET_DATA_FILE = 'data/Data.ts'
-
+// const TARGET_DATA_FILE_PATH = `node_modules/reactbootdev/src/data`
+const TARGET_DATA_FILE_PATH = `src/data`
+const TARGET_DATA_FILE = `${TARGET_DATA_FILE_PATH}/Data.ts`
+const OUTPUT_INTERFACE_PATH = `reactbootdev`
 
 const fileNames = glob.sync(
     SOURCE_PATH,
@@ -66,7 +68,9 @@ program.getSourceFiles().forEach(sourceFile => {
       // 데코레이터
       const tobeDecorators: any[] = []
       decorators.forEach(d => {
-        tobeDecorators.push(getDecoratorInfo(d, checker, sourceFile));
+        let decoratorInfo = getDecoratorInfo(d, checker, sourceFile)
+        if (decoratorInfo == null) return
+        tobeDecorators.push(decoratorInfo);
       });
 
       // 부모 클래스
@@ -90,9 +94,11 @@ program.getSourceFiles().forEach(sourceFile => {
         const memberDecorators = ts.canHaveDecorators(member) ? ts.getDecorators(member) : [];
         if(!memberDecorators) return
 
-        const tobeMemberDecorators: any[] = []
+        let tobeMemberDecorators: any[] = []
         memberDecorators.forEach(d => {
-          tobeMemberDecorators.push(getDecoratorInfo(d, checker, sourceFile));
+          let decoratorInfo = getDecoratorInfo(d, checker, sourceFile)
+          if (decoratorInfo == null) return
+          tobeMemberDecorators.push(decoratorInfo);
         });
 
         members.push(
@@ -118,10 +124,14 @@ program.getSourceFiles().forEach(sourceFile => {
 });
 
 //write file
+// if folder not exist, create folder recursively
+if (!fs.existsSync(TARGET_DATA_FILE_PATH)) {
+    fs.mkdirSync(TARGET_DATA_FILE_PATH, { recursive: true });
+}
 const outputListString = stringifyWithDepth(outputList, 2)
 fs.writeFileSync(
     TARGET_DATA_FILE,
-    `import { OutputInterface } from "../src/interface/OutputInterface";\n\nexport const outputList: OutputInterface[] = ${outputListString}`
+    `import { OutputInterface } from "${OUTPUT_INTERFACE_PATH}/src/interface/OutputInterface";\n\nexport const outputList: OutputInterface[] = ${outputListString}`
 )
 
 

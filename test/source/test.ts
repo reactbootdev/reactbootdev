@@ -7,12 +7,14 @@ class TestAAAA extends Test2 {
 }
 
 
+
 @page2("/test")
 @page("/tes2t")
 @page("/te3st", [1, 2], ["tes", ["df"]])
 class Test extends TestAAAA {
 
-    property = 'property';
+    @Uppercase
+    name?: string;
 
     property3 = 'property';
 

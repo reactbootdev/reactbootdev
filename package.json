@@ -1,12 +1,13 @@
 {
   "name": "reactbootdev",
-  "version": "1.0.4",
+  "version": "1.0.11",
   "description": "@ReactBootDev",
   "main": "index.js",
   "bin": {
     "reactbootdev": "dist/pre-processor/Decorator.js"
   },
   "scripts": {
+    "pub": "npm run build && npm publish",
     "build": "tsc",
     "start": "ts-node ./src/pre-processor/decorator.ts",
     "test": "ts-node ./src/pre-processor/Decorator.ts test"
