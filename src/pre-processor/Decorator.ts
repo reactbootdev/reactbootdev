@@ -9,6 +9,7 @@ import {
 import {OutputInterface} from "../interface/OutputInterface";
 import {outputList} from "../storage/OutputList";
 import * as fs from 'fs';
+import * as path from "path";
 
 // TypeScript 컴파일러 옵션 설정
 const compilerOptions: ts.CompilerOptions = {
@@ -30,9 +31,11 @@ if (args[0] === 'test') {
 
 const SOURCE_PATH = `${PRE_SOURCE_PATH}/**/*.ts`
 // const TARGET_DATA_FILE_PATH = `node_modules/reactbootdev/src/data`
-const TARGET_DATA_FILE_PATH = `src/data`
+const TARGET_DATA_FILE_PATH = `src/reactbootdev/data`
 const TARGET_DATA_FILE = `${TARGET_DATA_FILE_PATH}/Data.ts`
 const OUTPUT_INTERFACE_PATH = `reactbootdev`
+const TARGET_DECORATOR_FILE_PATH = `src\\reactbootdev\\decorator`
+const TARGET_INTERFACE_FILE_PATH = `src\\reactbootdev\\interface`
 
 const fileNames = glob.sync(
     SOURCE_PATH,
@@ -131,8 +134,69 @@ if (!fs.existsSync(TARGET_DATA_FILE_PATH)) {
 const outputListString = stringifyWithDepth(outputList, 2)
 fs.writeFileSync(
     TARGET_DATA_FILE,
-    `import { OutputInterface } from "${OUTPUT_INTERFACE_PATH}/src/interface/OutputInterface";\n\nexport const outputList: OutputInterface[] = ${outputListString}`
+    // `import { OutputInterface } from "${OUTPUT_INTERFACE_PATH}/src/interface/OutputInterface";\n\nexport const outputList: OutputInterface[] = ${outputListString}`
+    `import { OutputInterface } from "../interface/OutputInterface";\n\nexport const outputList: OutputInterface[] = ${outputListString}`
 )
 
 
+// if folder not exist, create folder recursively
+if (!fs.existsSync(TARGET_DECORATOR_FILE_PATH)) {
+  fs.mkdirSync(TARGET_DECORATOR_FILE_PATH, { recursive: true });
+}
+// copy decorator files to target folder by regex
+const decoratorFileNames = glob.sync(
+    `${path.resolve(__dirname, '..')}\\decorator\\*.*`.replace(/\\/g, `/`),
+    {
+        ignore: [
+            '**/*.spec.ts',
+        ],
+    }
+);
+decoratorFileNames.forEach(fileName => {
+    // string convert `src/decorator/` to  ${TARGET_DECORATOR_FILE_PATH}/
+    const targetFileName = fileName.replace("src\\decorator\\", `${TARGET_DECORATOR_FILE_PATH}\\`)
 
+    fs.copyFileSync(fileName, targetFileName)
+})
+
+
+
+// if folder not exist, create folder recursively
+if (!fs.existsSync(TARGET_INTERFACE_FILE_PATH)) {
+    fs.mkdirSync(TARGET_INTERFACE_FILE_PATH, { recursive: true });
+}
+// replaceAll
+// console.log(`${path.resolve(__dirname, '..')}\\interface\\*.*`.replace(`/\\/g`, `/`))
+console.log()
+
+// copy decorator files to target folder by regex
+const interfaceFileNames = glob.sync(
+    `${path.resolve(__dirname, '..')}\\interface\\*.*`.replace(/\\/g, `/`),
+    {
+        ignore: [
+            '**/*.spec.ts',
+        ],
+    }
+);
+interfaceFileNames.forEach(fileName => {
+    // string convert `src/decorator/` to  ${TARGET_DECORATOR_FILE_PATH}/
+    console.log(fileName)
+    const targetFileName = fileName.replace("src\\interface\\", `${TARGET_INTERFACE_FILE_PATH}\\`)
+
+    console.log(targetFileName)
+    fs.copyFileSync(fileName, targetFileName)
+})
+
+// how to get this file dir path
+//
+
+
+// console.log(__dirname)
+// console.log(process.cwd())
+// console.log(path.resolve(__dirname, '..'))
+// console.log(path.resolve(__dirname, '../..'))
+// console.log(path.resolve(__dirname, '../../..'))
+// console.log(path.resolve(__dirname, '../../../..'))
+// console.log(path.resolve(__dirname, '../../../../..'))
+// console.log(path.resolve(__dirname, '../../../../../..'))
+// console.log(path.resolve(__dirname, '../../../../../../..'))
