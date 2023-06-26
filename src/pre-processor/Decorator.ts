@@ -1,8 +1,10 @@
+#!/usr/bin/env node
+
 import * as ts from 'typescript';
 import * as glob from 'glob';
 import {
-  getClassFilePath, getDecoratorArgsTxt, getDecoratorInfo, getDecoratorName,
-  getSuperClasses, getTypeOfNode, printJsonWithDepth, stringifyWithDepth
+  getClassFilePath, getDecoratorInfo,
+  getSuperClasses, getTypeOfNode, stringifyWithDepth
 } from "../util/NodeUtil";
 import {OutputInterface} from "../interface/OutputInterface";
 import {outputList} from "../storage/OutputList";
