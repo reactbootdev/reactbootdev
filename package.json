@@ -1,6 +1,6 @@
 {
   "name": "reactbootdev",
-  "version": "1.0.14",
+  "version": "1.0.17",
   "description": "@ReactBootDev",
   "main": "index.js",
   "bin": {
@@ -9,8 +9,8 @@
   "scripts": {
     "pub": "npm run build && npm publish",
     "build": "tsc",
-    "start": "ts-node ./src/pre-processor/decorator.ts",
-    "test": "ts-node ./src/pre-processor/Decorator.ts test"
+    "start": "npm run build && node dist/pre-processor/Decorator.js",
+    "test": "npm run build && node dist/pre-processor/Decorator.js test"
   },
   "keywords": [
     "reactbootdev",
