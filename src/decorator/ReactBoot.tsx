@@ -36,7 +36,7 @@ export function ReactBoot() {
                 classPath: bean.classPath,
                 className: bean.className,
                 pageUrl: pageDecorator.arguments[0].value,
-                class: importMap[bean.classPath]
+                class: importMap[`${bean.classPath}/${bean.className}`]
             }
         })
         .filter((bean) => {

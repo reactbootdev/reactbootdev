@@ -148,7 +148,7 @@ const importMap =
     + outputList.map((bean: BeanInterface) => {
             const className = bean.className
             const classPath = bean.classPath
-            const importStatement = `\t "${classPath}" :  ${className}`
+            const importStatement = `\t "${classPath}/${className}" :  ${className}`
             return importStatement
         }).join(',\n')
     + `\n}`
