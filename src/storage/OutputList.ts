@@ -1,3 +1,3 @@
-import { OutputInterface } from "../interface/OutputInterface";
+import { BeanInterface } from "../interface/BeanInterface";
 
-export const outputList: OutputInterface[] = []
+export const outputList: BeanInterface[] = []

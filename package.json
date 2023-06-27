@@ -1,6 +1,6 @@
 {
   "name": "reactbootdev",
-  "version": "1.0.17",
+  "version": "1.0.23",
   "description": "@ReactBootDev",
   "main": "index.js",
   "bin": {

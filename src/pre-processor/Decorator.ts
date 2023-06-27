@@ -4,9 +4,9 @@ import * as ts from 'typescript';
 import * as glob from 'glob';
 import {
     getClassFilePath, getDecoratorInfo,
-    getSuperClasses, getTypeOfNode, stringifyWithDepth
+    getSuperClasses, getTypeOfNode, removeExtension, stringifyWithDepth
 } from "../util/NodeUtil";
-import {OutputInterface} from "../interface/OutputInterface";
+import {BeanInterface} from "../interface/BeanInterface";
 import {outputList} from "../storage/OutputList";
 import * as fs from 'fs';
 import * as path from "path";
@@ -30,7 +30,7 @@ if (args[0] === 'test') {
     PRE_SOURCE_PATH = './test'
 }
 
-const SOURCE_PATH = `${PRE_SOURCE_PATH}/**/*.ts`
+const SOURCE_PATH = `${PRE_SOURCE_PATH}/**/*.ts?(x)`
 const TARGET_DATA_FILE_PRE_PATH = `.\\src\\reactbootdev\\`
 const TARGET_FOLDER_NAMES = [
     `decorator`,
@@ -114,7 +114,7 @@ program.getSourceFiles().forEach(sourceFile => {
                     })
             });
 
-            const output: OutputInterface = {
+            const output: BeanInterface = {
                 superClasses: superClasses,
                 classPath: getClassFilePath(sourceFile, className, PRE_SOURCE_PATH),
                 className: className,
@@ -129,21 +129,50 @@ program.getSourceFiles().forEach(sourceFile => {
 
 // create folder `data`
 const TARGET_DATA_FILE_PATH = `${path.resolve(__dirname, '..\\..')}\\dist\\data`
-const TARGET_DATA_FILE_NAME = `Data.ts`
+const TARGET_DATA_FILE_NAME = `Bean.ts`
 const TARGET_DATA_FILE = `${TARGET_DATA_FILE_PATH}\\${TARGET_DATA_FILE_NAME}`
 if (!fs.existsSync(TARGET_DATA_FILE_PATH)) {
     fs.mkdirSync(TARGET_DATA_FILE_PATH, {recursive: true});
 }
 const outputListString = stringifyWithDepth(outputList, 2)
+const importStatments = outputList.map((bean: BeanInterface) => {
+    const className = bean.className
+    const classPath = removeExtension(bean.classPath)
+    const importStatement = `import { ${className} } from "${classPath}";`
+    return importStatement
+}).join('\n')
+
+const importMap =
+    `export const importMap: { [key: string]: any } = `
+    + `{\n`
+    + outputList.map((bean: BeanInterface) => {
+            const className = bean.className
+            const classPath = bean.classPath
+            const importStatement = `\t "${classPath}" :  ${className}`
+            return importStatement
+        }).join(',\n')
+    + `\n}`
+
 fs.writeFileSync(
     TARGET_DATA_FILE,
-    `import { OutputInterface } from "../interface/OutputInterface";\n\nexport const outputList: OutputInterface[] = ${outputListString}`
+    `import { BeanInterface } from "../interface/BeanInterface";`
+        + `\n\n`
+        + importStatments
+        + `\n\n`
+        + importMap
+        + `\n\n`
+        + `export const beans: BeanInterface[] = ${outputListString}`
 )
+
+const targetFolder = `${path.resolve(__dirname, '..')}`
 
 // create folder `decorator`
 const sourceDecoratorFolder = `${path.resolve(__dirname, '..\\..')}\\src\\decorator`
-const targetDecoratorFolder = `${path.resolve(__dirname, '..')}`
-copyFolderRecursiveSync(sourceDecoratorFolder, targetDecoratorFolder)
+copyFolderRecursiveSync(sourceDecoratorFolder, targetFolder)
+
+// create folder `interface`
+const sourceInterfaceFolder = `${path.resolve(__dirname, '..\\..')}\\src\\interface`
+copyFolderRecursiveSync(sourceInterfaceFolder, targetFolder)
 
 // move all folders
 TARGET_FOLDER_NAMES.forEach((folder: string): any => {

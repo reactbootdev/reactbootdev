@@ -1,5 +1,5 @@
 import * as ts from "typescript";
-import {DecoratorInfoInterface} from "../interface/OutputInterface";
+import {DecoratorInfoInterface} from "../interface/BeanInterface";
 
 export function stringifyWithDepth(obj: any, maxDepth: number, currentDepth: number = 0): string {
     if (currentDepth > maxDepth) {
@@ -50,7 +50,9 @@ export function getClassFilePath(sourceFile: ts.SourceFile, className: string, p
     });
 
     if (!classFilePath) return undefined;
-    return replaceSrcPath(preSourcePath, classFilePath);
+    return classFilePath
+    // TODO :: remove
+    // return replaceSrcPath(preSourcePath, classFilePath);
 }
 
 
@@ -180,4 +182,10 @@ function getArgumentValue(arg: ts.Expression, checker: ts.TypeChecker): any {
 export function replaceSrcPath(preSourcePath: string, path: string): string {
     if (!path.startsWith(preSourcePath)) return path;
     return path.replace(preSourcePath, '@src')
+}
+
+// remove extension support undefined
+export function removeExtension(path: string | undefined): string | undefined {
+    if(path === undefined) return path
+    return path.replace(/\.[^/.]+$/, "");
 }

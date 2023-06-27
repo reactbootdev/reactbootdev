@@ -1,4 +1,4 @@
-export interface OutputInterface {
+export interface BeanInterface {
   className: string,
   classPath: string | undefined,
   decorators: DecoratorInfoInterface[],

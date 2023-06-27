@@ -15,6 +15,11 @@ export function copyFolderRecursiveSync(source: string, target: string) {
     if (fs.lstatSync(source).isDirectory()) {
         files = fs.readdirSync(source);
         files.forEach(function (file) {
+
+            // only ts and tsx files
+            const allowExt = ['.ts', '.tsx']
+            if (!allowExt.includes(path.extname(file))) return
+
             let curSource = path.join(source, file);
             if (fs.lstatSync(curSource).isDirectory()) {
                 copyFolderRecursiveSync(curSource, targetFolder);
