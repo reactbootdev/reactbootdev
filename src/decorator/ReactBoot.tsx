@@ -43,12 +43,21 @@ export function ReactBoot() {
             return bean !== undefined;
         })
 
-    const routeList = pageClasses.map((page) => {
-        return (
-            // @ts-ignore
-            <Route path={page.pageUrl} element={page.class.render()}></Route>
-        )
-    })
+    const routeList = pageClasses
+        .map((page) => {
+            if(page?.class === undefined) {
+                return undefined
+            }
+            const pageClass = new page.class()
+            if(pageClass.render === undefined) {
+                return undefined
+            }
+            return (
+                <Route path={page.pageUrl} element={pageClass.render()}></Route>
+            )
+        }).filter((route) => {
+            return route !== undefined
+        })
 
     return (
         <Router>
