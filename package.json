@@ -11,7 +11,8 @@
     "clean": "rimraf dist && rimraf src/reactbootdev",
     "pub": "npm run clean && npm run build && npm publish",
     "start": "npm run build && node dist/Runner.js",
-    "test": "npm run clean && npm run build && node dist/Runner.js test"
+    "dev": "npm run clean && npm run build && node dist/Runner.js dev",
+    "test": "npm run dev && node dist/TestRunner.js test"
   },
   "keywords": [
     "reactbootdev",

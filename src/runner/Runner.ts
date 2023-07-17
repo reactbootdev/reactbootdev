@@ -17,7 +17,7 @@ import fs from "fs";
 import {FileObjectsType} from "./copy/interface/EntityBeanInterface";
 
 
-function runner(args: string[]){
+export function runner(args: string[]){
 
     // create folder dist `data`
     createFolderSync(DECORATOR_TASK_TARGET_FOLDER)

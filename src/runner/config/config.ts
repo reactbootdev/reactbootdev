@@ -15,11 +15,12 @@ export const PROCESS_ARGS = process.argv.slice(2); // Exclude the first two defa
 export const PROCESS_ARG_PROFILE = PROCESS_ARGS[0]
 export enum PROCESS_PROFILE_ENUM {
     TEST = 'test',
-    PROD = 'prod'
+    PROD = 'prod',
+    DEV = 'dev'
 }
 
 export const PRE_SOURCE_PATH =
-    PROCESS_PROFILE_ENUM.TEST === PROCESS_ARG_PROFILE ? './src/test' : './src'
+    PROCESS_PROFILE_ENUM.PROD === PROCESS_ARG_PROFILE ? './src' : './src/test'
 
 export const SOURCE_PATH = `${PRE_SOURCE_PATH}/**/*.ts?(x)`
 

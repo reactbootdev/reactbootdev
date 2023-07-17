@@ -274,7 +274,7 @@ export function entityDecoratorPostTask(fileObjects: FileObjectsType, joinKey: s
     const fileContent =
         `import { FileObjectsType } from "../interface/EntityBeanInterface";`
         + `\n\n`
-        + `export const fileObjects: FileObjectsType = `
+        + `export const entityBeans: FileObjectsType = `
         + JSON.stringify(fileObjects, null, 2)
 
     return fileContent;
