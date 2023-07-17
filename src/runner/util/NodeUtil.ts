@@ -1,5 +1,15 @@
 import * as ts from "typescript";
 import {DecoratorInfoInterface} from "../copy/interface/BeanInterface";
+import {
+    ClassPropertyType,
+    ClassType,
+    EnumType,
+    FileObjectsType,
+    FileType,
+    ImportPathType,
+    ObjectTypeEnum
+} from "../copy/interface/EntityBeanInterface";
+import path from "path";
 
 export function stringifyWithDepth(obj: any, maxDepth: number, currentDepth: number = 0): string {
     if (currentDepth > maxDepth) {
@@ -188,4 +198,151 @@ export function replaceSrcPath(preSourcePath: string, path: string): string {
 export function removeExtension(path: string | undefined): string | undefined {
     if(path === undefined) return path
     return path.replace(/\.[^/.]+$/, "");
+}
+
+
+export function isArrayElementTypeReferenceNode(node: ts.TypeNode): boolean {
+    if (ts.isTypeReferenceNode(node)) return true
+    if (ts.isArrayTypeNode(node)) {
+        const elementType = node.elementType;
+        return ts.isTypeReferenceNode(elementType);
+    }
+    return false;
+}
+
+
+export function hasRecursiveFormDecorator(node: ts.ClassDeclaration, sourceFile: ts.SourceFile): boolean {
+    const nodeDecorators = ts.canHaveDecorators(node) ? ts.getDecorators(node) ?? [] : [];
+
+    // Check if any decorator has the target name
+    const TARGET_DECORATOR_NAME = '@entity';
+    return nodeDecorators.some(decorator => {
+        return decorator.getText(sourceFile).includes(TARGET_DECORATOR_NAME);
+    });
+}
+
+
+
+export function hasCircularReference(obj: any) {
+    const visitedObjects = new Set();
+
+    function detectCircularReference(obj: any) {
+        if (typeof obj === 'object' && obj !== null) {
+            if (visitedObjects.has(obj)) {
+                return true; // 순환 참조 발견
+            }
+
+            visitedObjects.add(obj);
+
+            for (const key in obj) {
+                if (detectCircularReference(obj[key])) {
+                    return true; // 순환 참조 발견
+                }
+            }
+
+            visitedObjects.delete(obj);
+        }
+
+        return false; // 순환 참조 없음
+    }
+
+    return detectCircularReference(obj);
+}
+
+export function convertToAbsolutePath(filePath: string, baseDir: string = path.resolve(__dirname)): string {
+    // console.log param
+    filePath = path.normalize(filePath);
+
+    if (path.isAbsolute(filePath)) {
+        const result = path.normalize(filePath);
+        // console.log(`1 filePath : ${filePath} || baseDir : ${baseDir} || result : ${result}`)
+        return result;
+    }
+
+    filePath = removeFirstDirectoryFromRelativePath(filePath);
+    filePath = path.resolve(baseDir, filePath);
+    const result = path.normalize(filePath);
+    // console.log(`2 filePath : ${filePath} || baseDir : ${baseDir} || result : ${result}`)
+    return result;
+}
+
+export function getDirectoryPath(filePath: string): string {
+    const directoryPath = filePath.substring(0, filePath.lastIndexOf('\\'));
+    return directoryPath;
+}
+
+export function removeFirstDirectoryFromRelativePath(filePath: string): string {
+    filePath = path.normalize(filePath);
+    const parts = filePath.split('\\');
+    if (parts.length > 1) {
+        parts.shift();
+    }
+    return parts.join('\\');
+}
+
+export function findTypeLocation(sourceFile: ts.SourceFile, typeNode: ts.TypeNode, program: ts.Program): string {
+    const defaultResult = sourceFile.fileName;
+    const typeChecker = program.getTypeChecker();
+
+    // console.log(`findTypeLocation > ${typeNode.getText(sourceFile)}`)
+    if (!ts.isIdentifier(typeNode)) {
+        return defaultResult;
+    }
+
+    const symbol = typeChecker.getSymbolAtLocation(typeNode);
+    if (!symbol) {
+        return defaultResult;
+    }
+
+    const declarations = symbol.getDeclarations();
+    if (!declarations || declarations.length === 0) {
+        return defaultResult;
+    }
+
+    const declaration = declarations[0];
+    const declarationSourceFile = declaration.getSourceFile();
+    return declarationSourceFile.fileName;
+}
+
+// TODO :: class name 충돌 시 > entity 내부 값으로 변경 가능? 우선순위 설정.
+export function resolvePropertyType(member: ts.PropertyDeclaration, sourceFile: ts.SourceFile, program: ts.Program): ClassPropertyType | undefined {
+    const node = member.type
+    if (!node) return undefined
+
+    const typeName = node.getText(sourceFile);
+    const BASIC_TYPES = ['string', 'number', 'boolean', 'any',]
+    if (BASIC_TYPES.includes(typeName)) {
+        return {
+            type: typeName,
+            isArray: false,
+            isTypeReferenceNode: false,
+            isEnum: false,
+            // isLiteral: ts.isLiteralTypeNode(node),
+            // isStringLiteral: ts.isStringLiteral(node),
+        };
+    }
+
+    // console.log(typeName)
+    const isReferenceNode = isArrayElementTypeReferenceNode(node);
+    const isArray = ts.isArrayTypeNode(node);
+    const reTypeName = isArray ? typeName.replace('[]', '') : typeName;
+    const isEnum = isPropertyOfTypeEnum(member);
+    const filePath = findTypeLocation(sourceFile, node, program);
+    if (!isReferenceNode) return undefined
+
+    return {
+        type: reTypeName,
+        isArray: isArray,
+        isTypeReferenceNode: isReferenceNode,
+        isEnum: isEnum,
+        // isLiteral: ts.isLiteralTypeNode(node),
+        // isStringLiteral: ts.isStringLiteral(node),
+    };
+}
+
+function isPropertyOfTypeEnum(node: ts.Node): boolean {
+    // if (ts.isTypeNode(node))
+
+    // TODO :: 작동 불가
+    return false
 }

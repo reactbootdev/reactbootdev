@@ -39,11 +39,7 @@ export function pageDecoratorPostTask(beanList: BeanInterface[], targetFileName:
         + `\n\n`
         + `export const beans: BeanInterface[] = ${outputListString}`
 
-    const targetFullFilePath = `${DECORATOR_TASK_TARGET_FOLDER}\\${targetFileName}`
-    fs.writeFileSync(
-        targetFullFilePath, fileContent
-    )
-
+    return fileContent
 }
 
 export function pageDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, beanList: BeanInterface[]) {

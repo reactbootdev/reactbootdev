@@ -9,10 +9,12 @@ import {
     SOURCE_PATH,
     DECORATOR_TASK_TARGET_FOLDER
 } from "./config/config";
-import {pageDecoratorPostTask, pageDecoratorPreTask} from "./task/PageDecoratorPreTask";
+import {pageDecoratorPostTask, pageDecoratorPreTask} from "./task/PageDecoratorTask";
 import {createFolderSync} from "./util/FileUtil";
-import {BeanInterface} from "./copy/interface/BeanInterface";
 import {BaskTaskResultInterface} from "./copy/interface/BaskTaskResultInterface";
+import {entityDecoratorPreTask, entityDecoratorPostTask} from "./task/EntityDecoratorTask";
+import fs from "fs";
+import {FileObjectsType} from "./copy/interface/EntityBeanInterface";
 
 
 function runner(args: string[]){
@@ -23,16 +25,23 @@ function runner(args: string[]){
     const decoratorTasks : {
         preTask: Function
         postTask: Function,
-        taskResult: BaskTaskResultInterface[] | BaskTaskResultInterface,
+        taskResult: BaskTaskResultInterface[] | BaskTaskResultInterface | FileObjectsType,
         targetFileName: string
     }[] = [
         {
             preTask: pageDecoratorPreTask,
             postTask: pageDecoratorPostTask,
             taskResult: [],
-            targetFileName: `Bean.ts`,
+            targetFileName: `PageBean.ts`,
+        },
+        {
+            preTask: entityDecoratorPreTask,
+            postTask: entityDecoratorPostTask,
+            taskResult: {},
+            targetFileName: `EntityBean.ts`,
         }
     ]
+
 
     const sourceFileNames = getSourceFileNames(SOURCE_PATH)
     console.log(`sourceFileNames`)
@@ -48,7 +57,12 @@ function runner(args: string[]){
     });
 
     decoratorTasks.forEach((decoratorTask: any) => {
-        decoratorTask.postTask(decoratorTask.taskResult, decoratorTask.targetFileName)
+        let fileContent = decoratorTask.postTask(decoratorTask.taskResult, decoratorTask.targetFileName)
+        const targetFullFilePath = `${DECORATOR_TASK_TARGET_FOLDER}\\${decoratorTask.targetFileName}`
+
+        fs.writeFileSync(
+            targetFullFilePath, fileContent
+        )
     })
 
 

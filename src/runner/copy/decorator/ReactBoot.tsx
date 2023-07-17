@@ -8,7 +8,7 @@ export function ReactBoot() {
     // TODO :: page url 충돌 시 예외 처리 > 에러 발생
     // TODO :: `readme.md`에 의존성 모듈 내역 추가 > route, recoil 등.
 
-    const PAGE_DECORATOR_NAME = "Page"
+    const PAGE_DECORATOR_NAME = "page"
     const PAGE_DECORATOR_DEFINITION = "(pageUrl: string) => (target: any) => any"
 
     const pageClasses = beans
