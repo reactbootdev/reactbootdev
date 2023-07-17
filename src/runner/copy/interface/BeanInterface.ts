@@ -1,6 +1,6 @@
-import {BaskTaskResultInterface} from "./BaskTaskResultInterface";
+import {BaseTaskResultInterface} from "./BaseTaskResultInterface";
 
-export interface BeanInterface extends BaskTaskResultInterface {
+export interface BeanInterface extends BaseTaskResultInterface {
   className: string,
   classPath: string | undefined,
   decorators: DecoratorInfoInterface[],

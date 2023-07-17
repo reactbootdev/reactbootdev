@@ -2,7 +2,7 @@ import path from 'path';
 import * as ts from 'typescript';
 import * as glob from 'glob';
 import {
-    FileObjectsType,
+    EntityBeanType,
     ObjectsType,
     DecoratorType,
     FileType,
@@ -14,7 +14,7 @@ import {
     EnumDataType,
     ClassDataType,
     ImportPathType,
-} from "../copy/interface/EntityBeanInterface";
+} from "../copy/interface/EntityBeanType";
 import {
     convertToAbsolutePath,
     findTypeLocation,
@@ -45,7 +45,7 @@ import {BeanInterface} from "../copy/interface/BeanInterface";
 // const typeChecker = program.getTypeChecker();
 
 
-export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, fileObjects: FileObjectsType): FileObjectsType {
+export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, fileObjects: EntityBeanType): EntityBeanType {
 
     const objects: ObjectsType = {};
     const importPaths: ImportPathType = {};
@@ -169,7 +169,7 @@ export const KEY_DELIMITER = '/////'
 
 // const resJson = {}
 // default depth 0
-export function entityDecoratorPostTask(fileObjects: FileObjectsType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
+export function entityDecoratorPostTask(fileObjects: EntityBeanType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
     console.log(`depth : ${depth} / limit : ${maxDepth} / className : ${joinKey}`)
     depth++
 

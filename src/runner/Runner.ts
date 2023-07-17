@@ -11,10 +11,10 @@ import {
 } from "./config/config";
 import {pageDecoratorPostTask, pageDecoratorPreTask} from "./task/PageDecoratorTask";
 import {createFolderSync} from "./util/FileUtil";
-import {BaskTaskResultInterface} from "./copy/interface/BaskTaskResultInterface";
+import {BaseTaskResultInterface} from "./copy/interface/BaseTaskResultInterface";
 import {entityDecoratorPreTask, entityDecoratorPostTask} from "./task/EntityDecoratorTask";
 import fs from "fs";
-import {FileObjectsType} from "./copy/interface/EntityBeanInterface";
+import {EntityBeanType} from "./copy/interface/EntityBeanType";
 
 
 export function runner(args: string[]){
@@ -25,7 +25,7 @@ export function runner(args: string[]){
     const decoratorTasks : {
         preTask: Function
         postTask: Function,
-        taskResult: BaskTaskResultInterface[] | BaskTaskResultInterface | FileObjectsType,
+        taskResult: BaseTaskResultInterface[] | BaseTaskResultInterface | EntityBeanType,
         targetFileName: string
     }[] = [
         {

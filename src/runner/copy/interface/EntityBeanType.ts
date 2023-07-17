@@ -1,4 +1,4 @@
-import {BaskTaskResultInterface} from "./BaskTaskResultInterface";
+import {BaseTaskResultInterface} from "./BaseTaskResultInterface";
 
 
 export type DecoratorType = {
@@ -48,5 +48,5 @@ export type FileType = {
     objects: ObjectsType,
 }
 
-export type FileObjectsType = Record<string, FileType>
+export type EntityBeanType = Record<string, FileType>
 
