@@ -10,8 +10,8 @@
     "build": "tsc",
     "clean": "rimraf dist && rimraf src/reactbootdev",
     "pub": "npm run clean && npm run build && npm publish",
-    "start": "npm run build && node dist/pre-processor/Decorator.js",
-    "test": "npm run clean && npm run build && node dist/pre-processor/Decorator.js test"
+    "start": "npm run build && node dist/Runner.js",
+    "test": "npm run clean && npm run build && node dist/Runner.js test"
   },
   "keywords": [
     "reactbootdev",

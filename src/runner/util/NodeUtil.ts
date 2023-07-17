@@ -1,5 +1,5 @@
 import * as ts from "typescript";
-import {DecoratorInfoInterface} from "../interface/BeanInterface";
+import {DecoratorInfoInterface} from "../copy/interface/BeanInterface";
 
 export function stringifyWithDepth(obj: any, maxDepth: number, currentDepth: number = 0): string {
     if (currentDepth > maxDepth) {

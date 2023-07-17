@@ -1,6 +1,11 @@
 import * as fs from "fs";
 import * as path from "path";
 
+export function createFolderSync(targetFolder: string) {
+    if (!fs.existsSync(targetFolder)) {
+        fs.mkdirSync(targetFolder, { recursive: true });
+    }
+}
 
 export function copyFolderRecursiveSync(source: string, target: string) {
     let files = [];
