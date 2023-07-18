@@ -18,8 +18,8 @@ import {
 import {
     convertToAbsolutePath,
     findTypeLocation,
-    getDecoratorInfo, getDirectoryPath, hasRecursiveFormDecorator,
-    isArrayElementTypeReferenceNode, resolvePropertyType,
+    getDecoratorInfo, getDirectoryPath, getDirectoryPathByDelimiter, hasRecursiveFormDecorator,
+    isArrayElementTypeReferenceNode, removeExtension, resolveFilePath, resolvePropertyType,
     // resolveRecursiveTypes
 } from "../util/NodeUtil";
 import {BeanInterface} from "../copy/interface/BeanInterface";
@@ -45,15 +45,18 @@ import {BeanInterface} from "../copy/interface/BeanInterface";
 // const typeChecker = program.getTypeChecker();
 
 
-export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, fileObjects: EntityBeanType): EntityBeanType {
+export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, fileObjects: EntityBeanType): EntityBeanType {
 
     const objects: ObjectsType = {};
     const importPaths: ImportPathType = {};
     // console.log(111 + `sourceFile.fileName: ${sourceFile.fileName} || path.resolve(__dirname): ${path.resolve(__dirname)}`)
-    const currFileAbsolutePath = convertToAbsolutePath(sourceFile.fileName);
 
     // Check if any decorator has the target name
+    // const TARGET_DECORATOR_NAME = '@page';
     const TARGET_DECORATOR_NAME = '@entity';
+    // const currFileAbsolutePath = convertToAbsolutePath(sourceFile.fileName);
+    const currFileAbsolutePath = sourceFile.fileName.replace(/.*src\//, 'src/');
+
 
     ts.forEachChild(sourceFile, visitNode);
 
@@ -89,6 +92,18 @@ export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
                 return;
             }
 
+            const decorators = ts.canHaveDecorators(node) ? ts.getDecorators(node) : [];
+            if (!decorators) return
+            // 데코레이터
+            const tobeDecorators: any[] = []
+            decorators.forEach(d => {
+                let decoratorInfo = getDecoratorInfo(d, checker, sourceFile)
+                if (decoratorInfo == null) return
+                tobeDecorators.push(decoratorInfo);
+            });
+
+
+
             const targetName = node.name.text;
             const properties: ClassDataType = {};
 
@@ -120,7 +135,7 @@ export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
             const classObject: ClassType = {
                 type: ObjectTypeEnum.CLASS,
                 data: properties,
-                decorators: [],
+                decorators: tobeDecorators,
             }
             objects[targetName] = classObject;
         }
@@ -129,7 +144,12 @@ export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
             let importPath = node.moduleSpecifier.getText(sourceFile);
             importPath = importPath.replace(/['"]/g, '');
             // console.log(222 + `currFileAbsolutePath: ${currFileAbsolutePath} || importPath: ${importPath}`)
-            importPath = convertToAbsolutePath(importPath, getDirectoryPath(currFileAbsolutePath));
+
+            // importPath = convertToAbsolutePath(importPath, getDirectoryPath(currFileAbsolutePath));
+            // importPath = convertToAbsolutePath(importPath, getDirectoryPathByDelimiter(currFileAbsolutePath, '/'))
+
+            importPath = resolveFilePath(currFileAbsolutePath, importPath)
+
             // ext with ts if not exist ext
             if (!path.extname(importPath)) {
                 importPath += '.ts';
@@ -156,7 +176,17 @@ export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
 
     if (Object.keys(objects).length == 0) return fileObjects;
 
-    // console.log(`currFileAbsolutePath: ${currFileAbsolutePath} || sourceFile.fileName: ${sourceFile.fileName}`)
+    console.log(`currFileAbsolutePath: ${currFileAbsolutePath} || sourceFile.fileName: ${sourceFile.fileName} || baseDir: ${path.resolve(__dirname)}`)
+    // how to get only absolute path
+
+    const srcDir = path.resolve(__dirname, '../src');
+    console.log(`srcDir: ${srcDir}`)
+
+
+    // fileObjects[currFileAbsolutePath] = fileType;
+    // get after src in filepath by sourceFile.fileName
+
+    // fileObjects[reFileName] = fileType;
     fileObjects[currFileAbsolutePath] = fileType;
 
 
@@ -168,10 +198,17 @@ export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
 
 
 
-export const KEY_DELIMITER = '/////'
+export const KEY_DELIMITER = '////'
 
 
-export function recursiveUpdate(fileObjects: EntityBeanType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
+// const resJson = {}
+// default depth 0
+export function commonDecoratorPostTask(fileObjects: EntityBeanType, joinKey: string | undefined, maxDepth: number = 5, depth: number = 0): any {
+    console.log(`depth : ${depth} / limit : ${maxDepth} / className : ${joinKey}`)
+
+    depth++
+
+    // TODO :: 함수 분리 예정.
     const files = Object.entries(fileObjects)
     const filePathClassNameObjects: {
         [filePathClassName: string]: {
@@ -202,6 +239,7 @@ export function recursiveUpdate(fileObjects: EntityBeanType, joinKey: string | u
                 }, {})),
         };
     }, {});
+    console.log(`filePathClassNameObjects : ${JSON.stringify(filePathClassNameObjects, null, 2)}`)
 
     // if(limit <= 0) throw new Error('limit exceeded')
     if (
@@ -220,7 +258,7 @@ export function recursiveUpdate(fileObjects: EntityBeanType, joinKey: string | u
 
     joinKeys.forEach(joinKey => {
         const classInfoObject = filePathClassNameObjects[joinKey];
-        // console.log(`classInfoObject : ${classInfoObject} ||| joinKey : ${joinKey}`)
+        console.log(`classInfoObject : ${classInfoObject} ||| joinKey : ${joinKey}`)
         const importPaths = classInfoObject?.importPaths;
         if(!importPaths) return
         // const filePath = classInfoObject.filePath;
@@ -260,7 +298,7 @@ export function recursiveUpdate(fileObjects: EntityBeanType, joinKey: string | u
 
             if (isTypeReferenceNode) {
                 if (isClassType) {
-                    entityDecoratorPostTask(fileObjects, targetFileObjectKey, maxDepth, depth)
+                    commonDecoratorPostTask(fileObjects, targetFileObjectKey, maxDepth, depth)
                 }
                 // TODO :: type > importPaths
                 return classProperty.referenceNode = filePathClassNameObject.classObject
@@ -268,19 +306,37 @@ export function recursiveUpdate(fileObjects: EntityBeanType, joinKey: string | u
         })
 
     });
-}
 
 
-// const resJson = {}
-// default depth 0
-export function entityDecoratorPostTask(fileObjects: EntityBeanType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
-    // console.log(`depth : ${depth} / limit : ${maxDepth} / className : ${joinKey}`)
-    depth++
+    const importStatements = ``
+        + `\n`
+        + Object.entries(fileObjects).map(([filePath, fileType]) => {
+            return Object.entries(fileType.objects).map(([objectName, objectMap]) => {
+                filePath = filePath.replace(/\\/g, '/')
+                return `import { ${objectName} } from "${removeExtension(filePath)}";`
+            }).join('\n')
+        }).join('\n')
+        + `\n`
 
-    recursiveUpdate(fileObjects, joinKey, maxDepth, depth)
+    const importMap = ``
+    + `export const importMap: { [key: string]: any } = {`
+    + `\n`
+    + Object.entries(fileObjects).map(([filePath, fileType]) => {
+        return Object.entries(fileType.objects).map(([objectName, objectMap]) => {
+            filePath = filePath.replace(/\\/g, '/')
+            return `\t"${filePath}${KEY_DELIMITER}${objectName}" : ${objectName}`
+        }).join(',\n')
+    }).join(',\n')
+    + `\n`
+    + `}`
 
-    const fileContent =
-        `import { FileObjectsType } from "../interface/EntityBeanInterface";`
+
+    const fileContent =``
+        + `import { FileObjectsType } from "../interface/EntityBeanInterface";`
+        + `\n\n`
+        + importStatements
+        + `\n\n`
+        + importMap
         + `\n\n`
         + `export const entityBeans: FileObjectsType = `
         + JSON.stringify(fileObjects, null, 2)

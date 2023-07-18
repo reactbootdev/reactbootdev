@@ -1,5 +1,6 @@
-import {Person, TestEnum} from "./test2";
-import {column, entity} from "../decorator/decorator";
+import {Person, TestEnum} from "./testab2";
+import {column} from "../../runner/copy/decorator/Column";
+import {entity} from "../../runner/copy/decorator/Entity";
 
 
 

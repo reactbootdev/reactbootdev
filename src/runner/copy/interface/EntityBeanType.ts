@@ -15,7 +15,7 @@ export type ClassPropertyType = {
     type: string,
     isArray: boolean,
     isTypeReferenceNode: boolean,
-    isEnum: boolean,
+    // isEnum: boolean,
     referenceNode?: object,
     decorators?: DecoratorType[],
     // isLiteral: boolean,
@@ -34,7 +34,9 @@ export enum ObjectTypeEnum {
 export type ClassType = {
     type: ObjectTypeEnum.CLASS,
     data: ClassDataType,
+    decorators: DecoratorType[],
 }
+
 export type EnumType = {
     type: ObjectTypeEnum.ENUM,
     data: EnumDataType,

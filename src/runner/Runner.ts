@@ -15,6 +15,7 @@ import {BaseTaskResultInterface} from "./copy/interface/BaseTaskResultInterface"
 import {entityDecoratorPreTask, entityDecoratorPostTask} from "./task/EntityDecoratorTask";
 import fs from "fs";
 import {EntityBeanType} from "./copy/interface/EntityBeanType";
+import {commonDecoratorPostTask, commonDecoratorPreTask} from "./task/CommonDecoratorTask";
 
 
 export function runner(args: string[]){
@@ -39,6 +40,12 @@ export function runner(args: string[]){
             postTask: entityDecoratorPostTask,
             taskResult: {},
             targetFileName: `EntityBean.ts`,
+        },
+        {
+            preTask: commonDecoratorPreTask,
+            postTask: commonDecoratorPostTask,
+            taskResult: {},
+            targetFileName: `CommonBean.ts`,
         }
     ]
 
@@ -51,13 +58,15 @@ export function runner(args: string[]){
     const checker = program.getTypeChecker();
 
     program.getSourceFiles().forEach(sourceFile => {
+    // sourceFileNames.forEach(sourceFile => {
+    //     console.log(sourceFile.fileName)
         decoratorTasks.forEach((decoratorTask: any) => {
             decoratorTask.preTask(sourceFile, program, checker, decoratorTask.taskResult)
         })
     });
 
     decoratorTasks.forEach((decoratorTask: any) => {
-        let fileContent = decoratorTask.postTask(decoratorTask.taskResult, decoratorTask.targetFileName)
+        let fileContent = decoratorTask.postTask(decoratorTask.taskResult, undefined)
         const targetFullFilePath = `${DECORATOR_TASK_TARGET_FOLDER}\\${decoratorTask.targetFileName}`
 
         fs.writeFileSync(

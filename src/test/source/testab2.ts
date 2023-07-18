@@ -1,5 +1,5 @@
-import {Address} from "./test";
-import {entity} from "../decorator/decorator";
+import {Address} from "./testab";
+import {entity} from "../../runner/copy/decorator/Entity";
 
 @entity
 export class Person {

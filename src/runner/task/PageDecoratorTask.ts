@@ -1,6 +1,7 @@
 import * as ts from 'typescript';
 import {
-    getClassFilePath, getDecoratorInfo,
+    convertToAbsolutePath,
+    getClassFilePath, getDecoratorInfo, getDirectoryPath,
     getSuperClasses, getTypeOfNode, removeExtension, stringifyWithDepth
 } from "../util/NodeUtil";
 import {BeanInterface} from "../copy/interface/BeanInterface";
@@ -15,6 +16,7 @@ export function pageDecoratorPostTask(beanList: BeanInterface[], targetFileName:
     const importStatments = beanList.map((bean: BeanInterface) => {
         const className = bean.className
         const classPath = removeExtension(bean.classPath)
+        // const classPath = bean.classPath
         const importStatement = `import { ${className} } from "${classPath}";`
         return importStatement
     }).join('\n')
@@ -44,6 +46,8 @@ export function pageDecoratorPostTask(beanList: BeanInterface[], targetFileName:
 
 export function pageDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, beanList: BeanInterface[]) {
     // 소스 파일 내의 모든 데코레이터 소유한 클래스 탐색
+    const currFileAbsolutePath = convertToAbsolutePath(sourceFile.fileName);
+
     ts.forEachChild(sourceFile, node => {
         const decorators = ts.canHaveDecorators(node) ? ts.getDecorators(node) : [];
 
@@ -68,7 +72,8 @@ export function pageDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Prog
             const superClasses = getSuperClasses(node, sourceFile).map(el => {
                 return {
                     className: el,
-                    classPath: getClassFilePath(sourceFile, el, PRE_SOURCE_PATH)
+                    // classPath: getClassFilePath(sourceFile, el, PRE_SOURCE_PATH)
+                    classPath: currFileAbsolutePath
                 }
             })
 
@@ -101,9 +106,13 @@ export function pageDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Prog
                     })
             });
 
+            // let importPath = node.moduleSpecifier.getText(sourceFile);
+            // importPath = convertToAbsolutePath(importPath, getDirectoryPath(currFileAbsolutePath));
+
             const output: BeanInterface = {
                 superClasses: superClasses,
-                classPath: getClassFilePath(sourceFile, className, PRE_SOURCE_PATH),
+                // classPath: getClassFilePath(sourceFile, className, PRE_SOURCE_PATH),
+                classPath: currFileAbsolutePath,
                 className: className,
                 decorators: tobeDecorators,
                 members: members

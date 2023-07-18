@@ -211,13 +211,11 @@ export function isArrayElementTypeReferenceNode(node: ts.TypeNode): boolean {
 }
 
 
-export function hasRecursiveFormDecorator(node: ts.ClassDeclaration, sourceFile: ts.SourceFile): boolean {
+export function hasRecursiveFormDecorator(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, targetDecoratorName: string): boolean {
     const nodeDecorators = ts.canHaveDecorators(node) ? ts.getDecorators(node) ?? [] : [];
 
-    // Check if any decorator has the target name
-    const TARGET_DECORATOR_NAME = '@entity';
     return nodeDecorators.some(decorator => {
-        return decorator.getText(sourceFile).includes(TARGET_DECORATOR_NAME);
+        return decorator.getText(sourceFile).includes(targetDecoratorName);
     });
 }
 
@@ -249,6 +247,24 @@ export function hasCircularReference(obj: any) {
     return detectCircularReference(obj);
 }
 
+
+
+export function resolveFilePath(orgFilePath: string, importFilePath: string, delimeter: string = '/'): string {
+
+    if (importFilePath.startsWith('./')) {
+        const calcFilePath = orgFilePath.split(delimeter).slice(0, -1).join(delimeter);
+        const result = importFilePath.replace('./', calcFilePath + delimeter);
+        return result;
+    }
+
+    const cntUpperDir = importFilePath.split('../').length - 1;
+    const calcFilePath = orgFilePath.split(delimeter).slice(0, -cntUpperDir).join(delimeter);
+    const result = calcFilePath + delimeter + importFilePath.split('../').slice(-1)[0];
+
+    return result;
+}
+
+
 export function convertToAbsolutePath(filePath: string, baseDir: string = path.resolve(__dirname)): string {
     // console.log param
     filePath = path.normalize(filePath);
@@ -268,6 +284,11 @@ export function convertToAbsolutePath(filePath: string, baseDir: string = path.r
 
 export function getDirectoryPath(filePath: string): string {
     const directoryPath = filePath.substring(0, filePath.lastIndexOf('\\'));
+    return directoryPath;
+}
+
+export function getDirectoryPathByDelimiter(filePath: string, delimiter: string = '\\'): string {
+    const directoryPath = filePath.substring(0, filePath.lastIndexOf(delimiter));
     return directoryPath;
 }
 
@@ -316,7 +337,7 @@ export function resolvePropertyType(member: ts.PropertyDeclaration, sourceFile: 
             type: typeName,
             isArray: false,
             isTypeReferenceNode: false,
-            isEnum: false,
+            // isEnum: false,
             // isLiteral: ts.isLiteralTypeNode(node),
             // isStringLiteral: ts.isStringLiteral(node),
         };
@@ -326,7 +347,7 @@ export function resolvePropertyType(member: ts.PropertyDeclaration, sourceFile: 
     const isReferenceNode = isArrayElementTypeReferenceNode(node);
     const isArray = ts.isArrayTypeNode(node);
     const reTypeName = isArray ? typeName.replace('[]', '') : typeName;
-    const isEnum = isPropertyOfTypeEnum(member);
+    // const isEnum = isPropertyOfTypeEnum(member);
     const filePath = findTypeLocation(sourceFile, node, program);
     if (!isReferenceNode) return undefined
 
@@ -334,7 +355,7 @@ export function resolvePropertyType(member: ts.PropertyDeclaration, sourceFile: 
         type: reTypeName,
         isArray: isArray,
         isTypeReferenceNode: isReferenceNode,
-        isEnum: isEnum,
+        // isEnum: isEnum,
         // isLiteral: ts.isLiteralTypeNode(node),
         // isStringLiteral: ts.isStringLiteral(node),
     };
