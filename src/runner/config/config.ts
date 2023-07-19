@@ -59,6 +59,7 @@ export function getSourceFileNames(sourcePath: string) {
         sourcePath,
         {
             ignore: [
+                '**/src/reactbootdev/**/*.ts',
                 '**/node_modules/**/*.ts',
                 '**/*.spec.ts',
             ],

@@ -14,10 +14,11 @@
     "dev": "npm run devclean && npm run build && node dist/Runner.js dev src/test/source src/test/target/reactbootdev",
     "test": "npm run dev && node dist/TestRunner.js test",
     "rtclean": "rimraf src/test/reactjs/src/reactbootdev",
-    "rt": "npm run rtclean && npm run build && node dist/Runner.js dev src/test/reactjs/src src/test/reactjs/src/reactbootdev",
+    "rt": "npm run build && node dist/Runner.js dev src/test/reactjs/src src/test/reactjs/src/reactbootdev",
     "rtstart": "npm run rt && npm run start",
     "rtbuild": "npm run rt && npm run build",
     "rttest": "npm run rt && npm run test",
+    "rtnodemon": "nodemon -V --watch src/test/reactjs/src --ext js,mjs,cjs,json,jsx,ts,tsx --delay 10000ms --exec \"npm run rt\"",
     "pub": "npm run clean && npm run build && npm publish"
   },
   "keywords": [
@@ -33,6 +34,7 @@
     "react-router-dom": "^6.14.0"
   },
   "devDependencies": {
+    "nodemon": "^3.0.1",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.3"

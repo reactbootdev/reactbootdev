@@ -29,8 +29,33 @@ export function copyFolderRecursiveSync(source: string, target: string) {
             if (fs.lstatSync(curSource).isDirectory()) {
                 copyFolderRecursiveSync(curSource, targetFolder);
             } else {
-                fs.copyFileSync(curSource, path.join(targetFolder, file));
+                copyFileIfChanged(curSource, path.join(targetFolder, file));
             }
         });
+    }
+}
+
+export function copyFileIfChanged(sourceFile: string, targetFile: string) {
+    // 이전 파일 내용을 읽어옵니다.
+    let previousContent = '';
+    try {
+        previousContent = fs.readFileSync(targetFile, 'utf8');
+    } catch (error: unknown) { // Specify the type as 'unknown'
+        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+            throw error;
+        }
+    }
+
+    // 변경 여부를 확인하기 위해 파일 크기를 비교합니다.
+    const previousSize = previousContent.length;
+    const currentSize = fs.statSync(sourceFile).size;
+    const hasChanged = previousSize !== currentSize;
+
+    if (hasChanged) {
+        // 변경된 경우 파일을 복사합니다.
+        fs.copyFileSync(sourceFile, targetFile);
+        console.log('File copied:', targetFile , `<` , sourceFile);
+    } else {
+        console.log('No changes detected. File not copied:', targetFile , `<` , sourceFile);
     }
 }
