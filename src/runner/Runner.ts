@@ -61,9 +61,6 @@ export function runner(args: string[]){
 
 
     const sourceFileNames = getSourceFileNames(SOURCE_PATH)
-    console.log(`sourceFileNames`)
-    console.log(sourceFileNames)
-
     const program = ts.createProgram(sourceFileNames, COMPILER_OPTIONS);
     const checker = program.getTypeChecker();
 

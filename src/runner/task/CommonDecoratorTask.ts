@@ -63,8 +63,8 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
     // console.log(111 + `sourceFile.fileName: ${sourceFile.fileName} || path.resolve(__dirname): ${path.resolve(__dirname)}`)
 
     // Check if any decorator has the target name
-    // const TARGET_DECORATOR_NAME = '@page';
-    const TARGET_DECORATOR_NAME = '@entity';
+    const TARGET_DECORATOR_NAME = '@page';
+    // const TARGET_DECORATOR_NAME = '@entity';
     // const currFileAbsolutePath = convertToAbsolutePath(sourceFile.fileName);
     const currFileAbsolutePath = sourceFile.fileName.replace(/.*src\//, 'src/');
 

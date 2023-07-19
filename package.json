@@ -10,9 +10,10 @@
     "build": "tsc",
     "clean": "rimraf dist && rimraf src/reactbootdev && rimraf src/test/reactjs/src/reactbootdev",
     "pub": "npm run clean && npm run build && npm publish",
-    "start": "npm run clean && npm run build && node dist/Runner.js prod",
+    "start": "npm run clean && npm run build && node dist/Runner.js",
     "dev": "npm run clean && npm run build && node dist/Runner.js dev",
     "test": "npm run dev && node dist/TestRunner.js test",
+    "rt": "npm run clean && npm run build && node dist/Runner.js dev src/test/reactjs/src src/test/reactjs/src/reactbootdev",
     "rtstart": "npm run clean && npm run build && node dist/Runner.js dev src/test/reactjs/src src/test/reactjs/src/reactbootdev && cd src/test/reactjs && npm run start",
     "rtbuild": "npm run clean && npm run build && node dist/Runner.js dev src/test/reactjs/src && cd src/test/reactjs && npm run build",
     "rttest": "npm run clean && npm run build && node dist/Runner.js dev src/test/reactjs/src && cd src/test/reactjs && npm run test"
