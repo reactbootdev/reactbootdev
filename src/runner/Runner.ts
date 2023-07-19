@@ -29,18 +29,18 @@ export function runner(args: string[]){
         taskResult: BaseTaskResultInterface[] | BaseTaskResultInterface | TaskBeansType,
         targetFileName: string
     }[] = [
-        {
-            preTask: pageDecoratorPreTask,
-            postTask: pageDecoratorPostTask,
-            taskResult: [],
-            targetFileName: `PageBean.ts`,
-        },
-        {
-            preTask: entityDecoratorPreTask,
-            postTask: entityDecoratorPostTask,
-            taskResult: {},
-            targetFileName: `EntityBean.ts`,
-        },
+        // {
+        //     preTask: pageDecoratorPreTask,
+        //     postTask: pageDecoratorPostTask,
+        //     taskResult: [],
+        //     targetFileName: `PageBean.ts`,
+        // },
+        // {
+        //     preTask: entityDecoratorPreTask,
+        //     postTask: entityDecoratorPostTask,
+        //     taskResult: {},
+        //     targetFileName: `EntityBean.ts`,
+        // },
         {
             preTask: commonDecoratorPreTask,
             postTask: commonDecoratorPostTask,
