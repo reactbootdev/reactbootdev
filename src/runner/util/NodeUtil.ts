@@ -107,7 +107,7 @@ export function getDecoratorInfo(decorator: ts.Decorator, checker: ts.TypeChecke
     if(argsTexts === undefined) return undefined
 
     return {
-        decoratorName: decoratorName,
+        name: decoratorName,
         definition: definition,
 
         arguments: argValues.map((el, idx) => {

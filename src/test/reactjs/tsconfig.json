@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": [
+        "src/*"
+      ]
+    },
     "target": "es5",
     "lib": [
       "dom",

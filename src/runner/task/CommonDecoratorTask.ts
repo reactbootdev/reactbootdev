@@ -307,8 +307,9 @@ export function commonDecoratorPostTask(fileObjects: TaskBeansType, joinKey: str
         }).join('\n')
         + `\n`
 
+    const importMapName = `importMap`
     const importMap = ``
-    + `export const importMap: { [key: string]: any } = {`
+    + `export const ${importMapName}: { [key: string]: any } = {`
     + `\n`
     + Object.entries(fileObjects).map(([filePath, fileType]) => {
         return Object.entries(fileType.objects).map(([objectName, objectMap]) => {
@@ -319,9 +320,12 @@ export function commonDecoratorPostTask(fileObjects: TaskBeansType, joinKey: str
     + `\n`
     + `}`
 
+    const beanTypeName = `TaskBeansType`
+    const importType = [`${beanTypeName}`, `ObjectTypeEnum`]
+    const importFrom = `"../interface/TaskBeansType"`
 
     const fileContent =``
-        + `import { FileObjectsType } from "../interface/EntityBeanInterface";`
+        + `import { ${importType.join(`,`)} } from ${importFrom};`
         + `\n\n`
         + importStatements
         + `\n\n`
@@ -330,5 +334,12 @@ export function commonDecoratorPostTask(fileObjects: TaskBeansType, joinKey: str
         + `export const entityBeans: FileObjectsType = `
         + JSON.stringify(fileObjects, null, 2)
 
-    return fileContent;
+    return replaceStringTypeToEnum(fileContent);
+}
+
+function replaceStringTypeToEnum(text: string){
+    text = text.replace(/"type": "class"/g, `"type": ObjectTypeEnum.CLASS`)
+    text = text.replace(/"type": "enum"/g, `"type": ObjectTypeEnum.ENUM`)
+
+    return text
 }

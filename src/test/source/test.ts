@@ -24,12 +24,12 @@ class Test extends TestAAAA {
 
     test2 = (str: any) => str
 
-    @page2({value: "", callback: (a, b) => a + "2"})
+    @page2({objectValue: "", callback: (a, b) => a + "2"})
     test3(): string {
         return 'test';
     }
 
-    @page3({value: "", callback: (a, b) => a + "2"})
+    @page3({objectValue: "", callback: (a, b) => a + "2"})
     test33(): string {
         return 'test';
     }
@@ -73,7 +73,7 @@ function page2(option: { value: string, callback: (x: any, y: any) => any }) {
 
 function page3(option: { value: string, callback: (x: any, y: any) => any }) {
     return function logMethod(target: any, key: string, descriptor: PropertyDescriptor) {
-        const originalMethod = descriptor.value;
+        const originalMethod = descriptor.objectValue;
 
         descriptor.value = function (...args: any[]) {
             console.log(`Calling method ${key} with arguments:`, args);

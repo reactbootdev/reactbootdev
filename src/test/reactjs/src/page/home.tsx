@@ -7,7 +7,7 @@ function BasePageContent() {
 }
 
 
-
+// TODO : update
 @page("/test2")
 export class BasePage2 {
     // @Autowired
@@ -16,5 +16,20 @@ export class BasePage2 {
     render() {
         return  <BasePageContent />;
     }
+}
 
+function BasePageConten23t() {
+    return <div>BasePageConten23t</div>;
+}
+
+
+// TODO : update
+@page("/test3")
+export class BasePage3 {
+    // @Autowired
+    // baseRepository: BaseRepository;
+
+    render() {
+        return  <BasePageConten23t />;
+    }
 }

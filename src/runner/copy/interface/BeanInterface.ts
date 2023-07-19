@@ -18,7 +18,7 @@ export interface BeanInterface extends BaseTaskResultInterface {
 }
 
 export interface DecoratorInfoInterface {
-  decoratorName: string;
+  name: string;
   definition: string;
   arguments: { txt: string; type: string; value: any }[];
 }
