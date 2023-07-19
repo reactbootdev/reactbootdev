@@ -8,11 +8,14 @@
   },
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf dist && rimraf src/reactbootdev",
+    "clean": "rimraf dist && rimraf src/reactbootdev && rimraf src/test/reactjs/src/reactbootdev",
     "pub": "npm run clean && npm run build && npm publish",
-    "start": "npm run build && node dist/Runner.js",
+    "start": "npm run clean && npm run build && node dist/Runner.js prod",
     "dev": "npm run clean && npm run build && node dist/Runner.js dev",
-    "test": "npm run dev && node dist/TestRunner.js test"
+    "test": "npm run dev && node dist/TestRunner.js test",
+    "rtstart": "cd src/test/reactjs && npm run start",
+    "rtbuild": "cd src/test/reactjs && npm run build",
+    "rttest": "cd src/test/reactjs && npm run test"
   },
   "keywords": [
     "reactbootdev",

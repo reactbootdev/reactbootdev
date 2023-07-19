@@ -36,7 +36,10 @@ export const MOVE_TASK_SOURCE_DIST_FOLDER_NAMES = [
     `interface`,
     `data`
 ]
-export const MOVE_TASK_TARGET_FOLDER = `.\\src\\reactbootdev\\`
+export const MOVE_TASK_TARGET_FOLDER =
+    PROCESS_PROFILE_ENUM.PROD === PROCESS_ARG_PROFILE
+        ? `.\\src\\reactbootdev\\`
+        : `.\\src\\test\\reactjs\\src\\reactbootdev\\`
 
 // 프로젝트 내 모든 TypeScript 파일 경로 설정
 // 재귀적으로 모든 파일을 탐색하고 싶다면 glob 패턴을 사용하면 된다.
