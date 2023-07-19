@@ -2,6 +2,7 @@ import path from "path";
 import * as ts from 'typescript';
 import * as glob from "glob";
 
+export const KEY_DELIMITER = '////'
 
 // TypeScript 컴파일러 옵션 설정
 export const COMPILER_OPTIONS: ts.CompilerOptions = {
@@ -20,7 +21,7 @@ export enum PROCESS_PROFILE_ENUM {
 }
 
 export const PRE_SOURCE_PATH =
-    PROCESS_PROFILE_ENUM.PROD === PROCESS_ARG_PROFILE ? './src' : './src/test'
+    PROCESS_PROFILE_ENUM.PROD === PROCESS_ARG_PROFILE ? './src' : './src/test/source'
 
 export const SOURCE_PATH = `${PRE_SOURCE_PATH}/**/*.ts?(x)`
 

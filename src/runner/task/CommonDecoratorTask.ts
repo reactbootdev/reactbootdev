@@ -2,7 +2,7 @@ import path from 'path';
 import * as ts from 'typescript';
 import * as glob from 'glob';
 import {
-    EntityBeanType,
+    TaskBeansType,
     ObjectsType,
     DecoratorType,
     FileType,
@@ -14,7 +14,7 @@ import {
     EnumDataType,
     ClassDataType,
     ImportPathType,
-} from "../copy/interface/EntityBeanType";
+} from "../copy/interface/TaskBeansType";
 import {
     convertToAbsolutePath,
     findTypeLocation,
@@ -23,6 +23,8 @@ import {
     // resolveRecursiveTypes
 } from "../util/NodeUtil";
 import {BeanInterface} from "../copy/interface/BeanInterface";
+import {entityDecoratorPostTask} from "./EntityDecoratorTask";
+import {KEY_DELIMITER} from "../config/config";
 
 
 // const PRE_SOURCE_PATH = 'src/source';
@@ -45,7 +47,16 @@ import {BeanInterface} from "../copy/interface/BeanInterface";
 // const typeChecker = program.getTypeChecker();
 
 
-export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, fileObjects: EntityBeanType): EntityBeanType {
+export interface TaskArgsInterface {
+    decoratorNames: string[],
+    resultFileName: string,
+    isRecursiveConnection: boolean,
+    maxDepthRecursiveConnection: number,
+    taskBeans: TaskBeansType,
+}
+
+
+export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, taskBeans: TaskBeansType): TaskBeansType {
 
     const objects: ObjectsType = {};
     const importPaths: ImportPathType = {};
@@ -174,7 +185,7 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
         objects: objects,
     }
 
-    if (Object.keys(objects).length == 0) return fileObjects;
+    if (Object.keys(objects).length == 0) return taskBeans;
 
     console.log(`currFileAbsolutePath: ${currFileAbsolutePath} || sourceFile.fileName: ${sourceFile.fileName} || baseDir: ${path.resolve(__dirname)}`)
     // how to get only absolute path
@@ -187,28 +198,18 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
     // get after src in filepath by sourceFile.fileName
 
     // fileObjects[reFileName] = fileType;
-    fileObjects[currFileAbsolutePath] = fileType;
+    taskBeans[currFileAbsolutePath] = fileType;
 
 
     // TODO :: 모든 Path 절대경로 치환.
     // TODO :: importPaths 데이터 형태 유효성 확인
-    return fileObjects;
+    return taskBeans;
 }
 
 
 
 
-export const KEY_DELIMITER = '////'
-
-
-// const resJson = {}
-// default depth 0
-export function commonDecoratorPostTask(fileObjects: EntityBeanType, joinKey: string | undefined, maxDepth: number = 5, depth: number = 0): any {
-    console.log(`depth : ${depth} / limit : ${maxDepth} / className : ${joinKey}`)
-
-    depth++
-
-    // TODO :: 함수 분리 예정.
+export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
     const files = Object.entries(fileObjects)
     const filePathClassNameObjects: {
         [filePathClassName: string]: {
@@ -224,7 +225,6 @@ export function commonDecoratorPostTask(fileObjects: EntityBeanType, joinKey: st
         return {
             ...acc,
             ...(Object.entries(fileValue.objects)
-                // .filter(([key, value]) => value.type === ObjectTypeEnum.CLASS)
                 .reduce((innerAcc, [className, value]) => {
                     return {
                         ...innerAcc,
@@ -239,9 +239,7 @@ export function commonDecoratorPostTask(fileObjects: EntityBeanType, joinKey: st
                 }, {})),
         };
     }, {});
-    console.log(`filePathClassNameObjects : ${JSON.stringify(filePathClassNameObjects, null, 2)}`)
 
-    // if(limit <= 0) throw new Error('limit exceeded')
     if (
         maxDepth != -1
         && depth > maxDepth
@@ -258,54 +256,45 @@ export function commonDecoratorPostTask(fileObjects: EntityBeanType, joinKey: st
 
     joinKeys.forEach(joinKey => {
         const classInfoObject = filePathClassNameObjects[joinKey];
-        console.log(`classInfoObject : ${classInfoObject} ||| joinKey : ${joinKey}`)
         const importPaths = classInfoObject?.importPaths;
         if(!importPaths) return
-        // const filePath = classInfoObject.filePath;
 
         Object.keys(classInfoObject.classObject.data).forEach(propertyName => {
             // @ts-ignore
             const classProperty: ClassPropertyType = classInfoObject.classObject.data[propertyName];
-
-            // console.log(classProperty)
             const typeName = classProperty.type
             const isTypeReferenceNode = classProperty.isTypeReferenceNode
             const referenceNode = classProperty.referenceNode
-            // const isEnum = classProperty.isEnum // TODO :: ?
-
-            // console.log(typeName, isTypeReferenceNode, referenceNode, isEnum)
 
             if (!typeName) return
             if (!!referenceNode) return
 
             const targetFilePath = importPaths[typeName]
 
-            // TODO :: referenceNode 에 class, enum  구분할 수 있도록 해야하는데. 외부에 설
-            // TODO :: 가장 공수가 적은 건 모든 class, enum naming 유니크로 제약 거는 것. 중복시 컴파일타임에 에러 띄우기.
-            // TODO :: 문제는 enum에 데코레이터 적용이 안되서 프로젝트 규모가 커질수록.. 개발자가 일일히 네이밍 체크가 불가능해져.
-            // TODO :: 가능하면 파일 경로까지 체크해서 네이밍 체크를 해야할듯.
-
-            // TODO :: "classPath": "src/page/BasePage.tsx", > 문제는 멤버 변수들의 타입 Path 로딩이 가능한지인데.
-
-            // if (!!enumTypeObjects[typeName]) {
-            //     return classProperty.referenceNode = enumTypeObjects[typeName]
-            // }
             const targetFileObjectKey = `${targetFilePath}${KEY_DELIMITER}${typeName}`
             const filePathClassNameObject = filePathClassNameObjects[targetFileObjectKey]
-            // TODO :: ?
             if (!filePathClassNameObject) return
             const isClassType = filePathClassNameObject.classObject.type === ObjectTypeEnum.CLASS
 
             if (isTypeReferenceNode) {
                 if (isClassType) {
-                    commonDecoratorPostTask(fileObjects, targetFileObjectKey, maxDepth, depth)
+                    entityDecoratorPostTask(fileObjects, targetFileObjectKey, maxDepth, depth)
                 }
-                // TODO :: type > importPaths
                 return classProperty.referenceNode = filePathClassNameObject.classObject
             }
         })
 
     });
+}
+
+// const resJson = {}
+// default depth 0
+export function commonDecoratorPostTask(fileObjects: TaskBeansType, joinKey: string | undefined, maxDepth: number = 5, depth: number = 0): any {
+    console.log(`depth : ${depth} / limit : ${maxDepth} / className : ${joinKey}`)
+
+    depth++
+
+    recursiveUpdate(fileObjects, joinKey, maxDepth, depth)
 
 
     const importStatements = ``

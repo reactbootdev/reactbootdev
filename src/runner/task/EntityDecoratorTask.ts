@@ -2,7 +2,7 @@ import path from 'path';
 import * as ts from 'typescript';
 import * as glob from 'glob';
 import {
-    EntityBeanType,
+    TaskBeansType,
     ObjectsType,
     DecoratorType,
     FileType,
@@ -14,7 +14,7 @@ import {
     EnumDataType,
     ClassDataType,
     ImportPathType,
-} from "../copy/interface/EntityBeanType";
+} from "../copy/interface/TaskBeansType";
 import {
     convertToAbsolutePath,
     findTypeLocation,
@@ -45,7 +45,7 @@ import {BeanInterface} from "../copy/interface/BeanInterface";
 // const typeChecker = program.getTypeChecker();
 
 
-export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, fileObjects: EntityBeanType): EntityBeanType {
+export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, fileObjects: TaskBeansType): TaskBeansType {
 
     const objects: ObjectsType = {};
     const importPaths: ImportPathType = {};
@@ -171,7 +171,7 @@ export function entityDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
 export const KEY_DELIMITER = '/////'
 
 
-export function recursiveUpdate(fileObjects: EntityBeanType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
+export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
     const files = Object.entries(fileObjects)
     const filePathClassNameObjects: {
         [filePathClassName: string]: {
@@ -273,7 +273,7 @@ export function recursiveUpdate(fileObjects: EntityBeanType, joinKey: string | u
 
 // const resJson = {}
 // default depth 0
-export function entityDecoratorPostTask(fileObjects: EntityBeanType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
+export function entityDecoratorPostTask(fileObjects: TaskBeansType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
     // console.log(`depth : ${depth} / limit : ${maxDepth} / className : ${joinKey}`)
     depth++
 

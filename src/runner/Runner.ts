@@ -14,8 +14,8 @@ import {createFolderSync} from "./util/FileUtil";
 import {BaseTaskResultInterface} from "./copy/interface/BaseTaskResultInterface";
 import {entityDecoratorPreTask, entityDecoratorPostTask} from "./task/EntityDecoratorTask";
 import fs from "fs";
-import {EntityBeanType} from "./copy/interface/EntityBeanType";
-import {commonDecoratorPostTask, commonDecoratorPreTask} from "./task/CommonDecoratorTask";
+import {TaskBeansType} from "./copy/interface/TaskBeansType";
+import {commonDecoratorPostTask, commonDecoratorPreTask, TaskArgsInterface} from "./task/CommonDecoratorTask";
 
 
 export function runner(args: string[]){
@@ -26,7 +26,7 @@ export function runner(args: string[]){
     const decoratorTasks : {
         preTask: Function
         postTask: Function,
-        taskResult: BaseTaskResultInterface[] | BaseTaskResultInterface | EntityBeanType,
+        taskResult: BaseTaskResultInterface[] | BaseTaskResultInterface | TaskBeansType,
         targetFileName: string
     }[] = [
         {
@@ -48,6 +48,16 @@ export function runner(args: string[]){
             targetFileName: `CommonBean.ts`,
         }
     ]
+    const taskArgs : TaskArgsInterface = {
+        decoratorNames: [
+            `@page`,
+            `@entity`,
+        ],
+        resultFileName: `PageBean.ts`,
+        isRecursiveConnection: true,
+        maxDepthRecursiveConnection: 3,
+        taskBeans: {},
+    }
 
 
     const sourceFileNames = getSourceFileNames(SOURCE_PATH)

@@ -4,11 +4,11 @@ import {
     ClassPropertyType,
     ClassType,
     EnumType,
-    EntityBeanType,
+    TaskBeansType,
     FileType,
     ImportPathType,
     ObjectTypeEnum
-} from "../copy/interface/EntityBeanType";
+} from "../copy/interface/TaskBeansType";
 import path from "path";
 
 export function stringifyWithDepth(obj: any, maxDepth: number, currentDepth: number = 0): string {

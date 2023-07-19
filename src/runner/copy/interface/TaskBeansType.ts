@@ -50,5 +50,5 @@ export type FileType = {
     objects: ObjectsType,
 }
 
-export type EntityBeanType = Record<string, FileType>
+export type TaskBeansType = Record<string, FileType>
 
