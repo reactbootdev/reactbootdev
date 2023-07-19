@@ -8,15 +8,17 @@
   },
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf dist && rimraf src/reactbootdev && rimraf src/test/reactjs/src/reactbootdev",
-    "pub": "npm run clean && npm run build && npm publish",
+    "clean": "rimraf dist && rimraf src/reactbootdev",
     "start": "npm run clean && npm run build && node dist/Runner.js",
-    "dev": "npm run clean && npm run build && node dist/Runner.js dev",
+    "devclean": "rimraf dist && rimraf src/test/target/reactbootdev",
+    "dev": "npm run devclean && npm run build && node dist/Runner.js dev src/test/source src/test/target/reactbootdev",
     "test": "npm run dev && node dist/TestRunner.js test",
-    "rt": "npm run clean && npm run build && node dist/Runner.js dev src/test/reactjs/src src/test/reactjs/src/reactbootdev",
-    "rtstart": "npm run clean && npm run build && node dist/Runner.js dev src/test/reactjs/src src/test/reactjs/src/reactbootdev && cd src/test/reactjs && npm run start",
-    "rtbuild": "npm run clean && npm run build && node dist/Runner.js dev src/test/reactjs/src && cd src/test/reactjs && npm run build",
-    "rttest": "npm run clean && npm run build && node dist/Runner.js dev src/test/reactjs/src && cd src/test/reactjs && npm run test"
+    "rtclean": "rimraf src/test/reactjs/src/reactbootdev",
+    "rt": "npm run rtclean && npm run build && node dist/Runner.js dev src/test/reactjs/src src/test/reactjs/src/reactbootdev",
+    "rtstart": "npm run rt && npm run start",
+    "rtbuild": "npm run rt && npm run build",
+    "rttest": "npm run rt && npm run test",
+    "pub": "npm run clean && npm run build && npm publish"
   },
   "keywords": [
     "reactbootdev",
