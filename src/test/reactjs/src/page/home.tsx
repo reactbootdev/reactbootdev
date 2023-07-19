@@ -26,7 +26,7 @@ function BasePageConten23t() {
 
 
 // TODO : update
-@page("/test3")
+@page("/test3a")
 export class BasePage3 {
     // @Autowired
     // baseRepository: BaseRepository;

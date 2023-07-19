@@ -18,7 +18,7 @@
     "rtstart": "npm run rt && npm run start",
     "rtbuild": "npm run rt && npm run build",
     "rttest": "npm run rt && npm run test",
-    "rtnodemon": "nodemon -V --watch src/test/reactjs/src --ext js,mjs,cjs,json,jsx,ts,tsx --delay 10000ms --exec \"npm run rt\"",
+    "rtnodemon": "nodemon -V --watch src/test/reactjs/src --ext js,mjs,cjs,json,jsx,ts,tsx --delay 5000ms --exec \"npm run rt\"",
     "pub": "npm run clean && npm run build && npm publish"
   },
   "keywords": [
