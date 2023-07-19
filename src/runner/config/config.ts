@@ -12,8 +12,11 @@ export const COMPILER_OPTIONS: ts.CompilerOptions = {
 
 
 // if param test is true, use test file
-export const PROCESS_ARGS = process.argv.slice(2); // Exclude the first two default arguments
+export const PROCESS_ARGS = process.argv.slice(3); // Exclude the first two default arguments
 export const PROCESS_ARG_PROFILE = PROCESS_ARGS[0]
+export const PROCESS_ARG_SOURCE_FOLDER = PROCESS_ARGS[1]
+export const PROCESS_ARG_TARGET_FOLDER = PROCESS_ARGS[2]
+
 export enum PROCESS_PROFILE_ENUM {
     TEST = 'test',
     PROD = 'prod',
@@ -21,6 +24,7 @@ export enum PROCESS_PROFILE_ENUM {
 }
 
 export const PRE_SOURCE_PATH =
+    PROCESS_ARG_SOURCE_FOLDER !== undefined ? PROCESS_ARG_SOURCE_FOLDER :
     PROCESS_PROFILE_ENUM.PROD === PROCESS_ARG_PROFILE ? './src' : './src/test/source'
 
 export const SOURCE_PATH = `${PRE_SOURCE_PATH}/**/*.ts?(x)`
@@ -37,6 +41,7 @@ export const MOVE_TASK_SOURCE_DIST_FOLDER_NAMES = [
     `data`
 ]
 export const MOVE_TASK_TARGET_FOLDER =
+    PROCESS_ARG_TARGET_FOLDER !== undefined ? PROCESS_ARG_TARGET_FOLDER :
     PROCESS_PROFILE_ENUM.PROD === PROCESS_ARG_PROFILE
         ? `.\\src\\reactbootdev\\`
         : `.\\src\\test\\reactjs\\src\\reactbootdev\\`
