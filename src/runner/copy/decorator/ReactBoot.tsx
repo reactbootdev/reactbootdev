@@ -11,6 +11,7 @@ export function ReactBoot() {
 
     // TODO :: page url 충돌 시 예외 처리 > 에러 발생
     // TODO :: `readme.md`에 의존성 모듈 내역 추가 > route, recoil 등.
+    // TODO :: useMemo 사용
 
     const DELIMITER = "////"
     const PAGE_DECORATOR_NAME = "page"
@@ -31,22 +32,22 @@ export function ReactBoot() {
             return decorator.name === PAGE_DECORATOR_NAME
         }).length > 0
     }).map((object) => {
-        console.log(object)
+        // console.log(object)
 
         if(object.objectValue.type !== ObjectTypeEnum.CLASS) return undefined
 
         const pageDecorator = object.objectValue.decorators.filter((decorator) => {
             return decorator.name === PAGE_DECORATOR_NAME
         })[0]
-        console.log(pageDecorator)
+        // console.log(pageDecorator)
         return {
             ...object,
             class: importMap[`${object.objectPath}${DELIMITER}${object.objectName}`],
             pageUrl: pageDecorator.arguments[0].value,
         }
     }).filter((object) => {
-        console.log(`filter`)
-        console.log(object)
+        // console.log(`filter`)
+        // console.log(object)
         return !!object
     })
 
@@ -116,9 +117,9 @@ export function ReactBoot() {
         })
 
     // pageClasses
-    console.log(`pageClasses : ${pageClasses}`)
-    console.log(pageClasses)
-    console.log(routeList)
+    // console.log(`pageClasses : ${pageClasses}`)
+    // console.log(pageClasses)
+    // console.log(routeList)
     return (
         <RecoilRoot>
             <Router>

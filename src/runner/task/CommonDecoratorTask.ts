@@ -296,7 +296,6 @@ export function commonDecoratorPostTask(fileObjects: TaskBeansType, joinKey: str
 
     recursiveUpdate(fileObjects, joinKey, maxDepth, depth)
 
-
     const importStatements = ``
         + `\n`
         + Object.entries(fileObjects).map(([filePath, fileType]) => {
@@ -307,7 +306,7 @@ export function commonDecoratorPostTask(fileObjects: TaskBeansType, joinKey: str
         }).join('\n')
         + `\n`
 
-    const importMapName = `importMap`
+
     const importMap = ``
     + `export const ${importMapName}: { [key: string]: any } = {`
     + `\n`
@@ -320,9 +319,8 @@ export function commonDecoratorPostTask(fileObjects: TaskBeansType, joinKey: str
     + `\n`
     + `}`
 
-    const beanTypeName = `TaskBeansType`
-    const importType = [`${beanTypeName}`, `ObjectTypeEnum`]
-    const importFrom = `"../interface/TaskBeansType"`
+    const importType = [`${beanTypeName}`, `${objectTypeEnumName}`]
+    const importFrom = `"../interface/${beanTypeName}"`
 
     const fileContent =``
         + `import { ${importType.join(`,`)} } from ${importFrom};`
@@ -331,15 +329,20 @@ export function commonDecoratorPostTask(fileObjects: TaskBeansType, joinKey: str
         + `\n\n`
         + importMap
         + `\n\n`
-        + `export const entityBeans: FileObjectsType = `
+        + `export const ${beansName}: ${beanTypeName} = `
         + JSON.stringify(fileObjects, null, 2)
 
     return replaceStringTypeToEnum(fileContent);
 }
 
+const importMapName = `importMap`
+const beansName = `entityBeans`
+const beanTypeName = `TaskBeansType`
+const objectTypeEnumName = `ObjectTypeEnum`
+
 function replaceStringTypeToEnum(text: string){
-    text = text.replace(/"type": "class"/g, `"type": ObjectTypeEnum.CLASS`)
-    text = text.replace(/"type": "enum"/g, `"type": ObjectTypeEnum.ENUM`)
+    text = text.replace(/"type": "class"/g, `"type": ${objectTypeEnumName}.CLASS`)
+    text = text.replace(/"type": "enum"/g, `"type": ${objectTypeEnumName}.ENUM`)
 
     return text
 }

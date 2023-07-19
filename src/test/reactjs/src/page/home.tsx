@@ -1,7 +1,9 @@
 import {page} from "../reactbootdev/decorator/Page";
 
 
-
+function WelcomeComponent() {
+    return <div>WelcomeComponent</div>;
+}
 function BasePageContent() {
     return <div>BasePageContent</div>;
 }
@@ -31,5 +33,17 @@ export class BasePage3 {
 
     render() {
         return  <BasePageConten23t />;
+    }
+}
+
+
+// TODO : update
+@page("/")
+export class Welcome {
+    // @Autowired
+    // baseRepository: BaseRepository;
+
+    render() {
+        return  <WelcomeComponent />;
     }
 }
