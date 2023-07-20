@@ -56,6 +56,7 @@ export function copyFileIfChanged(sourceFile: string, targetFile: string) {
         fs.copyFileSync(sourceFile, targetFile);
         console.log('File copied:', targetFile , `<` , sourceFile);
     } else {
-        console.log('No changes detected. File not copied:', targetFile , `<` , sourceFile);
+        // TODO :: verbose option 설정 or log level
+        // console.log('No changes detected. File not copied:', targetFile , `<` , sourceFile);
     }
 }

@@ -250,6 +250,9 @@ export function hasCircularReference(obj: any) {
 
 
 export function resolveFilePath(orgFilePath: string, importFilePath: string, delimeter: string = '/'): string {
+    if (importFilePath.startsWith('src/')) {
+        return importFilePath;
+    }
 
     if (importFilePath.startsWith('./')) {
         const calcFilePath = orgFilePath.split(delimeter).slice(0, -1).join(delimeter);
@@ -257,9 +260,16 @@ export function resolveFilePath(orgFilePath: string, importFilePath: string, del
         return result;
     }
 
-    const cntUpperDir = importFilePath.split('../').length - 1;
+    const cntUpperDir = importFilePath.split('../').length;
     const calcFilePath = orgFilePath.split(delimeter).slice(0, -cntUpperDir).join(delimeter);
-    const result = calcFilePath + delimeter + importFilePath.split('../').slice(-1)[0];
+
+    let result = calcFilePath + delimeter + importFilePath.split('../').slice(-1)[0];
+    if (result.startsWith('@')) {
+        result = result.replace('@', '');
+    }
+    if (result.startsWith('/')) {
+        result = result.replace('/', '');
+    }
 
     return result;
 }

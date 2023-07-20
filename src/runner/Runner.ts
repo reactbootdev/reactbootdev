@@ -94,7 +94,7 @@ export function runner(args: string[]){
     });
 
     decoratorTasks.forEach((decoratorTask) => {
-        let fileContent = commonDecoratorPostTask(decoratorTask.taskBeans, undefined)
+        let fileContent = commonDecoratorPostTask(decoratorTask.taskBeans, undefined, decoratorTask.isRecursiveConnection ? decoratorTask.maxDepthRecursiveConnection : 1)
         const targetFullFilePath = `${DECORATOR_TASK_TARGET_FOLDER}\\${decoratorTask.resultFileName}`
 
         fs.writeFileSync(

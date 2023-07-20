@@ -172,6 +172,7 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
 
             // ext with ts if not exist ext
             if (!path.extname(importPath)) {
+                // TODO :: json, ts, tsx ?
                 importPath += '.ts';
             }
             const importName = node.importClause?.getText(sourceFile);
@@ -219,6 +220,12 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
 
 
 export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
+    console.log(`depth : ${depth} / maxDepth : ${maxDepth} / joinKey : ${joinKey}`)
+
+
+    depth++
+
+    // TODO :: function 분리 예정
     const files = Object.entries(fileObjects)
     const filePathClassNameObjects: {
         [filePathClassName: string]: {
@@ -252,7 +259,11 @@ export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | un
     if (
         maxDepth != -1
         && depth > maxDepth
-    ) throw new Error('depth exceeded')
+    ) {
+        console.log((`depth exceeded : depth > maxDepth : ${depth} > ${maxDepth} `))
+        // throw new Error
+        return
+    }
 
     let joinKeys
     if (!!joinKey) {
@@ -263,12 +274,16 @@ export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | un
 
     if (!joinKeys || joinKeys.length === 0) return
 
+    console.log(`joinKeys : ${joinKeys}`)
+
     joinKeys.forEach(joinKey => {
         const classInfoObject = filePathClassNameObjects[joinKey];
         const importPaths = classInfoObject?.importPaths;
         if(!importPaths) return
+        console.log(`classInfoObject : ${JSON.stringify(classInfoObject)}`)
 
         Object.keys(classInfoObject.classObject.data).forEach(propertyName => {
+            console.log(`propertyName : ${propertyName}`)
             // @ts-ignore
             const classProperty: ClassPropertyType = classInfoObject.classObject.data[propertyName];
             const typeName = classProperty.type
@@ -282,12 +297,16 @@ export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | un
 
             const targetFileObjectKey = `${targetFilePath}${KEY_DELIMITER}${typeName}`
             const filePathClassNameObject = filePathClassNameObjects[targetFileObjectKey]
+
+            console.log(`targetFileObjectKey : ${targetFileObjectKey}`)
+            console.log(`filePathClassNameObject : ${filePathClassNameObject}`)
+
             if (!filePathClassNameObject) return
             const isClassType = filePathClassNameObject.classObject.type === ObjectTypeEnum.CLASS
 
             if (isTypeReferenceNode) {
                 if (isClassType) {
-                    entityDecoratorPostTask(fileObjects, targetFileObjectKey, maxDepth, depth)
+                    recursiveUpdate(fileObjects, targetFileObjectKey, maxDepth, depth)
                 }
                 return classProperty.referenceNode = filePathClassNameObject.classObject
             }
@@ -299,11 +318,8 @@ export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | un
 // const resJson = {}
 // default depth 0
 export function commonDecoratorPostTask(fileObjects: TaskBeansType, joinKey: string | undefined, maxDepth: number = 5, depth: number = 0): any {
-    console.log(`depth : ${depth} / limit : ${maxDepth} / className : ${joinKey}`)
 
-    depth++
-
-    recursiveUpdate(fileObjects, joinKey, maxDepth, depth)
+    recursiveUpdate(fileObjects, undefined, maxDepth, depth)
 
     const importStatements = ``
         + `\n`
