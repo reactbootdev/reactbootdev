@@ -56,14 +56,15 @@ export interface TaskArgsInterface {
 }
 
 
-export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, taskBeans: TaskBeansType): TaskBeansType {
+export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Program, checker: ts.TypeChecker, taskArgs: TaskArgsInterface): TaskBeansType {
+    const taskBeans = taskArgs.taskBeans;
 
     const objects: ObjectsType = {};
     const importPaths: ImportPathType = {};
     // console.log(111 + `sourceFile.fileName: ${sourceFile.fileName} || path.resolve(__dirname): ${path.resolve(__dirname)}`)
 
     // Check if any decorator has the target name
-    const TARGET_DECORATOR_NAME = '@page';
+    const TARGET_DECORATOR_NAME = taskArgs.decoratorNames;
     // const TARGET_DECORATOR_NAME = '@entity';
     // const currFileAbsolutePath = convertToAbsolutePath(sourceFile.fileName);
     const currFileAbsolutePath = sourceFile.fileName.replace(/.*src\//, 'src/');
@@ -99,9 +100,17 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
         if (ts.isClassDeclaration(node)) {
             if (!node.name?.text) return;
 
-            if (!hasRecursiveFormDecorator(node, sourceFile, TARGET_DECORATOR_NAME)) {
-                return;
-            }
+            // if (!hasRecursiveFormDecorator(node, sourceFile, TARGET_DECORATOR_NAME)) {
+            //     return;
+            // }
+            let isHaveTargetDecorator = false
+            taskArgs.decoratorNames.forEach(decoratorName => {
+                if (hasRecursiveFormDecorator(node, sourceFile, decoratorName)) {
+                    isHaveTargetDecorator = true
+                }
+            })
+            if (!isHaveTargetDecorator) return
+
 
             const decorators = ts.canHaveDecorators(node) ? ts.getDecorators(node) : [];
             if (!decorators) return

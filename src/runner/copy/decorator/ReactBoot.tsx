@@ -3,7 +3,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 // import {beans, importMap} from "../data/Bean";
 import {RecoilRoot} from "recoil";
 import {ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
-import {entityBeans, importMap} from "src/reactbootdev/data/CommonBean";
+import {entityBeans, importMap} from "src/reactbootdev/data/PageBean";
 
 
 // TODO : update

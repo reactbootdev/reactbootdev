@@ -23,12 +23,33 @@ export function runner(args: string[]){
     // create folder dist `data`
     createFolderSync(DECORATOR_TASK_TARGET_FOLDER)
 
-    const decoratorTasks : {
-        preTask: Function
-        postTask: Function,
-        taskResult: BaseTaskResultInterface[] | BaseTaskResultInterface | TaskBeansType,
-        targetFileName: string
-    }[] = [
+    const decoratorTasks : TaskArgsInterface[] = [
+        {
+            decoratorNames: [
+                `@page`
+            ],
+            resultFileName: `PageBean.ts`,
+            isRecursiveConnection: false,
+            maxDepthRecursiveConnection: 0,
+            taskBeans: {},
+        },
+        {
+            decoratorNames: [
+                `@entity`
+            ],
+            resultFileName: `EntityBean.ts`,
+            isRecursiveConnection: true,
+            maxDepthRecursiveConnection: 3,
+            taskBeans: {},
+        },
+    ]
+
+    // {
+    //     preTask: Function
+    //     postTask: Function,
+    //     taskResult: BaseTaskResultInterface[] | BaseTaskResultInterface | TaskBeansType,
+    //     targetFileName: string
+    // }[] = [
         // {
         //     preTask: pageDecoratorPreTask,
         //     postTask: pageDecoratorPostTask,
@@ -41,23 +62,23 @@ export function runner(args: string[]){
         //     taskResult: {},
         //     targetFileName: `EntityBean.ts`,
         // },
-        {
-            preTask: commonDecoratorPreTask,
-            postTask: commonDecoratorPostTask,
-            taskResult: {},
-            targetFileName: `CommonBean.ts`,
-        }
-    ]
-    const taskArgs : TaskArgsInterface = {
-        decoratorNames: [
-            `@page`,
-            `@entity`,
-        ],
-        resultFileName: `PageBean.ts`,
-        isRecursiveConnection: true,
-        maxDepthRecursiveConnection: 3,
-        taskBeans: {},
-    }
+        // {
+        //     preTask: commonDecoratorPreTask,
+        //     postTask: commonDecoratorPostTask,
+        //     taskResult: {},
+        //     targetFileName: `CommonBean.ts`,
+        // }
+    // ]
+    // const taskArgs : TaskArgsInterface = {
+    //     decoratorNames: [
+    //         `@page`,
+    //         `@entity`,
+    //     ],
+    //     resultFileName: `PageBean.ts`,
+    //     isRecursiveConnection: true,
+    //     maxDepthRecursiveConnection: 3,
+    //     taskBeans: {},
+    // }
 
 
     const sourceFileNames = getSourceFileNames(SOURCE_PATH)
@@ -67,14 +88,14 @@ export function runner(args: string[]){
     program.getSourceFiles().forEach(sourceFile => {
     // sourceFileNames.forEach(sourceFile => {
     //     console.log(sourceFile.fileName)
-        decoratorTasks.forEach((decoratorTask: any) => {
-            decoratorTask.preTask(sourceFile, program, checker, decoratorTask.taskResult)
+        decoratorTasks.forEach((decoratorTask) => {
+            commonDecoratorPreTask(sourceFile, program, checker, decoratorTask)
         })
     });
 
-    decoratorTasks.forEach((decoratorTask: any) => {
-        let fileContent = decoratorTask.postTask(decoratorTask.taskResult, undefined)
-        const targetFullFilePath = `${DECORATOR_TASK_TARGET_FOLDER}\\${decoratorTask.targetFileName}`
+    decoratorTasks.forEach((decoratorTask) => {
+        let fileContent = commonDecoratorPostTask(decoratorTask.taskBeans, undefined)
+        const targetFullFilePath = `${DECORATOR_TASK_TARGET_FOLDER}\\${decoratorTask.resultFileName}`
 
         fs.writeFileSync(
             targetFullFilePath, fileContent
