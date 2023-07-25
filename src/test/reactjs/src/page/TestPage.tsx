@@ -24,7 +24,7 @@ const BasePageContentFirst = () => {
 
 
 @page("/atest1")
-export class TestPage {
+export class TestPageA {
     // private constructor() {} // 외부에서 인스턴스화 방지
 
     render() {
@@ -90,7 +90,7 @@ const BasePageContent = () => {
 
 
 @page("/atest2")
-export class BasePage2 {
+export class TestPageA2 {
 
     // @Autowired
     // baseRepository: BaseRepository;
