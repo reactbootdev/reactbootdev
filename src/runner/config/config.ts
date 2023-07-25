@@ -35,6 +35,8 @@ export const SOURCE_PATH = `${PRE_SOURCE_PATH}/**/*.ts?(x)`
 export const DECORATOR_TASK_TARGET_FOLDER = `${path.resolve(__dirname, '..\\..')}\\dist\\data`
 export const COPY_TASK_PREFIX_FOLDER_PATH = `\\src\\runner\\copy\\`
 export const MOVE_TASK_SOURCE_DIST_FOLDER_NAMES = [
+    `entity`,
+    `repository`,
     `decorator`,
     `interface`,
     `data`
