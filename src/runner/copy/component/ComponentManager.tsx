@@ -35,6 +35,7 @@ function entityRenderer(
     // 우선 CREATE 부터.
     // isAppend option
     // repository 부터 recoil
+    // https://rjsf-team.github.io/react-jsonschema-form/
     
     return (
         <div>{entity}</div>
