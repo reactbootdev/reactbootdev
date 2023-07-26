@@ -1,6 +1,6 @@
 
 
-import React from "react";
+import React, {useMemo} from "react";
 import {useRecoilState, useRecoilValue} from "recoil";
 import BaseRepository from "src/reactbootdev/repository/BaseRepository";
 import {page} from "src/reactbootdev/decorator/Page";
@@ -42,7 +42,13 @@ export class TestPageA {
 }
 
 const BasePageContent = () => {
-    const baseRepository = new BaseRepository("testName");
+    // getUUid by useMemo
+    const uuid = useMemo(() => {
+        // random string
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }, []);
+
+    const baseRepository = new BaseRepository(uuid);
 
     // TODO :: 아래와 같은 형태로 변환예정. 변수는 상속관계.
     // TODO :: 일단은 동작 가능한 최소의 프로토타입 코드 작성. CRRUD.
