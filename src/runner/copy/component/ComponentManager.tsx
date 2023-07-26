@@ -1,14 +1,15 @@
 import React from 'react';
+import {entityImportMap} from "src/reactbootdev/data/EntityBean";
 
 
 // return react component
-function stringInputComponent<T extends string>(name: T) : React.FC<T>{
+export function stringInputComponent<T extends string>(name: T) : JSX.Element {
     return (
-        <div>{name}</div>
+        <div>adf</div>
     )
 }
 
-class ComponentManager {
+export class ComponentManager {
 
     stringInputComponent = stringInputComponent;
 
@@ -21,12 +22,12 @@ class ComponentManager {
 }
 
 
-function entityRenderer(
+export function entityRenderer (
     entity: unknown,
     repository: unknown,
     renderType: unknown,
     refiner: (rep: unknown) => unknown
-) {
+) : JSX.Element {
 
     // TODO :: entityBean. repository 둘 다 평문화 시켜서 렌더링 하는 수외에는 없다고 봐.
     // 각 key랑, [type, value] 에 따라 component mapping
@@ -46,7 +47,14 @@ function entityRenderer(
     // 문제는 반환된 state-repository mapping. react hook form?
     // inner component에 update callback 세팅?
 
+    Object.entries(entityImportMap).find(([key, value]) => {
+        console.log(key, value);
+        if (value === entity) {
+            console.log(key);
+        }
+    })
+
     return (
-        <div>{entity}</div>
+        <div>xxx</div>
     )
 }

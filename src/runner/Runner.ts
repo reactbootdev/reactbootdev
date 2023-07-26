@@ -28,7 +28,7 @@ export function runner(args: string[]){
             decoratorNames: [
                 `@page`
             ],
-            resultFileName: `PageBean.ts`,
+            resultFileName: `page`,
             isRecursiveConnection: false,
             maxDepthRecursiveConnection: 0,
             taskBeans: {},
@@ -37,7 +37,7 @@ export function runner(args: string[]){
             decoratorNames: [
                 `@entity`
             ],
-            resultFileName: `EntityBean.ts`,
+            resultFileName: `entity`,
             isRecursiveConnection: true,
             maxDepthRecursiveConnection: 3,
             taskBeans: {},
@@ -94,8 +94,10 @@ export function runner(args: string[]){
     });
 
     decoratorTasks.forEach((decoratorTask) => {
-        let fileContent = commonDecoratorPostTask(decoratorTask.taskBeans, undefined, decoratorTask.isRecursiveConnection ? decoratorTask.maxDepthRecursiveConnection : 1)
-        const targetFullFilePath = `${DECORATOR_TASK_TARGET_FOLDER}\\${decoratorTask.resultFileName}`
+        let fileContent = commonDecoratorPostTask(decoratorTask, undefined, decoratorTask.isRecursiveConnection ? decoratorTask.maxDepthRecursiveConnection : 1)
+
+        const upperFirstCharFileName = decoratorTask.resultFileName.charAt(0).toUpperCase() + decoratorTask.resultFileName.slice(1)
+        const targetFullFilePath = `${DECORATOR_TASK_TARGET_FOLDER}\\${upperFirstCharFileName}Bean.ts`
 
         fs.writeFileSync(
             targetFullFilePath, fileContent

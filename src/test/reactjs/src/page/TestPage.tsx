@@ -4,6 +4,8 @@ import React from "react";
 import {useRecoilState, useRecoilValue} from "recoil";
 import BaseRepository from "src/reactbootdev/repository/BaseRepository";
 import {page} from "src/reactbootdev/decorator/Page";
+import {Project} from "src/entity/Project";
+import {entityRenderer} from "src/reactbootdev/component/ComponentManager";
 // import {ProjectRepository} from "src/reactbootdev/repository/ProjectRepository";
 
 
@@ -64,6 +66,7 @@ const BasePageContent = () => {
     baseRepository.setEntityList = setEntityList;
     baseRepository.entityList = entityList;
 
+
     const addDate = () => {
 
         baseRepository.addEntities(
@@ -79,9 +82,20 @@ const BasePageContent = () => {
         // });
     }
 
+    const renderedEntity = entityRenderer (
+        Project,
+        baseRepository,
+        "CREATE",
+        () => {}
+    )
+
+
     return (
         <div>
             <h1>Base Page aaa2223</h1>
+            <div>--- --- ---</div>
+            <div>{renderedEntity}</div>
+            <div>--- --- ---</div>
             <div>{JSON.stringify(entityList)}</div>
             <button onClick={addDate}>aadd</button>
         </div>
@@ -91,6 +105,7 @@ const BasePageContent = () => {
 
 @page("/atest2")
 export class TestPageA2 {
+
 
     // @Autowired
     // baseRepository: BaseRepository;

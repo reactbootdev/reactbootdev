@@ -3,7 +3,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 // import {beans, importMap} from "../data/Bean";
 import {RecoilRoot} from "recoil";
 import {ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
-import {entityBeans, importMap} from "src/reactbootdev/data/PageBean";
+import {pageBeans, pageImportMap} from "src/reactbootdev/data/PageBean";
 
 
 // TODO : update
@@ -17,7 +17,7 @@ export function ReactBoot() {
     const PAGE_DECORATOR_NAME = "page"
     // const PAGE_DECORATOR_DEFINITION = "(pageUrl: string) => (target: any) => any"
 
-    const pageClasses = Object.entries(entityBeans).map(([filePath, fileInfo]) => {
+    const pageClasses = Object.entries(pageBeans).map(([filePath, fileInfo]) => {
         const objects = Object.entries(fileInfo.objects).map(([objectName, objectValue]) => {
             return {
                 objectPath: filePath,
@@ -42,7 +42,7 @@ export function ReactBoot() {
         // console.log(pageDecorator)
         return {
             ...object,
-            class: importMap[`${object.objectPath}${DELIMITER}${object.objectName}`],
+            class: pageImportMap[`${object.objectPath}${DELIMITER}${object.objectName}`],
             pageUrl: pageDecorator.arguments[0].value,
         }
     }).filter((object) => {
