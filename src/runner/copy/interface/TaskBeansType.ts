@@ -16,7 +16,7 @@ export type ClassPropertyType = {
     isArray: boolean,
     isTypeReferenceNode: boolean,
     // isEnum: boolean,
-    referenceNode?: object,
+    referenceNode?: ObjectType
     decorators?: DecoratorType[],
     // isLiteral: boolean,
     // isStringLiteral: boolean,

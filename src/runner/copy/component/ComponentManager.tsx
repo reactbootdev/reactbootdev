@@ -1,5 +1,8 @@
 import React from 'react';
-import {entityImportMap} from "src/reactbootdev/data/EntityBean";
+import {entityBeans, entityImportMap} from "src/reactbootdev/data/EntityBean";
+import {NAME_DELIMITER} from "src/reactbootdev/config/config";
+import {ClassType} from "src/reactbootdev/interface/TaskBeansType";
+import {ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
 
 
 // return react component
@@ -47,14 +50,66 @@ export function entityRenderer (
     // 문제는 반환된 state-repository mapping. react hook form?
     // inner component에 update callback 세팅?
 
+    let bean;
+    let entityName;
     Object.entries(entityImportMap).find(([key, value]) => {
         console.log(key, value);
         if (value === entity) {
             console.log(key);
+            const fileName = key.split(NAME_DELIMITER).shift();
+            entityName = key.split(NAME_DELIMITER).pop();
+            if (fileName === undefined || entityName === undefined) {
+                return
+            }
+            bean = entityBeans[fileName].objects[entityName];
+            console.log(bean);
         }
     })
+
+    if (bean === undefined || entityName === undefined) {
+        return <div>error : bean undefined</div>
+    }
+
+    console.log(flattenObject(bean, entityName));
 
     return (
         <div>xxx</div>
     )
+}
+
+function isPrimtiveType (type: string) {
+    return type === 'string' || type === 'number' || type === 'boolean'
+}
+
+// recursive 객체 단순화
+function flattenObject(obj: ClassType, objName: string) {
+    // console.log(`check`)
+    // console.log(`check`, obj)
+    const flattened : Record<string, string> = {}
+
+    Object.entries(obj.data).map(([propertyName, propertyInfo]) => {
+        // console.log(`check22`,  propertyInfo.type, propertyInfo.referenceNode !== undefined, propertyInfo.type == ObjectTypeEnum.CLASS)
+
+        const flattenedKey = `${objName}${NAME_DELIMITER}${propertyName}`
+        if (isPrimtiveType(propertyInfo.type)) {
+            flattened[flattenedKey] = propertyInfo.type
+        } else if (
+            propertyInfo.isTypeReferenceNode
+            && propertyInfo.referenceNode !== undefined
+            && propertyInfo.referenceNode.type === ObjectTypeEnum.CLASS
+        ) {
+            // console.log(`check33`)
+            Object.assign(flattened, flattenObject(propertyInfo.referenceNode, `${flattenedKey}`))
+        }
+    })
+
+    // Object.keys(obj).forEach((key) => {
+    //     if (typeof obj[key] === 'object' && obj[key] !== null) {
+    //         Object.assign(flattened, flattenObject(obj[key]))
+    //     } else {
+    //         flattened[key] = obj[key]
+    //     }
+    // })
+
+    return flattened
 }
