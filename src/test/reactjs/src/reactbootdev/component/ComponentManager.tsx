@@ -72,6 +72,8 @@ export function entityRenderer (
 
     console.log(flattenObject(bean, entityName));
 
+    // TODO :: `flat info`로 @form 생성 @repository 자동 update
+
     return (
         <div>xxx</div>
     )
