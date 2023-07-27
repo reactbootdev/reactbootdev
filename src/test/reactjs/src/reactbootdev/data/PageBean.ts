@@ -20,6 +20,7 @@ export const pageBeans: TaskBeansType = {
   "src/page/TestPage.tsx": {
     "importPaths": {
       "React": "src/page/react.ts",
+      "useMemo": "src/page/react.ts",
       "useRecoilState": "src/page/recoil.ts",
       "useRecoilValue": "src/page/recoil.ts",
       "BaseRepository": "src/reactbootdev/repository/BaseRepository.ts",

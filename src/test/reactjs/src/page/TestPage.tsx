@@ -5,7 +5,7 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import BaseRepository from "src/reactbootdev/repository/BaseRepository";
 import {page} from "src/reactbootdev/decorator/Page";
 import {Project} from "src/entity/Project";
-import {entityRenderer} from "src/reactbootdev/component/ComponentManager";
+import {entityRenderer} from "src/reactbootdev/component/BaseComponentManager";
 // import {ProjectRepository} from "src/reactbootdev/repository/ProjectRepository";
 
 

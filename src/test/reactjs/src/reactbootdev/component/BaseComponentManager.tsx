@@ -6,24 +6,43 @@ import {ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
 
 
 // return react component
-export function stringInputComponent<T extends string>(name: T) : JSX.Element {
+
+export interface StringInputProps {
+    repositoryKey: string
+    initValue: string
+}
+
+export const StringInput = (props: StringInputProps) => {
+    // useState
+    const [inputValue, setInputValue] = React.useState(props.initValue);
+
     return (
-        <div>adf</div>
+        <div>
+            <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => {
+                    setInputValue(e.target.value);
+            }}/>
+            {/*adwf : {props.testValue}*/}
+        </div>
     )
 }
 
-export class ComponentManager {
 
-    stringInputComponent = stringInputComponent;
-
-    // constructor()
-    constructor(option: {
-        stringInputComponent: (args: unknown) => React.FC<unknown>,
-    }) {
-
-    }
+interface BaseComponentTypeMapInterface {
+    [key: string]: (args: any) => JSX.Element;
 }
 
+export const baseComponentTypeMap : BaseComponentTypeMapInterface= {
+    stringInput: StringInput,
+    stringArrayInput: StringInput,
+    stringOutput: StringInput,
+    stringArrayOutput: StringInput,
+}
+
+
+export const IS_ARRAY_TYPE_TEXT = 'Array'
 
 export function entityRenderer (
     entity: unknown,
@@ -70,16 +89,40 @@ export function entityRenderer (
         return <div>error : bean undefined</div>
     }
 
-    console.log(flattenObject(bean, entityName));
+    const flattedObject = flattenObject(bean, entityName);
+    console.log(flattedObject);
+
+    const generatedForm = Object.entries(flattedObject).map(([key, type]) => {
+        const compKey = `${type}Input`
+        const MappedComponent = baseComponentTypeMap[compKey]
+        const repositoryKeyToUpdate = `sdfsdfsdf`
+
+        return (
+            <div>
+                <div>{key}</div>
+                <div>{type}</div>
+                <MappedComponent
+                    testValue={repositoryKeyToUpdate}
+                />
+
+            </div>
+        )
+    })
+
+    // TODO :: `flat info`로 @form 생성 @repository 자동 update
+    // TODO :: copy 용 파일 확장자 변경 (`tsback`, `tsxback`) 및 copy 후 원복
 
     return (
-        <div>xxx</div>
+        <>
+            {generatedForm}
+        </>
     )
 }
 
 function isPrimtiveType (type: string) {
     return type === 'string' || type === 'number' || type === 'boolean'
 }
+
 
 // recursive 객체 단순화
 function flattenObject(obj: ClassType, objName: string) {
@@ -93,7 +136,7 @@ function flattenObject(obj: ClassType, objName: string) {
         const flattenedKey = `${objName}${NAME_DELIMITER}${propertyName}`
         if (isPrimtiveType(propertyInfo.type)) {
             const flattenedType = propertyInfo.type
-            const flattenedArrayType = propertyInfo.isArray ? '[]' : ''
+            const flattenedArrayType = propertyInfo.isArray ? IS_ARRAY_TYPE_TEXT : ''
             flattened[flattenedKey] = `${flattenedType}${flattenedArrayType}`
         } else if (
             propertyInfo.isTypeReferenceNode

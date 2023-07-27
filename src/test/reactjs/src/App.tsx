@@ -5,11 +5,11 @@ import {ReactBoot} from "src/reactbootdev/component/ReactBoot";
 
 function App() {
     console.log(`App`)
-  return (
-    <div className="App">
-        <ReactBoot/>
-    </div>
-  );
+    return (
+        <div className="App">
+            <ReactBoot/>
+        </div>
+    );
 }
 
 export default App;

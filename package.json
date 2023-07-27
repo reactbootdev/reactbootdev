@@ -15,7 +15,7 @@
     "test": "npm run dev && node dist/TestRunner.js test",
     "rtclean": "rimraf src/test/reactjs/src/reactbootdev",
     "rt": "npm run build && node dist/Runner.js dev src/test/reactjs/src src/test/reactjs/src/reactbootdev",
-    "rtstart": "npm run rt && cd src/test/reactjs && npm run start",
+    "rtstart": "cd src/test/reactjs && npm run start",
     "rtbuild": "npm run rt && cd src/test/reactjs && npm run build",
     "rttest": "npm run rt && cd src/test/reactjs && npm run test",
     "rtnodemon": "nodemon -V --watch src/test/reactjs/src --ext js,mjs,cjs,json,jsx,ts,tsx --delay 5000ms --exec \"npm run rt\"",
