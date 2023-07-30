@@ -3,6 +3,7 @@ import {RecoilRoot, atom, selector, useRecoilState, useRecoilValue, RecoilState}
 
 export default class BaseRepository<T extends BaseEntity> {
 
+    isDetailRepository: boolean;
     entityListState: RecoilState<T[]>;
     entityList: any;
     setEntityList: any;
@@ -34,6 +35,13 @@ export default class BaseRepository<T extends BaseEntity> {
 
 
     constructor(stateName: string) {
+
+        this.isDetailRepository = false;
+
+        // TODO :: key 값이 존재할 경우 기존 값에서 참고. static.
+        // TODO :: 상세 값. 관련해서 저장 방법.
+        // TODO :: delimiter key 값에 의한 update method.
+
         // 상태를 저장하는 Recoil atom 정의
         this.entityListState = atom<T[]>({
             key: stateName,

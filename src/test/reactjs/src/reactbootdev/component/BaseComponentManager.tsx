@@ -23,7 +23,7 @@ export const StringInput = (props: StringInputProps) => {
                 value={inputValue}
                 onChange={(e) => {
                     setInputValue(e.target.value);
-            }}/>
+                }}/>
             {/*adwf : {props.testValue}*/}
         </div>
     )
@@ -110,7 +110,6 @@ export function entityRenderer (
     })
 
     // TODO :: `flat info`로 @form 생성 @repository 자동 update
-    // TODO :: copy 용 파일 확장자 변경 (`tsback`, `tsxback`) 및 copy 후 원복
 
     return (
         <>

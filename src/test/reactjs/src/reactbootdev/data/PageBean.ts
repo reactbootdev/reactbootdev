@@ -26,7 +26,7 @@ export const pageBeans: TaskBeansType = {
       "BaseRepository": "src/reactbootdev/repository/BaseRepository.ts",
       "page": "src/reactbootdev/decorator/Page.ts",
       "Project": "src/entity/Project.ts",
-      "entityRenderer": "src/reactbootdev/component/ComponentManager.ts"
+      "entityRenderer": "src/reactbootdev/component/BaseComponentManager.ts"
     },
     "objects": {
       "TestPageA": {
