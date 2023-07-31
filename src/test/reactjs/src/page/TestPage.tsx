@@ -95,6 +95,10 @@ const BasePageContent = () => {
         () => {}
     )
 
+    // TODO :: API Generator.
+    // TODO :: renderedEntity > Container
+    // TODO :: BaseDomain > Pagenation, Search
+
 
     return (
         <div>
