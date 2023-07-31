@@ -50,8 +50,7 @@ const BasePageContent = () => {
 
     const baseRepository = new BaseRepository(`uuid`);
     const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
-    baseRepository.setEntityList = setEntityList;
-    baseRepository.entityList = entityList;
+    baseRepository.init(entityList, setEntityList);
 
 
     // TODO :: 아래와 같은 형태로 변환예정. 변수는 상속관계.

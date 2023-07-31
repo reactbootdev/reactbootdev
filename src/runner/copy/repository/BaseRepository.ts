@@ -12,6 +12,10 @@ export default class BaseRepository<T extends BaseEntity> {
 
     static repositoryKeyMap: Map<string, any> = new Map<string, any>();
 
+    init(entityList: any, setEntityList: any) {
+        this.entityList = entityList;
+        this.setEntityList = setEntityList;
+    }
 
     addEntity = (newItem: T) => {
         const updatedList = addItem(this.entityList, newItem);
@@ -22,7 +26,6 @@ export default class BaseRepository<T extends BaseEntity> {
         const updatedList = addItems(this.entityList, newItems);
         this.setEntityList(updatedList);
     }
-
 
     // 항목 업데이트
     updateEntity =  (itemId: number, newItem: T) => {
