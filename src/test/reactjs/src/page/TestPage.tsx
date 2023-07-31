@@ -48,7 +48,11 @@ const BasePageContent = () => {
         return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }, []);
 
-    const baseRepository = new BaseRepository(uuid);
+    const baseRepository = new BaseRepository(`uuid`);
+    const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
+    baseRepository.setEntityList = setEntityList;
+    baseRepository.entityList = entityList;
+
 
     // TODO :: 아래와 같은 형태로 변환예정. 변수는 상속관계.
     // TODO :: 일단은 동작 가능한 최소의 프로토타입 코드 작성. CRRUD.
@@ -67,10 +71,6 @@ const BasePageContent = () => {
     //     }]
     // }
 
-
-    const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
-    baseRepository.setEntityList = setEntityList;
-    baseRepository.entityList = entityList;
 
 
     const addDate = () => {

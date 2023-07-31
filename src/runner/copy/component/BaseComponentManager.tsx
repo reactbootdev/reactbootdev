@@ -3,6 +3,8 @@ import {entityBeans, entityImportMap} from "src/reactbootdev/data/EntityBean";
 import {NAME_DELIMITER} from "src/reactbootdev/config/config";
 import {ClassType} from "src/reactbootdev/interface/TaskBeansType";
 import {ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
+import BaseRepository from "src/reactbootdev/repository/BaseRepository";
+import {useRecoilState} from "recoil";
 
 
 // return react component
@@ -15,14 +17,34 @@ export interface StringInputProps {
 export const StringInput = (props: StringInputProps) => {
     // useState
     const [inputValue, setInputValue] = React.useState(props.initValue);
+    // remove first element and join again
+    const refinedRepository = props.repositoryKey.split(NAME_DELIMITER).slice(1).join(NAME_DELIMITER)
+
+    const baseRepository = new BaseRepository(`uuid`);
+    const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
+    baseRepository.setEntityList = setEntityList;
+    baseRepository.entityList = entityList;
+
+    const updateRepository = (value: string) => {
+
+        setInputValue(value)
+    }
+
+    const testInit = baseRepository.getValuesByDelimiterKey(0, refinedRepository)
+
 
     return (
         <div>
+            <div>{props.initValue}</div>
+            <div>{refinedRepository}</div>
+            <div>{JSON.stringify(testInit)}</div>
+            <div>{JSON.stringify(baseRepository.entityList)}</div>
             <input
                 type="text"
-                value={inputValue}
+                value={JSON.stringify(testInit)}
                 onChange={(e) => {
-                    setInputValue(e.target.value);
+                    baseRepository.updateEntityByDelimiterKey(0, e.target.value, refinedRepository)
+                    // setInputValue(e.target.value);
                 }}/>
             {/*adwf : {props.testValue}*/}
         </div>
@@ -72,16 +94,16 @@ export function entityRenderer (
     let bean;
     let entityName;
     Object.entries(entityImportMap).find(([key, value]) => {
-        console.log(key, value);
+        // console.log(key, value);
         if (value === entity) {
-            console.log(key);
+            // console.log(key);
             const fileName = key.split(NAME_DELIMITER).shift();
             entityName = key.split(NAME_DELIMITER).pop();
             if (fileName === undefined || entityName === undefined) {
                 return
             }
             bean = entityBeans[fileName].objects[entityName];
-            console.log(bean);
+            // console.log(bean);
         }
     })
 
@@ -90,19 +112,20 @@ export function entityRenderer (
     }
 
     const flattedObject = flattenObject(bean, entityName);
-    console.log(flattedObject);
+    // console.log(flattedObject);
 
     const generatedForm = Object.entries(flattedObject).map(([key, type]) => {
         const compKey = `${type}Input`
         const MappedComponent = baseComponentTypeMap[compKey]
-        const repositoryKeyToUpdate = `sdfsdfsdf`
+        const initValue = ``
 
         return (
             <div>
-                <div>{key}</div>
-                <div>{type}</div>
+                {/*<div>{key}</div>*/}
+                {/*<div>{type}</div>*/}
                 <MappedComponent
-                    testValue={repositoryKeyToUpdate}
+                    repositoryKey={key}
+                    initValue={initValue}
                 />
 
             </div>
@@ -125,12 +148,12 @@ function isPrimtiveType (type: string) {
 
 // recursive 객체 단순화
 function flattenObject(obj: ClassType, objName: string) {
-    // console.log(`check`)
-    // console.log(`check`, obj)
+    // // console.log(`check`)
+    // // console.log(`check`, obj)
     const flattened : Record<string, string> = {}
 
     Object.entries(obj.data).map(([propertyName, propertyInfo]) => {
-        // console.log(`check22`,  propertyInfo.type, propertyInfo.referenceNode !== undefined, propertyInfo.type == ObjectTypeEnum.CLASS)
+        // // console.log(`check22`,  propertyInfo.type, propertyInfo.referenceNode !== undefined, propertyInfo.type == ObjectTypeEnum.CLASS)
 
         const flattenedKey = `${objName}${NAME_DELIMITER}${propertyName}`
         if (isPrimtiveType(propertyInfo.type)) {
@@ -142,7 +165,7 @@ function flattenObject(obj: ClassType, objName: string) {
             && propertyInfo.referenceNode !== undefined
             && propertyInfo.referenceNode.type === ObjectTypeEnum.CLASS
         ) {
-            // console.log(`check33`)
+            // // console.log(`check33`)
             Object.assign(flattened, flattenObject(propertyInfo.referenceNode, `${flattenedKey}`))
         }
     })
