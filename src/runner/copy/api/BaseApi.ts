@@ -1,4 +1,4 @@
 
-class BaseApi {
+export class BaseApi {
 
 }

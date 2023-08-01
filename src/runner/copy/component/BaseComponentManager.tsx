@@ -10,9 +10,11 @@ import {useRecoilState} from "recoil";
 // return react component
 
 export interface StringInputProps {
+    children: any;
     repositoryKey: string
     initValue: string
 }
+
 
 export const StringInput = (props: StringInputProps) => {
     // useState
@@ -52,6 +54,19 @@ export const StringInput = (props: StringInputProps) => {
 }
 
 
+export const CreateContainer = (props: StringInputProps) => {
+
+    return (
+        <div>
+            <div>상위</div>
+            {/*포함된 자식 컨테이너*/}
+            {props.children}
+            <div>하위</div>
+        </div>
+    )
+}
+
+
 interface BaseComponentTypeMapInterface {
     [key: string]: (args: any) => JSX.Element;
 }
@@ -61,6 +76,7 @@ export const baseComponentTypeMap : BaseComponentTypeMapInterface= {
     stringArrayInput: StringInput,
     stringOutput: StringInput,
     stringArrayOutput: StringInput,
+    createContainer: CreateContainer,
 }
 
 
@@ -134,9 +150,13 @@ export function entityRenderer (
 
     // TODO :: `flat info`로 @form 생성 @repository 자동 update
 
+    const CreateContainer = baseComponentTypeMap['createContainer']
+
     return (
         <>
-            {generatedForm}
+            <CreateContainer>
+                {generatedForm}
+            </CreateContainer>
         </>
     )
 }
