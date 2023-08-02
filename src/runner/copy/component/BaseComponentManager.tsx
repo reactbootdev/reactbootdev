@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {entityBeans, entityImportMap} from "src/reactbootdev/data/EntityBean";
 import {NAME_DELIMITER} from "src/reactbootdev/config/config";
 import {ClassType} from "src/reactbootdev/interface/TaskBeansType";
 import {ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
 import BaseRepository from "src/reactbootdev/repository/BaseRepository";
 import {useRecoilState} from "recoil";
+import {BaseApi} from "src/reactbootdev/api/BaseApi";
 
 
 // return react component
@@ -12,6 +13,7 @@ import {useRecoilState} from "recoil";
 export interface StringInputProps {
     children: any;
     repositoryKey: string
+    propertyKey: string
     initValue: string
 }
 
@@ -20,12 +22,11 @@ export const StringInput = (props: StringInputProps) => {
     // useState
     const [inputValue, setInputValue] = React.useState(props.initValue);
     // remove first element and join again
-    const refinedRepository = props.repositoryKey.split(NAME_DELIMITER).slice(1).join(NAME_DELIMITER)
+    const refinedRepository = props.propertyKey.split(NAME_DELIMITER).slice(1).join(NAME_DELIMITER)
 
-    const baseRepository = new BaseRepository(`uuid`);
+    const baseRepository = new BaseRepository(props.repositoryKey);
     const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
-    baseRepository.setEntityList = setEntityList;
-    baseRepository.entityList = entityList;
+    baseRepository.init(entityList, setEntityList)
 
     const updateRepository = (value: string) => {
 
@@ -53,8 +54,20 @@ export const StringInput = (props: StringInputProps) => {
     )
 }
 
+export interface CreateContainerProps {
+    children: any;
+    repositoryKey: string
+}
 
-export const CreateContainer = (props: StringInputProps) => {
+export const CreateContainer = (props: CreateContainerProps) => {
+
+    // BaseApi
+    const baseApi = new BaseApi()
+    const handleCreate = baseApi.handleCreate
+
+    const baseRepository = new BaseRepository(props.repositoryKey);
+    const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
+    baseRepository.init(entityList, setEntityList)
 
     return (
         <div>
@@ -62,6 +75,10 @@ export const CreateContainer = (props: StringInputProps) => {
             {/*포함된 자식 컨테이너*/}
             {props.children}
             <div>하위</div>
+            <button onClick={() => {
+                handleCreate(entityList)
+            }}>create</button>
+
         </div>
     )
 }
@@ -107,6 +124,8 @@ export function entityRenderer (
     // 문제는 반환된 state-repository mapping. react hook form?
     // inner component에 update callback 세팅?
 
+    const REPOSITORY_KEY = 'UUID'
+
     let bean;
     let entityName;
     Object.entries(entityImportMap).find(([key, value]) => {
@@ -140,7 +159,8 @@ export function entityRenderer (
                 {/*<div>{key}</div>*/}
                 {/*<div>{type}</div>*/}
                 <MappedComponent
-                    repositoryKey={key}
+                    repositoryKey={REPOSITORY_KEY}
+                    propertyKey={key}
                     initValue={initValue}
                 />
 
@@ -154,7 +174,9 @@ export function entityRenderer (
 
     return (
         <>
-            <CreateContainer>
+            <CreateContainer
+                repositoryKey={REPOSITORY_KEY}
+            >
                 {generatedForm}
             </CreateContainer>
         </>
