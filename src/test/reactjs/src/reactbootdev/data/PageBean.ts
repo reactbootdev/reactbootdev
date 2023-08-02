@@ -24,6 +24,7 @@ export const pageBeans: TaskBeansType = {
       "useRecoilState": "src/page/recoil.ts",
       "useRecoilValue": "src/page/recoil.ts",
       "BaseRepository": "src/reactbootdev/repository/BaseRepository.ts",
+      "TestRepo": "src/reactbootdev/repository/BaseRepository.ts",
       "page": "src/reactbootdev/decorator/Page.ts",
       "Project": "src/entity/Project.ts",
       "entityRenderer": "src/reactbootdev/component/BaseComponentManager.ts"

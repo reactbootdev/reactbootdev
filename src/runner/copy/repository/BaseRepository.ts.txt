@@ -2,8 +2,13 @@ import BaseEntity from "../entity/BaseEntity";
 import {RecoilRoot, atom, selector, useRecoilState, useRecoilValue, RecoilState} from 'recoil';
 import produce, { Draft } from 'immer';
 import {NAME_DELIMITER} from "src/reactbootdev/config/config";
+import { v4 as uuidv4 } from 'uuid';
+
 
 export default class BaseRepository<T extends BaseEntity> {
+
+    // TODO :: default Repository Key 설정
+    static defaultRepositoryKey: string = uuidv4();
 
     isDetailRepository: boolean;
     entityListState: RecoilState<T[]>;
@@ -51,7 +56,7 @@ export default class BaseRepository<T extends BaseEntity> {
     }
 
 
-    constructor(repositoryKey: string) {
+    constructor(repositoryKey: string = BaseRepository.defaultRepositoryKey) {
 
         // 상세 값. 관련해서 저장 방법.
         this.isDetailRepository = false;
@@ -224,3 +229,8 @@ function createOrSetProperty<T, K extends keyof T>(
 //
 //     return value;
 // }
+
+
+export class TestRepo extends BaseRepository<BaseEntity> {
+    static defaultRepositoryKey = uuidv4()
+}

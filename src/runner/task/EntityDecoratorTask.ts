@@ -22,7 +22,6 @@ import {
     isArrayElementTypeReferenceNode, resolvePropertyType,
     // resolveRecursiveTypes
 } from "../util/NodeUtil";
-import {BeanInterface} from "../copy/interface/BeanInterface";
 
 
 // const PRE_SOURCE_PATH = 'src/source';

@@ -2,7 +2,7 @@
 
 import React, {useMemo} from "react";
 import {useRecoilState, useRecoilValue} from "recoil";
-import BaseRepository from "src/reactbootdev/repository/BaseRepository";
+import BaseRepository, {TestRepo} from "src/reactbootdev/repository/BaseRepository";
 import {page} from "src/reactbootdev/decorator/Page";
 import {Project} from "src/entity/Project";
 import {entityRenderer} from "src/reactbootdev/component/BaseComponentManager";
@@ -101,6 +101,12 @@ const BasePageContent = () => {
 
     return (
         <div>
+            <div>
+                {TestRepo.defaultRepositoryKey}
+            </div>
+            <div>
+                {BaseRepository.defaultRepositoryKey}
+            </div>
             <h1>Base Page aaa2223</h1>
             <div>--- --- ---</div>
             <div>{renderedEntity}</div>

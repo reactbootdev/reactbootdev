@@ -11,10 +11,8 @@ import {
 } from "./config/config";
 import {pageDecoratorPostTask, pageDecoratorPreTask} from "./task/PageDecoratorTask";
 import {createFolderSync} from "./util/FileUtil";
-import {BaseTaskResultInterface} from "./copy/interface/BaseTaskResultInterface";
 import {entityDecoratorPreTask, entityDecoratorPostTask} from "./task/EntityDecoratorTask";
 import fs from "fs";
-import {TaskBeansType} from "./copy/interface/TaskBeansType";
 import {commonDecoratorPostTask, commonDecoratorPreTask, TaskArgsInterface} from "./task/CommonDecoratorTask";
 
 

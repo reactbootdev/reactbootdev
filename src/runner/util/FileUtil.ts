@@ -7,6 +7,8 @@ export function createFolderSync(targetFolder: string) {
     }
 }
 
+const BACKUP_EXT = '.txt'
+
 export function copyFolderRecursiveSync(source: string, target: string) {
     let files = [];
 
@@ -22,7 +24,7 @@ export function copyFolderRecursiveSync(source: string, target: string) {
         files.forEach(function (file) {
 
             // only ts and tsx files
-            const allowExt = ['.ts', '.tsx']
+            const allowExt = ['.ts', '.tsx', BACKUP_EXT]
             if (!allowExt.includes(path.extname(file))) return
 
             let curSource = path.join(source, file);
@@ -51,12 +53,20 @@ export function copyFileIfChanged(sourceFile: string, targetFile: string) {
     const currentSize = fs.statSync(sourceFile).size;
     const hasChanged = previousSize !== currentSize;
 
-    if (hasChanged) {
-        // 변경된 경우 파일을 복사합니다.
-        fs.copyFileSync(sourceFile, targetFile);
-        console.log('File copied:', targetFile , `<` , sourceFile);
-    } else {
+    if(!hasChanged) {
         // TODO :: verbose option 설정 or log level
         // console.log('No changes detected. File not copied:', targetFile , `<` , sourceFile);
+        return
     }
+
+    // if ext is `.txt`, remove `.txt` extension
+    const ext = path.extname(targetFile)
+    if(ext === BACKUP_EXT){
+        targetFile = targetFile.replace(ext, '')
+    }
+
+    // 변경된 경우 파일을 복사합니다.
+    fs.copyFileSync(sourceFile, targetFile);
+    console.log('File copied:', targetFile , `<` , sourceFile);
+
 }
