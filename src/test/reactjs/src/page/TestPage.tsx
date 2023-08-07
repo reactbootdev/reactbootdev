@@ -3,16 +3,26 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import BaseRepository from "src/reactbootdev/repository/BaseRepository";
 import {page} from "src/reactbootdev/decorator/Page";
 import {Project} from "src/entity/Project";
-import {entityRenderer} from "src/reactbootdev/component/BaseComponentManager";
+import {entityRenderer, RenderTypeEnum} from "src/reactbootdev/component/BaseComponentManager";
+import {ProjectRepository} from "src/repository/ProjectRepository";
+import {ProjectApi} from "src/api/ProjectApi";
 
 
 
 const BasePageContent = () => {
 
-    const baseRepository = new BaseRepository(`uuid`);
-    const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
-    baseRepository.init(entityList, setEntityList);
+    const projectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey)
+    const [entityList, setEntityList] = useRecoilState(projectRepository.entityListState);
+    projectRepository.init(entityList, setEntityList);
+    const projectApi = new ProjectApi()
 
+    const renderedEntity = entityRenderer (
+        Project,
+        projectRepository,
+        projectApi,
+        RenderTypeEnum.CREATE,
+        {},
+    )
 
     // TODO :: 아래와 같은 형태로 변환예정. 변수는 상속관계.
     // TODO :: 일단은 동작 가능한 최소의 프로토타입 코드 작성. CRRUD.
@@ -24,36 +34,16 @@ const BasePageContent = () => {
 
     // TODO :: 객체 타입을 포함한 재귀형태 entity 를 json 형태로 변환하는 것. 이것이 가장 큰 기술적 난제야.
 
-    // const [entityList, setEntityList] = useRecoilState(ProjectRepository.state); // static
-    // const addData = () => {
-    //     setEntityList(ProjectRepository.addEntity([{
-    //         id: 1,
-    //     }]
-    // }
 
-
-
-    const addDate = () => {
-
-        baseRepository.addEntities(
-[{
-            id: 314
-        },
-        {
-            id: 3142
-        }])
-
-        // baseRepository.addEntity({
-        //     id: 3143
-        // });
-    }
-
-    const renderedEntity = entityRenderer (
-        Project,
-        baseRepository,
-        "CREATE",
-        () => {}
-    )
+//     const addDate = () => {
+//         projectRepository.addEntities(
+// [{
+//             id: 314
+//         },
+//         {
+//             id: 3142
+//         }])
+//     }
 
     // TODO :: API Generator.
     // TODO :: renderedEntity > Container
@@ -63,20 +53,21 @@ const BasePageContent = () => {
     return (
         <div>
             <div>
-                {BaseRepository.defaultRepositoryKey}
+                defaultRepositoryKey : {BaseRepository.defaultRepositoryKey}
             </div>
-            <h1>Base Page aaa2223</h1>
+
             <div>--- --- ---</div>
             <div>{renderedEntity}</div>
             <div>--- --- ---</div>
+
             <div>{JSON.stringify(entityList)}</div>
-            <button onClick={addDate}>aadd</button>
+            {/*<button onClick={addDate}>aadd</button>*/}
         </div>
     );
 };
 
 
-@page("/atest2")
+@page("/test")
 export class TestPageA2 {
 
 

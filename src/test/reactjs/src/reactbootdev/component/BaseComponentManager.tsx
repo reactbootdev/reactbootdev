@@ -4,9 +4,9 @@ import {NAME_DELIMITER} from "src/reactbootdev/config/config";
 import {ClassType, ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
 import {CreateContainer} from "src/reactbootdev/component/CreateComponent";
 import {StringInput} from "src/reactbootdev/component/StringInput";
-
-
-// return react component
+import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
+import {BaseApi} from "@src/reactbootdev/api/BaseApi";
 
 
 interface BaseComponentTypeMapInterface {
@@ -14,21 +14,58 @@ interface BaseComponentTypeMapInterface {
 }
 
 export const baseComponentTypeMap : BaseComponentTypeMapInterface= {
+    booleanInput: StringInput,
+    booleanArrayInput: StringInput,
+    booleanOutput: StringInput,
+    booleanArrayOutput: StringInput,
+    numberInput: StringInput,
+    numberArrayInput: StringInput,
+    numberOutput: StringInput,
+    numberArrayOutput: StringInput,
     stringInput: StringInput,
     stringArrayInput: StringInput,
     stringOutput: StringInput,
     stringArrayOutput: StringInput,
+
     createContainer: CreateContainer,
+    readListContainer: CreateContainer,
+    readDetailContainer: CreateContainer,
+    updateContainer: CreateContainer,
+    deleteContainer: CreateContainer,
 }
 
 
 export const IS_ARRAY_TYPE_TEXT = 'Array'
 
+
+export enum RenderTypeEnum {
+    CREATE = 'CREATE',
+    READ_LIST = 'READ_LIST',
+    READ_DETAIL = 'READ_DETAIL',
+    UPDATE = 'UPDATE',
+    DELETE = 'DELETE',
+}
+
+export type EntityType<T> = T extends BaseEntity ? T : never;
+
+export type RepositoryType<T extends BaseEntity> = T extends BaseRepository<infer EntityType> ? BaseRepository<EntityType> : never;
+// export type RepositoryType = BaseRepositoryType<EntityType>
+
+// export type BaseEntityType<T> = T extends BaseEntity ? T : never;
+// export type EntityType = BaseEntityType<BaseEntity>
+//
+// export type BaseRepositoryType<T extends BaseEntity> = T extends BaseRepository<infer BaseEntityType> ? BaseRepository<BaseEntityType> : never;
+// export type RepositoryType = BaseRepositoryType<EntityType>
+
+export type BaseApiType<T> = T extends BaseApi ? T : never;
+export type ApiType = BaseApiType<BaseApi>
+
 export function entityRenderer (
     entity: unknown,
-    repository: unknown,
-    renderType: unknown,
-    refiner: (rep: unknown) => unknown
+    repository: RepositoryType<EntityType<any>>,
+    api: ApiType,
+    renderType: RenderTypeEnum,
+    refiner: BaseComponentTypeMapInterface
 ) : JSX.Element {
 
     // TODO :: entityBean. repository 둘 다 평문화 시켜서 렌더링 하는 수외에는 없다고 봐.
@@ -49,7 +86,7 @@ export function entityRenderer (
     // 문제는 반환된 state-repository mapping. react hook form?
     // inner component에 update callback 세팅?
 
-    const REPOSITORY_KEY = 'UUID'
+    const REPOSITORY_KEY = repository.repositoryKey
 
     let bean;
     let entityName;

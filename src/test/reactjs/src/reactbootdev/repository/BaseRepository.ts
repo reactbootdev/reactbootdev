@@ -7,9 +7,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default class BaseRepository<T extends BaseEntity> {
 
-    // TODO :: default Repository Key 설정
     static defaultRepositoryKey: string = uuidv4();
 
+    repositoryKey: string;
     isDetailRepository: boolean;
     entityListState: RecoilState<T[]>;
     entityList: any;
@@ -32,7 +32,6 @@ export default class BaseRepository<T extends BaseEntity> {
         this.setEntityList(updatedList);
     }
 
-    // 항목 업데이트
     updateEntity =  (itemId: number, newItem: T) => {
         const updatedList = updateItem(this.entityList, itemId, newItem);
         this.setEntityList(updatedList);
@@ -40,12 +39,9 @@ export default class BaseRepository<T extends BaseEntity> {
 
     updateEntityByDelimiterKey =  (itemId: number, newItem: unknown, multiKeys: string) => {
         const updatedList = updateByDelimiterKey(this.entityList, itemId, newItem, multiKeys);
-        console.log("newItem", newItem);
-        console.log("updatedList", updatedList);
         this.setEntityList(updatedList);
     };
 
-    // 항목 삭제
     deleteEntity = (itemId: number) => {
         const updatedList = deleteItem(this.entityList, itemId);
         this.setEntityList(updatedList);
@@ -56,8 +52,9 @@ export default class BaseRepository<T extends BaseEntity> {
     }
 
 
-    constructor(repositoryKey: string = BaseRepository.defaultRepositoryKey) {
+    constructor(repositoryKey: string = uuidv4()) {
 
+        this.repositoryKey = repositoryKey
         // 상세 값. 관련해서 저장 방법.
         this.isDetailRepository = false;
 
@@ -145,24 +142,18 @@ const updateByDelimiterKey =  <T extends BaseEntity> (
     multiKeys: string,
 ): T[] => {
 
-    console.log("1", itemId);
     if (list.length === 0) {
         const newItem = createOrSetProperty({} as T, multiKeys, newValue);
-        // console.log("newItem", newItem);
-        console.log("11");
         return [newItem];
     }
 
     const updatedList = list.map((item, idx) => {
         if (idx === itemId) {
-            console.log("111");
             const newItem = createOrSetProperty(item, multiKeys, newValue);
             return newItem;
         }
         return item;
     });
-    console.log("1111");
-    // console.log("updatedList", updatedList);
     return updatedList;
 }
 
