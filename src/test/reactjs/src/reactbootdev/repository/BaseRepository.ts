@@ -61,9 +61,6 @@ export default class BaseRepository<T extends BaseEntity> {
         // 상세 값. 관련해서 저장 방법.
         this.isDetailRepository = false;
 
-        // TODO :: delimiter key 값에 의한 update method.
-
-
         // repositoryKeyMap > key 값이 존재할 경우 기존 값에서 참고. static.
         if (BaseRepository.repositoryKeyMap.has(repositoryKey)) {
             this.entityListState = BaseRepository.repositoryKeyMap.get(repositoryKey);
@@ -75,14 +72,6 @@ export default class BaseRepository<T extends BaseEntity> {
             })
             BaseRepository.repositoryKeyMap.set(repositoryKey, this.entityListState);
         }
-
-        // const [ entityList, setEntityList ] = useRecoilState(this.entityListState);
-
-        // this.entityList = entityList
-        // this.addEntity = addEntity
-        // this.updateEntity = updateEntity
-        // this.deleteEntity = deleteEntity
-
     }
 
 }
@@ -213,24 +202,4 @@ function createOrSetProperty<T, K extends keyof T>(
     return produce(obj, (draft) => {
         return updateNestedProperty(draft, keys, value);
     });
-}
-
-// function getValueByPath(data: unknown, path: string, delimiter: string = '.') {
-//     const keys = path.split(delimiter);
-//     let value = data;
-//
-//     for (const key of keys) {
-//         if (typeof value === 'undefined') {
-//             return undefined;
-//         }
-//
-//         value = value[key];
-//     }
-//
-//     return value;
-// }
-
-
-export class TestRepo extends BaseRepository<BaseEntity> {
-    static defaultRepositoryKey = uuidv4()
 }

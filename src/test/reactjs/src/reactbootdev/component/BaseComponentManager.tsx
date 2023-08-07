@@ -1,87 +1,12 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {entityBeans, entityImportMap} from "src/reactbootdev/data/EntityBean";
 import {NAME_DELIMITER} from "src/reactbootdev/config/config";
-import {ClassType} from "src/reactbootdev/interface/TaskBeansType";
-import {ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
-import BaseRepository from "src/reactbootdev/repository/BaseRepository";
-import {useRecoilState} from "recoil";
-import {BaseApi} from "src/reactbootdev/api/BaseApi";
+import {ClassType, ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
+import {CreateContainer} from "src/reactbootdev/component/CreateComponent";
+import {StringInput} from "src/reactbootdev/component/StringInput";
 
 
 // return react component
-
-export interface StringInputProps {
-    children: any;
-    repositoryKey: string
-    propertyKey: string
-    initValue: string
-}
-
-
-export const StringInput = (props: StringInputProps) => {
-    // useState
-    const [inputValue, setInputValue] = React.useState(props.initValue);
-    // remove first element and join again
-    const refinedRepository = props.propertyKey.split(NAME_DELIMITER).slice(1).join(NAME_DELIMITER)
-
-    const baseRepository = new BaseRepository(props.repositoryKey);
-    const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
-    baseRepository.init(entityList, setEntityList)
-
-    const updateRepository = (value: string) => {
-
-        setInputValue(value)
-    }
-
-    const testInit = baseRepository.getValuesByDelimiterKey(0, refinedRepository)
-
-
-    return (
-        <div>
-            <div>{props.initValue}</div>
-            <div>{refinedRepository}</div>
-            <div>{JSON.stringify(testInit)}</div>
-            <div>{JSON.stringify(baseRepository.entityList)}</div>
-            <input
-                type="text"
-                value={JSON.stringify(testInit)}
-                onChange={(e) => {
-                    baseRepository.updateEntityByDelimiterKey(0, e.target.value, refinedRepository)
-                    // setInputValue(e.target.value);
-                }}/>
-            {/*adwf : {props.testValue}*/}
-        </div>
-    )
-}
-
-export interface CreateContainerProps {
-    children: any;
-    repositoryKey: string
-}
-
-export const CreateContainer = (props: CreateContainerProps) => {
-
-    // BaseApi
-    const baseApi = new BaseApi()
-    const handleCreate = baseApi.handleCreate
-
-    const baseRepository = new BaseRepository(props.repositoryKey);
-    const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
-    baseRepository.init(entityList, setEntityList)
-
-    return (
-        <div>
-            <div>상위</div>
-            {/*포함된 자식 컨테이너*/}
-            {props.children}
-            <div>하위</div>
-            <button onClick={() => {
-                handleCreate(entityList)
-            }}>create</button>
-
-        </div>
-    )
-}
 
 
 interface BaseComponentTypeMapInterface {

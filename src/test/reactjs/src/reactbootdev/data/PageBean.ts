@@ -1,7 +1,6 @@
 import { TaskBeansType,ObjectTypeEnum } from "../interface/TaskBeansType";
 
 
-import { TestPageA } from "src/page/TestPage";
 import { TestPageA2 } from "src/page/TestPage";
 import { BasePage2 } from "src/page/home";
 import { BasePage3 } from "src/page/home";
@@ -9,7 +8,6 @@ import { Welcome } from "src/page/home";
 
 
 export const pageImportMap: { [key: string]: any } = {
-	"src/page/TestPage.tsx////TestPageA" : TestPageA,
 	"src/page/TestPage.tsx////TestPageA2" : TestPageA2,
 	"src/page/home.tsx////BasePage2" : BasePage2,
 	"src/page/home.tsx////BasePage3" : BasePage3,
@@ -30,23 +28,6 @@ export const pageBeans: TaskBeansType = {
       "entityRenderer": "src/reactbootdev/component/BaseComponentManager.ts"
     },
     "objects": {
-      "TestPageA": {
-        "type": ObjectTypeEnum.CLASS,
-        "data": {},
-        "decorators": [
-          {
-            "name": "page",
-            "definition": "any",
-            "arguments": [
-              {
-                "type": "string",
-                "value": "/atest1",
-                "txt": "\"/atest1\""
-              }
-            ]
-          }
-        ]
-      },
       "TestPageA2": {
         "type": ObjectTypeEnum.CLASS,
         "data": {},

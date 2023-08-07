@@ -1,52 +1,13 @@
-
-
-import React, {useMemo} from "react";
+import React from "react";
 import {useRecoilState, useRecoilValue} from "recoil";
-import BaseRepository, {TestRepo} from "src/reactbootdev/repository/BaseRepository";
+import BaseRepository from "src/reactbootdev/repository/BaseRepository";
 import {page} from "src/reactbootdev/decorator/Page";
 import {Project} from "src/entity/Project";
 import {entityRenderer} from "src/reactbootdev/component/BaseComponentManager";
-// import {ProjectRepository} from "src/reactbootdev/repository/ProjectRepository";
 
 
-
-
-const BasePageContentFirst = () => {
-
-    const baseRepository = new BaseRepository("testName2");
-    const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
-
-    return (
-        <div>
-            <div>{JSON.stringify(entityList)}</div>
-            <h1>Base Pagea</h1>
-        </div>
-    );
-}
-
-
-@page("/atest1")
-export class TestPageA {
-    // private constructor() {} // 외부에서 인스턴스화 방지
-
-    render() {
-        return (
-            <div>
-                <h1>Base Page</h1>
-                <BasePageContentFirst/>
-                <BasePageContent/>
-            </div>
-        )
-    }
-
-}
 
 const BasePageContent = () => {
-    // getUUid by useMemo
-    const uuid = useMemo(() => {
-        // random string
-        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    }, []);
 
     const baseRepository = new BaseRepository(`uuid`);
     const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
@@ -101,9 +62,6 @@ const BasePageContent = () => {
 
     return (
         <div>
-            <div>
-                {TestRepo.defaultRepositoryKey}
-            </div>
             <div>
                 {BaseRepository.defaultRepositoryKey}
             </div>
