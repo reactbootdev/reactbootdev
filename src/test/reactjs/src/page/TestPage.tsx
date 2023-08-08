@@ -16,6 +16,8 @@ const BasePageContent = () => {
     projectRepository.init(entityList, setEntityList);
     const projectApi = new ProjectApi()
 
+    // TODO :: api에 의한 repo update는 두 곳에서. `page`랑 `component`
+
     const createEntity = entityRenderer(
         Project,
         projectRepository,
