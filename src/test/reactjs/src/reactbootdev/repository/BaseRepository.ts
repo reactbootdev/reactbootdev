@@ -103,13 +103,11 @@ const getByDelimiterKey = <T extends BaseEntity> (
     list: T[],
     idx: number,
     multiKeys: string,
-): unknown => {
+) => {
     let keys = multiKeys.split(NAME_DELIMITER);
     let result: unknown = undefined;
-    console.log("keys", keys, list)
     const item = list[idx];
     result = getNestedProperty(item, keys);
-    console.log("check", result)
 
     return result
 }
@@ -119,16 +117,14 @@ const getByDelimiterKey = <T extends BaseEntity> (
 function getNestedProperty<T, K extends keyof T>(
     obj: T,
     keys: string[]
-): T {
+) {
     const result = { ...obj };
-    console.log("getNestedProperty", obj, result)
     let current: any = result;
     for (let i = 0; i < keys.length - 1; i++) {
         const key = keys[i];
         current[key] = { ...current[key] };
         current = current[key];
     }
-    console.log(current[keys[keys.length - 1]])
     return current[keys[keys.length - 1]]
 }
 

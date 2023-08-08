@@ -23,18 +23,22 @@ export const StringInput = (props: StringInputProps) => {
         setInputValue(value)
     }
 
-    const testInit = baseRepository.getValuesByDelimiterKey(0, refinedRepository)
 
+    const itemId = 0
+    // testInit as string
+
+    const value = baseRepository.getValuesByDelimiterKey(itemId, props.propertyKey) ?? ""
+    const refinedValue = String(value)
 
     return (
         <div>
             <div>{props.initValue}</div>
             <div>{refinedRepository}</div>
-            <div>{JSON.stringify(testInit)}</div>
+            <div>{JSON.stringify(value)}</div>
             <div>{JSON.stringify(baseRepository.entityList)}</div>
             <input
                 type="text"
-                value={JSON.stringify(testInit)}
+                value={refinedValue}
                 onChange={(e) => {
                     baseRepository.updateEntityByDelimiterKey(0, e.target.value, props.propertyKey)
                     // setInputValue(e.target.value);
