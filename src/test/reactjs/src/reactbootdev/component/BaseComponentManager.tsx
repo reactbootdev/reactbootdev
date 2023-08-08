@@ -160,8 +160,11 @@ function getElementComponents (
 
     const flattedObject = flattenObject(bean, entityName);
 
+    // TODO :: C, R, U, D 는 각각 Repository 특정 IDX에 종속. 그러나, R > `List`은 특정 IDX에 종속되지 않는다.
+    // TODO :: renderer 인자값 설정. 고려. groupName도.
+    // TODO :: Test API Mockup 작성 및 프로토타입 renderer 전체적인 흐름 연동.
+
     let generatedForm
-    // if renderType
     if (renderType === RenderTypeEnum.READ_DETAIL) {
         generatedForm = Object.entries(flattedObject).map(([key, type]) => {
             const compKey = `${type}Output`
@@ -180,18 +183,18 @@ function getElementComponents (
         })
     } else if (renderType === RenderTypeEnum.READ_LIST) {
         generatedForm = Object.entries(flattedObject).map(([key, type]) => {
-            const compKey = `${type}Input`
+            const compKey = `${type}Output`
             const MappedComponent = baseComponentTypeMap[compKey]
             const initValue = ``
 
             return (
-                <div>
+                <>
                     <MappedComponent
                         repositoryKey={REPOSITORY_KEY}
                         propertyKey={key}
                         initValue={initValue}
                     />
-                </div>
+                </>
             )
         })
     } else if (renderType === RenderTypeEnum.CREATE) {
