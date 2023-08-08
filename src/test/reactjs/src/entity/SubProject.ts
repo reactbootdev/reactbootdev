@@ -3,17 +3,10 @@ import {entity} from "src/reactbootdev/decorator/Entity";
 @entity
 export class SubProject {
 
-    testcol1?: string
-    testcol2?: string
+    testcol1b?: string
+    testcol2b?: string
+    testcol3b?: boolean
+    testcol4b?: number
 
 }
-
-
-export interface SubProjectInterface {
-
-    testcol1: string
-    testcol2: string
-
-}
-
 

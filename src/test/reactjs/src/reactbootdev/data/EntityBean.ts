@@ -19,13 +19,23 @@ export const entityBeans: TaskBeansType = {
       "SubProject": {
         "type": ObjectTypeEnum.CLASS,
         "data": {
-          "testcol1": {
+          "testcol1b": {
             "type": "string",
             "isArray": false,
             "isTypeReferenceNode": false
           },
-          "testcol2": {
+          "testcol2b": {
             "type": "string",
+            "isArray": false,
+            "isTypeReferenceNode": false
+          },
+          "testcol3b": {
+            "type": "boolean",
+            "isArray": false,
+            "isTypeReferenceNode": false
+          },
+          "testcol4b": {
+            "type": "number",
             "isArray": false,
             "isTypeReferenceNode": false
           }
@@ -37,19 +47,45 @@ export const entityBeans: TaskBeansType = {
   "src/entity/Project.ts": {
     "importPaths": {
       "entity": "src/reactbootdev/decorator/Entity.ts",
-      "SubProject": "src/entity/SubProject.ts"
+      "SubProject": "src/entity/SubProject.ts",
+      "BaseEntity": "src/reactbootdev/entity/BaseEntity.ts"
     },
     "objects": {
       "Project": {
         "type": ObjectTypeEnum.CLASS,
         "data": {
-          "testcol1": {
+          "testcol1a": {
             "type": "string",
             "isArray": false,
             "isTypeReferenceNode": false
           },
-          "testcol2": {
+          "testcol2a": {
             "type": "string",
+            "isArray": false,
+            "isTypeReferenceNode": false,
+            "decorators": [
+              {
+                "name": "render",
+                "definition": "(config: { name: string; }) => (target: any, key: string) => void",
+                "arguments": [
+                  {
+                    "type": "any",
+                    "value": {
+                      "name": "testrenderer"
+                    },
+                    "txt": "{name: \"testrenderer\"}"
+                  }
+                ]
+              }
+            ]
+          },
+          "testcol3a": {
+            "type": "boolean",
+            "isArray": false,
+            "isTypeReferenceNode": false
+          },
+          "testcol4a": {
+            "type": "number",
             "isArray": false,
             "isTypeReferenceNode": false
           },
@@ -60,13 +96,23 @@ export const entityBeans: TaskBeansType = {
             "referenceNode": {
               "type": ObjectTypeEnum.CLASS,
               "data": {
-                "testcol1": {
+                "testcol1b": {
                   "type": "string",
                   "isArray": false,
                   "isTypeReferenceNode": false
                 },
-                "testcol2": {
+                "testcol2b": {
                   "type": "string",
+                  "isArray": false,
+                  "isTypeReferenceNode": false
+                },
+                "testcol3b": {
+                  "type": "boolean",
+                  "isArray": false,
+                  "isTypeReferenceNode": false
+                },
+                "testcol4b": {
+                  "type": "number",
                   "isArray": false,
                   "isTypeReferenceNode": false
                 }
@@ -75,7 +121,21 @@ export const entityBeans: TaskBeansType = {
             }
           }
         },
-        "decorators": []
+        "decorators": [
+          {
+            "name": "renderContainer",
+            "definition": "(config: { name: string; }) => (target: any) => void",
+            "arguments": [
+              {
+                "type": "any",
+                "value": {
+                  "name": "testrenderer"
+                },
+                "txt": "{name: \"testrenderer\"}"
+              }
+            ]
+          }
+        ]
       }
     }
   }

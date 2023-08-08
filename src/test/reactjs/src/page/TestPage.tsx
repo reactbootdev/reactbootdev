@@ -16,11 +16,43 @@ const BasePageContent = () => {
     projectRepository.init(entityList, setEntityList);
     const projectApi = new ProjectApi()
 
-    const renderedEntity = entityRenderer (
+    const createEntity = entityRenderer(
         Project,
         projectRepository,
         projectApi,
         RenderTypeEnum.CREATE,
+        {},
+    )
+
+    const readListEntity = entityRenderer(
+        Project,
+        projectRepository,
+        projectApi,
+        RenderTypeEnum.READ_LIST,
+        {},
+    )
+
+    const readDetailEntity = entityRenderer(
+        Project,
+        projectRepository,
+        projectApi,
+        RenderTypeEnum.READ_DETAIL,
+        {},
+    )
+
+    const updateEntity = entityRenderer(
+        Project,
+        projectRepository,
+        projectApi,
+        RenderTypeEnum.UPDATE,
+        {},
+    )
+
+    const deleteEntity = entityRenderer(
+        Project,
+        projectRepository,
+        projectApi,
+        RenderTypeEnum.DELETE,
         {},
     )
 
@@ -57,8 +89,25 @@ const BasePageContent = () => {
             </div>
 
             <div>--- --- ---</div>
-            <div>{renderedEntity}</div>
+            <div>{createEntity}</div>
             <div>--- --- ---</div>
+
+            <div>--- --- ---</div>
+            <div>{readListEntity}</div>
+            <div>--- --- ---</div>
+
+            <div>--- --- ---</div>
+            <div>{readDetailEntity}</div>
+            <div>--- --- ---</div>
+
+            <div>--- --- ---</div>
+            <div>{updateEntity}</div>
+            <div>--- --- ---</div>
+
+            <div>--- --- ---</div>
+            <div>{deleteEntity}</div>
+            <div>--- --- ---</div>
+
 
             <div>{JSON.stringify(entityList)}</div>
             {/*<button onClick={addDate}>aadd</button>*/}
