@@ -93,11 +93,11 @@ const BasePageContent = () => {
             <div>--- --- ---</div>
 
             <div>--- --- ---</div>
-            <div>{readListEntity}</div>
+            <div>{readDetailEntity}</div>
             <div>--- --- ---</div>
 
             <div>--- --- ---</div>
-            <div>{readDetailEntity}</div>
+            <div>{readListEntity}</div>
             <div>--- --- ---</div>
 
             <div>--- --- ---</div>

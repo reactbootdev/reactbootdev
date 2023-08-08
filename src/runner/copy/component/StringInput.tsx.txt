@@ -20,7 +20,6 @@ export const StringInput = (props: StringInputProps) => {
     baseRepository.init(entityList, setEntityList)
 
     const updateRepository = (value: string) => {
-
         setInputValue(value)
     }
 
@@ -37,7 +36,7 @@ export const StringInput = (props: StringInputProps) => {
                 type="text"
                 value={JSON.stringify(testInit)}
                 onChange={(e) => {
-                    baseRepository.updateEntityByDelimiterKey(0, e.target.value, refinedRepository)
+                    baseRepository.updateEntityByDelimiterKey(0, e.target.value, props.propertyKey)
                     // setInputValue(e.target.value);
                 }}/>
             {/*adwf : {props.testValue}*/}

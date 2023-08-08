@@ -2,11 +2,12 @@ import React from 'react';
 import {entityBeans, entityImportMap} from "src/reactbootdev/data/EntityBean";
 import {NAME_DELIMITER} from "src/reactbootdev/config/config";
 import {ClassType, ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
-import {CreateContainer} from "src/reactbootdev/component/CreateComponent";
+import {CreateContainer} from "src/reactbootdev/component/CreateContainer";
 import {StringInput} from "src/reactbootdev/component/StringInput";
-import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
-import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
-import {BaseApi} from "@src/reactbootdev/api/BaseApi";
+import BaseRepository from "src/reactbootdev/repository/BaseRepository";
+import BaseEntity from "src/reactbootdev/entity/BaseEntity";
+import {BaseApi} from "src/reactbootdev/api/BaseApi";
+import {StringOutput} from "src/reactbootdev/component/StringOutput";
 
 
 interface BaseComponentTypeMapInterface {
@@ -16,16 +17,16 @@ interface BaseComponentTypeMapInterface {
 export const baseComponentTypeMap : BaseComponentTypeMapInterface= {
     booleanInput: StringInput,
     booleanArrayInput: StringInput,
-    booleanOutput: StringInput,
-    booleanArrayOutput: StringInput,
+    booleanOutput: StringOutput,
+    booleanArrayOutput: StringOutput,
     numberInput: StringInput,
     numberArrayInput: StringInput,
-    numberOutput: StringInput,
-    numberArrayOutput: StringInput,
+    numberOutput: StringOutput,
+    numberArrayOutput: StringOutput,
     stringInput: StringInput,
     stringArrayInput: StringInput,
-    stringOutput: StringInput,
-    stringArrayOutput: StringInput,
+    stringOutput: StringOutput,
+    stringArrayOutput: StringOutput,
 
     createContainer: CreateContainer,
     readListContainer: CreateContainer,
@@ -87,78 +88,178 @@ export function entityRenderer (
     // inner component에 update callback 세팅?
 
     const REPOSITORY_KEY = repository.repositoryKey
+    const ElementComponents = getElementComponents(entity, repository, api, renderType, refiner)
+    const ContainerComponent = getContainerComponent(entity, repository, api, renderType, refiner)
+
+    return (
+        <>
+            <ContainerComponent
+                repositoryKey={REPOSITORY_KEY}
+            >
+                {ElementComponents}
+            </ContainerComponent>
+        </>
+    )
+}
+
+function getContainerComponent (
+    entity: unknown,
+    repository: RepositoryType<EntityType<any>>,
+    api: ApiType,
+    renderType: RenderTypeEnum,
+    refiner: BaseComponentTypeMapInterface
+) {
+    let ContainerComponent
+    switch (renderType) {
+        case RenderTypeEnum.CREATE:
+            ContainerComponent = baseComponentTypeMap['createContainer']
+            break
+        case RenderTypeEnum.READ_LIST:
+            ContainerComponent = baseComponentTypeMap['readListContainer']
+            break
+        case RenderTypeEnum.READ_DETAIL:
+            ContainerComponent = baseComponentTypeMap['readDetailContainer']
+            break
+        case RenderTypeEnum.UPDATE:
+            ContainerComponent = baseComponentTypeMap['updateContainer']
+            break
+        case RenderTypeEnum.DELETE:
+            ContainerComponent = baseComponentTypeMap['deleteContainer']
+            break
+        default:
+            ContainerComponent = baseComponentTypeMap['createContainer']
+    }
+    return ContainerComponent
+}
+
+function getElementComponents (
+    entity: unknown,
+    repository: RepositoryType<EntityType<any>>,
+    api: ApiType,
+    renderType: RenderTypeEnum,
+    refiner: BaseComponentTypeMapInterface
+) {
+    const REPOSITORY_KEY = repository.repositoryKey
 
     let bean;
     let entityName;
     Object.entries(entityImportMap).find(([key, value]) => {
-        // console.log(key, value);
         if (value === entity) {
-            // console.log(key);
             const fileName = key.split(NAME_DELIMITER).shift();
             entityName = key.split(NAME_DELIMITER).pop();
             if (fileName === undefined || entityName === undefined) {
                 return
             }
             bean = entityBeans[fileName].objects[entityName];
-            // console.log(bean);
         }
     })
 
     if (bean === undefined || entityName === undefined) {
-        return <div>error : bean undefined</div>
+        throw new Error(`getGeneratedForm :: entity is not found in entityBeans. entity: ${entityName}`)
     }
 
     const flattedObject = flattenObject(bean, entityName);
-    // console.log(flattedObject);
 
-    const generatedForm = Object.entries(flattedObject).map(([key, type]) => {
-        const compKey = `${type}Input`
-        const MappedComponent = baseComponentTypeMap[compKey]
-        const initValue = ``
+    let generatedForm
+    // if renderType
+    if (renderType === RenderTypeEnum.READ_DETAIL) {
+        generatedForm = Object.entries(flattedObject).map(([key, type]) => {
+            const compKey = `${type}Output`
+            const MappedComponent = baseComponentTypeMap[compKey]
+            const initValue = ``
 
-        return (
-            <div>
-                {/*<div>{key}</div>*/}
-                {/*<div>{type}</div>*/}
-                <MappedComponent
-                    repositoryKey={REPOSITORY_KEY}
-                    propertyKey={key}
-                    initValue={initValue}
-                />
+            return (
+                <div>
+                    <MappedComponent
+                        repositoryKey={REPOSITORY_KEY}
+                        propertyKey={key}
+                        initValue={initValue}
+                    />
+                </div>
+            )
+        })
+    } else if (renderType === RenderTypeEnum.READ_LIST) {
+        generatedForm = Object.entries(flattedObject).map(([key, type]) => {
+            const compKey = `${type}Input`
+            const MappedComponent = baseComponentTypeMap[compKey]
+            const initValue = ``
 
-            </div>
-        )
-    })
+            return (
+                <div>
+                    <MappedComponent
+                        repositoryKey={REPOSITORY_KEY}
+                        propertyKey={key}
+                        initValue={initValue}
+                    />
+                </div>
+            )
+        })
+    } else if (renderType === RenderTypeEnum.CREATE) {
+        generatedForm = Object.entries(flattedObject).map(([key, type]) => {
+            const compKey = `${type}Input`
+            const MappedComponent = baseComponentTypeMap[compKey]
+            const initValue = ``
 
-    // TODO :: `flat info`로 @form 생성 @repository 자동 update
+            return (
+                <div>
+                    <MappedComponent
+                        repositoryKey={REPOSITORY_KEY}
+                        propertyKey={key}
+                        initValue={initValue}
+                    />
+                </div>
+            )
+        })
+    } else if (renderType === RenderTypeEnum.UPDATE) {
+        generatedForm = Object.entries(flattedObject).map(([key, type]) => {
+            const compKey = `${type}Input`
+            const MappedComponent = baseComponentTypeMap[compKey]
+            const initValue = ``
 
-    const CreateContainer = baseComponentTypeMap['createContainer']
+            return (
+                <div>
+                    <MappedComponent
+                        repositoryKey={REPOSITORY_KEY}
+                        propertyKey={key}
+                        initValue={initValue}
+                    />
+                </div>
+            )
+        })
+    } else if (renderType === RenderTypeEnum.DELETE) {
+        generatedForm = Object.entries(flattedObject).map(([key, type]) => {
+            const compKey = `${type}Input`
+            const MappedComponent = baseComponentTypeMap[compKey]
+            const initValue = ``
+
+            return (
+                <div>
+                    <MappedComponent
+                        repositoryKey={REPOSITORY_KEY}
+                        propertyKey={key}
+                        initValue={initValue}
+                    />
+                </div>
+            )
+        })
+    }
 
     return (
         <>
-            <CreateContainer
-                repositoryKey={REPOSITORY_KEY}
-            >
-                {generatedForm}
-            </CreateContainer>
+            {generatedForm}
         </>
     )
 }
+
 
 function isPrimtiveType (type: string) {
     return type === 'string' || type === 'number' || type === 'boolean'
 }
 
-
-// recursive 객체 단순화
 function flattenObject(obj: ClassType, objName: string) {
-    // // console.log(`check`)
-    // // console.log(`check`, obj)
     const flattened : Record<string, string> = {}
 
     Object.entries(obj.data).map(([propertyName, propertyInfo]) => {
-        // // console.log(`check22`,  propertyInfo.type, propertyInfo.referenceNode !== undefined, propertyInfo.type == ObjectTypeEnum.CLASS)
-
         const flattenedKey = `${objName}${NAME_DELIMITER}${propertyName}`
         if (isPrimtiveType(propertyInfo.type)) {
             const flattenedType = propertyInfo.type
@@ -169,18 +270,9 @@ function flattenObject(obj: ClassType, objName: string) {
             && propertyInfo.referenceNode !== undefined
             && propertyInfo.referenceNode.type === ObjectTypeEnum.CLASS
         ) {
-            // // console.log(`check33`)
             Object.assign(flattened, flattenObject(propertyInfo.referenceNode, `${flattenedKey}`))
         }
     })
-
-    // Object.keys(obj).forEach((key) => {
-    //     if (typeof obj[key] === 'object' && obj[key] !== null) {
-    //         Object.assign(flattened, flattenObject(obj[key]))
-    //     } else {
-    //         flattened[key] = obj[key]
-    //     }
-    // })
 
     return flattened
 }

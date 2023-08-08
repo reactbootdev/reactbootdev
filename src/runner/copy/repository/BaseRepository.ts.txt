@@ -53,7 +53,6 @@ export default class BaseRepository<T extends BaseEntity> {
 
 
     constructor(repositoryKey: string = uuidv4()) {
-
         this.repositoryKey = repositoryKey
         // 상세 값. 관련해서 저장 방법.
         this.isDetailRepository = false;
@@ -102,17 +101,15 @@ const updateItem = <T extends BaseEntity>(list: T[], itemId: number, newItem: T)
 // getByDelimiterKey
 const getByDelimiterKey = <T extends BaseEntity> (
     list: T[],
-    itemId: number,
+    idx: number,
     multiKeys: string,
 ): unknown => {
     let keys = multiKeys.split(NAME_DELIMITER);
-
     let result: unknown = undefined;
-    list.forEach(item => {
-        if (item.id === itemId) {
-            result = getNestedProperty(item, keys);
-        }
-    });
+    console.log("keys", keys, list)
+    const item = list[idx];
+    result = getNestedProperty(item, keys);
+    console.log("check", result)
 
     return result
 }
@@ -124,12 +121,14 @@ function getNestedProperty<T, K extends keyof T>(
     keys: string[]
 ): T {
     const result = { ...obj };
+    console.log("getNestedProperty", obj, result)
     let current: any = result;
     for (let i = 0; i < keys.length - 1; i++) {
         const key = keys[i];
         current[key] = { ...current[key] };
         current = current[key];
     }
+    console.log(current[keys[keys.length - 1]])
     return current[keys[keys.length - 1]]
 }
 
@@ -137,7 +136,7 @@ function getNestedProperty<T, K extends keyof T>(
 // updateByDelimiterKey
 const updateByDelimiterKey =  <T extends BaseEntity> (
     list: T[],
-    itemId: number,
+    idx: number,
     newValue: unknown,
     multiKeys: string,
 ): T[] => {
@@ -147,8 +146,8 @@ const updateByDelimiterKey =  <T extends BaseEntity> (
         return [newItem];
     }
 
-    const updatedList = list.map((item, idx) => {
-        if (idx === itemId) {
+    const updatedList = list.map((item, listIdx) => {
+        if (listIdx === idx) {
             const newItem = createOrSetProperty(item, multiKeys, newValue);
             return newItem;
         }
