@@ -17,24 +17,87 @@ export class TestProjectApi extends BaseApi {
     }
 
     handleCreate = (data: any) => {
-        const ACTION_URL = `create`
-        const TARGET_URL = this.getTargetUrl(ACTION_URL)
-        console.log(data);
-
-        axios.post(TARGET_URL, data)
-            .then((response) => {
-                console.log(response);
-            })
+        const testRes = {
+            code: 200,
+            message: "success",
+            result: {},
+        }
+        return testRes
     }
 
     handleUpdate = (data: any) => {
-        const ACTION_URL = `update`
-        const TARGET_URL = this.getTargetUrl(ACTION_URL)
-        console.log(data);
-
-        axios.put(TARGET_URL, data)
-            .then((response) => {
-                console.log(response);
-            })
+        const testRes = {
+            code: 200,
+            message: "success",
+            result: {},
+        }
+        return testRes
     }
+
+    handleReadList = (data: any) => {
+        const testRes = {
+            code: 200,
+            message: "success",
+            result: {
+                data : [
+                    {
+                        id: 1,
+                        name: "test1",
+                        description: "test1",
+                        startDate: "2021-01-01",
+                        endDate: "2021-01-01",
+                    },
+                    {
+                        id: 2,
+                        name: "test2",
+                        description: "test2",
+                        startDate: "2021-01-01",
+                        endDate: "2021-01-01",
+                    },
+                ],
+                pagination: {
+                    total: 1,
+                    page: 1,
+                    size: 10,
+                },
+                search: {
+                    name: "test1",
+                    description: "test1",
+                    startDate: "2021-01-01",
+                },
+                // TODO :: `Bean` enum 객체 활용으로 변경 고려.
+                type: {
+                    "name////adf////": {a:1, b: 2},
+                },
+            }
+        }
+        return testRes
+    }
+
+    handleReadDetail = (data: any) => {
+        const testRes = {
+            code: 200,
+            message: "success",
+            result: {
+                data: {
+                    id: 1,
+                    name: "test1",
+                    description: "test1",
+                    startDate: "2021-01-01",
+                    endDate: "2021-01-01",
+                },
+                search: {
+                    name: "test1",
+                    description: "test1",
+                    startDate: "2021-01-01",
+                },
+                // TODO :: `Bean` enum 객체 활용으로 변경 고려.
+                type: {
+                    "name////adf////": {a:1, b: 2},
+                },
+            }
+        }
+        return testRes
+    }
+
 }

@@ -45,6 +45,7 @@ export enum RenderTypeEnum {
     READ_DETAIL = 'READ_DETAIL',
     UPDATE = 'UPDATE',
     DELETE = 'DELETE',
+    RENDERER = 'RENDERER',
 }
 
 export type EntityType<T> = T extends BaseEntity ? T : never;
