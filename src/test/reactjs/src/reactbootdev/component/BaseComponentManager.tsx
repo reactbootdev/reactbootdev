@@ -10,11 +10,33 @@ import {BaseApi} from "src/reactbootdev/api/BaseApi";
 import {StringOutput} from "src/reactbootdev/component/StringOutput";
 
 
+export enum BaseComponentTypeMapKeyEnum {
+    booleanInput = 'booleanInput',
+    booleanArrayInput = 'booleanArrayInput',
+    booleanOutput = 'booleanOutput',
+    booleanArrayOutput = 'booleanArrayOutput',
+    numberInput = 'numberInput',
+    numberArrayInput = 'numberArrayInput',
+    numberOutput = 'numberOutput',
+    numberArrayOutput = 'numberArrayOutput',
+    stringInput = 'stringInput',
+    stringArrayInput = 'stringArrayInput',
+    stringOutput = 'stringOutput',
+    stringArrayOutput = 'stringArrayOutput',
+
+    createContainer = 'createContainer',
+    readListContainer = 'readListContainer',
+    readDetailContainer = 'readDetailContainer',
+    updateContainer = 'updateContainer',
+    deleteContainer = 'deleteContainer',
+
+}
+
 interface BaseComponentTypeMapInterface {
     [key: string]: (args: any) => JSX.Element;
 }
 
-export const baseComponentTypeMap : BaseComponentTypeMapInterface= {
+export const baseComponentTypeMap : BaseComponentTypeMapInterface = {
     booleanInput: StringInput,
     booleanArrayInput: StringInput,
     booleanOutput: StringOutput,
@@ -114,22 +136,22 @@ function getContainerComponent (
     let ContainerComponent
     switch (renderType) {
         case RenderTypeEnum.CREATE:
-            ContainerComponent = baseComponentTypeMap['createContainer']
+            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.createContainer]
             break
         case RenderTypeEnum.READ_LIST:
-            ContainerComponent = baseComponentTypeMap['readListContainer']
+            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.readListContainer]
             break
         case RenderTypeEnum.READ_DETAIL:
-            ContainerComponent = baseComponentTypeMap['readDetailContainer']
+            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.readDetailContainer]
             break
         case RenderTypeEnum.UPDATE:
-            ContainerComponent = baseComponentTypeMap['updateContainer']
+            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.updateContainer]
             break
         case RenderTypeEnum.DELETE:
-            ContainerComponent = baseComponentTypeMap['deleteContainer']
+            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.deleteContainer]
             break
         default:
-            ContainerComponent = baseComponentTypeMap['createContainer']
+            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.createContainer]
     }
     return ContainerComponent
 }
@@ -176,6 +198,7 @@ function getElementComponents (
             return (
                 <div>
                     <MappedComponent
+                        renderType={RenderTypeEnum.READ_DETAIL}
                         repositoryKey={REPOSITORY_KEY}
                         propertyKey={key}
                         initValue={initValue}
@@ -192,6 +215,7 @@ function getElementComponents (
             return (
                 <>
                     <MappedComponent
+                        renderType={RenderTypeEnum.READ_LIST}
                         repositoryKey={REPOSITORY_KEY}
                         propertyKey={key}
                         initValue={initValue}

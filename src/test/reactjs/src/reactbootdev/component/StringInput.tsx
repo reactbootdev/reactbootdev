@@ -2,8 +2,10 @@ import React from "react";
 import {NAME_DELIMITER} from "src/reactbootdev/config/config";
 import BaseRepository from "src/reactbootdev/repository/BaseRepository";
 import {useRecoilState} from "recoil";
+import {RenderTypeEnum} from "src/reactbootdev/component/BaseComponentManager";
 
 export interface StringInputProps {
+    renderType: RenderTypeEnum
     repositoryKey: string
     propertyKey: string
     initValue: string
@@ -32,6 +34,7 @@ export const StringInput = (props: StringInputProps) => {
 
     return (
         <div>
+            <div>{props.renderType}</div>
             <div>{props.initValue}</div>
             <div>{refinedRepository}</div>
             <div>{JSON.stringify(value)}</div>

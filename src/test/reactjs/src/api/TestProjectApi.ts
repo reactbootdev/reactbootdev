@@ -26,6 +26,17 @@ export class TestProjectApi extends BaseApi {
     }
 
     handleUpdate = (data: any) => {
+        alert("handleUpdate")
+        const testRes = {
+            code: 200,
+            message: "success",
+            result: {},
+        }
+        return testRes
+    }
+
+    handleDelte = (data: any) => {
+        alert("handleDelte")
         const testRes = {
             code: 200,
             message: "success",
