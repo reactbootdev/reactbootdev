@@ -18,8 +18,8 @@ export const StringOutput = (props: StringOutputProps) => {
     baseRepository.init(entityList, setEntityList)
 
     const itemId = 0
-    const testInit = baseRepository.getValuesByDelimiterKey(itemId, props.propertyKey)
-
+    // const testInit = baseRepository.getValuesByDelimiterKey(itemId, props.propertyKey)
+    const testInit = baseRepository.getValuesByDelimiterKey(itemId, refinedRepository)
 
     return (
         <div>

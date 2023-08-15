@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useRecoilState, useRecoilValue} from "recoil";
 import BaseRepository from "src/reactbootdev/repository/BaseRepository";
 import {page} from "src/reactbootdev/decorator/Page";
@@ -6,21 +6,63 @@ import {Project} from "src/entity/Project";
 import {entityRenderer, RenderTypeEnum} from "src/reactbootdev/component/BaseComponentManager";
 import {ProjectRepository} from "src/repository/ProjectRepository";
 import {ProjectApi} from "src/api/ProjectApi";
+import {TestProjectApi} from "src/api/TestProjectApi";
 
 
 
 const BasePageContent = () => {
+    const projectApi = new TestProjectApi()
 
-    const projectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey)
-    const [entityList, setEntityList] = useRecoilState(projectRepository.entityListState);
-    projectRepository.init(entityList, setEntityList);
-    const projectApi = new ProjectApi()
+    // create
+    const createProjectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey + `create`)
+    const [createEntityList, setCreateEntityList] = useRecoilState(createProjectRepository.entityListState);
+    createProjectRepository.init(createEntityList, setCreateEntityList);
+
+    // readList
+    const readListProjectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey + `readList`)
+    const [readListEntityList, setReadListEntityList] = useRecoilState(readListProjectRepository.entityListState);
+    readListProjectRepository.init(readListEntityList, setReadListEntityList);
+
+    // readDetail
+    const readDetailProjectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey + `readDetail`)
+    const [readDetailEntityList, setReadDetailEntityList] = useRecoilState(readDetailProjectRepository.entityListState);
+    readDetailProjectRepository.init(readDetailEntityList, setReadDetailEntityList);
+
+    // update
+    const updateProjectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey + `update`)
+    const [updateEntityList, setUpdateEntityList] = useRecoilState(updateProjectRepository.entityListState);
+    updateProjectRepository.init(updateEntityList, setUpdateEntityList);
+
+    // delete
+    const deleteProjectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey + `delete`)
+    const [deleteEntityList, setDeleteEntityList] = useRecoilState(deleteProjectRepository.entityListState);
+    deleteProjectRepository.init(deleteEntityList, setDeleteEntityList);
+
+    // set readDetailProjectRepository by projectApi
+    useEffect(() => {
+        // readList
+        const readListRes = projectApi.handleReadList(undefined)
+        const resData = readListRes.result.data as Project[]
+        readListProjectRepository.addEntities(resData)
+
+        // readDetail
+        const readDetailRes = projectApi.handleReadDetail(undefined)
+        const readDetailResData = readDetailRes.result.data as Project
+        readDetailProjectRepository.addEntity(readDetailResData)
+
+        // update
+        const updateRes = projectApi.handleReadDetail(undefined)
+        const updateResData = updateRes.result.data as Project
+        updateProjectRepository.addEntity(updateResData)
+
+    }, [])
+
 
     // TODO :: api에 의한 repo update는 두 곳에서. `page`랑 `component`
 
     const createEntity = entityRenderer(
         Project,
-        projectRepository,
+        createProjectRepository,
         projectApi,
         RenderTypeEnum.CREATE,
         {},
@@ -28,7 +70,7 @@ const BasePageContent = () => {
 
     const readListEntity = entityRenderer(
         Project,
-        projectRepository,
+        readListProjectRepository,
         projectApi,
         RenderTypeEnum.READ_LIST,
         {},
@@ -36,7 +78,7 @@ const BasePageContent = () => {
 
     const readDetailEntity = entityRenderer(
         Project,
-        projectRepository,
+        readDetailProjectRepository,
         projectApi,
         RenderTypeEnum.READ_DETAIL,
         {},
@@ -44,7 +86,7 @@ const BasePageContent = () => {
 
     const updateEntity = entityRenderer(
         Project,
-        projectRepository,
+        updateProjectRepository,
         projectApi,
         RenderTypeEnum.UPDATE,
         {},
@@ -52,7 +94,7 @@ const BasePageContent = () => {
 
     const deleteEntity = entityRenderer(
         Project,
-        projectRepository,
+        deleteProjectRepository,
         projectApi,
         RenderTypeEnum.DELETE,
         {},
@@ -111,7 +153,7 @@ const BasePageContent = () => {
             <div>--- --- ---</div>
 
 
-            <div>{JSON.stringify(entityList)}</div>
+            <div>{JSON.stringify(readListEntityList)}</div>
             {/*<button onClick={addDate}>aadd</button>*/}
         </div>
     );

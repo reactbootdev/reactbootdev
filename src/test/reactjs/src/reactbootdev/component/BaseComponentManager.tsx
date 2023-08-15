@@ -97,6 +97,7 @@ export function entityRenderer (
             <ContainerComponent
                 repositoryKey={REPOSITORY_KEY}
             >
+                {JSON.stringify(repository.entityList)}
                 {ElementComponents}
             </ContainerComponent>
         </>

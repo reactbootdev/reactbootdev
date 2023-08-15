@@ -46,6 +46,7 @@ export class TestProjectApi extends BaseApi {
                         description: "test1",
                         startDate: "2021-01-01",
                         endDate: "2021-01-01",
+                        testcol1a: "testcol1axxx",
                     },
                     {
                         id: 2,
@@ -53,6 +54,7 @@ export class TestProjectApi extends BaseApi {
                         description: "test2",
                         startDate: "2021-01-01",
                         endDate: "2021-01-01",
+                        testcol1a: "testcol2axxx",
                     },
                 ],
                 pagination: {
@@ -85,6 +87,7 @@ export class TestProjectApi extends BaseApi {
                     description: "test1",
                     startDate: "2021-01-01",
                     endDate: "2021-01-01",
+                    testcol1a: "xxxxx1",
                 },
                 search: {
                     name: "test1",

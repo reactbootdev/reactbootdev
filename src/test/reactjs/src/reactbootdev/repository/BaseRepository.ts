@@ -48,6 +48,8 @@ export default class BaseRepository<T extends BaseEntity> {
     };
 
     getValuesByDelimiterKey = (itemId: number, multiKeys: string) => {
+        console.log(`this.entityList, itemId, multiKeys`, this.entityList, itemId, multiKeys)
+
         return getByDelimiterKey(this.entityList, itemId, multiKeys);
     }
 
