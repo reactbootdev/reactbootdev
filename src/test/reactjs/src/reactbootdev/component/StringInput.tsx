@@ -35,6 +35,7 @@ export const StringInput = (props: StringInputProps) => {
 
     return (
         <div>
+            String input
             <div>{props.renderType}</div>
             <div>{props.initValue}</div>
             <div>{refinedRepository}</div>

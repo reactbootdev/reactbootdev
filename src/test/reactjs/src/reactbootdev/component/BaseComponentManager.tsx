@@ -1,7 +1,7 @@
 import React from 'react';
 import {entityBeans, entityImportMap} from "src/reactbootdev/data/EntityBean";
 import {NAME_DELIMITER} from "src/reactbootdev/config/config";
-import {ClassType, ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
+import {ClassType, ObjectType, ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
 import {CreateContainer} from "src/reactbootdev/component/CreateContainer";
 import {StringInput} from "src/reactbootdev/component/StringInput";
 import BaseRepository from "src/reactbootdev/repository/BaseRepository";
@@ -17,6 +17,9 @@ export class ComponentManager {
     numberOutput = StringOutput
     stringInput = StringInput
     stringOutput = StringOutput
+    enumInput = StringInput
+    enumOutput = StringOutput
+
     container = CreateContainer
 
     customMap = new Map<string, JSX.Element>
@@ -59,6 +62,57 @@ export function entityRenderer (
     )
 }
 
+
+function getElementComponents (
+    entity: unknown,
+    repository: RepositoryType<EntityType<any>>,
+    api: ApiType,
+    renderType: RenderTypeEnum,
+    refiner: any
+) {
+    let bean;
+    let entityName;
+    Object.entries(entityImportMap).find(([key, value]) => {
+        if (value === entity) {
+            const fileName = key.split(NAME_DELIMITER).shift();
+            entityName = key.split(NAME_DELIMITER).pop();
+            if (fileName === undefined || entityName === undefined) {
+                return
+            }
+            bean = entityBeans[fileName].objects[entityName];
+        }
+    })
+
+    if (bean === undefined || entityName === undefined) {
+        throw new Error(`getGeneratedForm :: entity is not found in entityBeans. entity: ${entityName}`)
+    }
+
+    const flattedObject = flattenObject(bean, entityName);
+
+    let generatedForm = Object.entries(flattedObject).map(([key, type]) => {
+        const MappedComponent = getMappedComponent(renderType, type)
+        const initValue = ``
+
+        return (
+            <>
+                <MappedComponent
+                    repositoryKey={repository.repositoryKey}
+                    renderType={renderType}
+                    propertyKey={key}
+                    propertyType={type}
+                    initValue={initValue}
+                />
+            </>
+        )
+    })
+
+    return (
+        <>
+            {generatedForm}
+        </>
+    )
+}
+
 function getContainerComponent (
     entity: unknown,
     repository: RepositoryType<EntityType<any>>,
@@ -90,22 +144,41 @@ function getContainerComponent (
     return ContainerComponent
 }
 
-function getMappedComponent (renderType: RenderTypeEnum, type: string, isOutput: boolean) {
+function getMappedComponent (renderType: RenderTypeEnum, type: string) {
+    let isOutput
+    switch (renderType) {
+        case RenderTypeEnum.CREATE:
+        case RenderTypeEnum.UPDATE:
+        case RenderTypeEnum.DELETE:
+            isOutput = false
+            break
+        case RenderTypeEnum.READ_DETAIL:
+        case RenderTypeEnum.READ_LIST:
+            isOutput = true
+            break
+        default:
+            isOutput = true
+    }
+
     let componentManager = new ComponentManager()
     let MappedComponent;
     if (isOutput) {
         switch (type) {
             case 'string':
-            case 'stringArray':
+            case `string${ARRAY_TYPE_TEXT}`:
                 MappedComponent = componentManager.stringOutput
                 break
             case 'number':
-            case 'numberArray':
+            case `number${ARRAY_TYPE_TEXT}`:
                 MappedComponent = componentManager.numberOutput
                 break
             case 'boolean':
-            case 'booleanArray':
+            case `boolean${ARRAY_TYPE_TEXT}`:
                 MappedComponent = componentManager.booleanOutput
+                break
+            case 'enum':
+            case `enum${ARRAY_TYPE_TEXT}`:
+                MappedComponent = componentManager.enumOutput
                 break
             default:
                 MappedComponent = componentManager.stringOutput
@@ -113,16 +186,20 @@ function getMappedComponent (renderType: RenderTypeEnum, type: string, isOutput:
     } else {
         switch (type) {
             case 'string':
-            case 'stringArray':
+            case `string${ARRAY_TYPE_TEXT}`:
                 MappedComponent = componentManager.stringInput
                 break
             case 'number':
-            case 'numberArray':
+            case `number${ARRAY_TYPE_TEXT}`:
                 MappedComponent = componentManager.numberInput
                 break
             case 'boolean':
-            case 'booleanArray':
+            case `boolean${ARRAY_TYPE_TEXT}`:
                 MappedComponent = componentManager.booleanInput
+                break
+            case 'enum':
+            case `enum${ARRAY_TYPE_TEXT}`:
+                MappedComponent = componentManager.enumInput
                 break
             default:
                 MappedComponent = componentManager.stringInput
@@ -131,70 +208,26 @@ function getMappedComponent (renderType: RenderTypeEnum, type: string, isOutput:
     return MappedComponent
 }
 
-function getElementComponents (
-    entity: unknown,
-    repository: RepositoryType<EntityType<any>>,
-    api: ApiType,
-    renderType: RenderTypeEnum,
-    refiner: any
-) {
-    let bean;
-    let entityName;
-    Object.entries(entityImportMap).find(([key, value]) => {
-        if (value === entity) {
-            const fileName = key.split(NAME_DELIMITER).shift();
-            entityName = key.split(NAME_DELIMITER).pop();
-            if (fileName === undefined || entityName === undefined) {
-                return
-            }
-            bean = entityBeans[fileName].objects[entityName];
-        }
-    })
-
-    if (bean === undefined || entityName === undefined) {
-        throw new Error(`getGeneratedForm :: entity is not found in entityBeans. entity: ${entityName}`)
-    }
-
-    const flattedObject = flattenObject(bean, entityName);
-
-    let generatedForm = Object.entries(flattedObject).map(([key, type]) => {
-        const MappedComponent = getMappedComponent(renderType, type, true)
-        const initValue = ``
-
-        return (
-            <>
-                <MappedComponent
-                    repositoryKey={repository.repositoryKey}
-                    renderType={renderType}
-                    propertyKey={key}
-                    propertyType={type}
-                    initValue={initValue}
-                />
-            </>
-        )
-    })
-
-    return (
-        <>
-            {generatedForm}
-        </>
-    )
-}
-
 function isPrimtiveType (type: string) {
     return type === 'string' || type === 'number' || type === 'boolean'
 }
 
-export const IS_ARRAY_TYPE_TEXT = 'Array'
+export const ARRAY_TYPE_TEXT = 'Array'
 
-function flattenObject(obj: ClassType, objName: string) {
+function flattenObject(obj: ObjectType, objName: string) {
     const flattened : Record<string, string> = {}
 
     Object.entries(obj.data).map(([propertyName, propertyInfo]) => {
         const flattenedKey = `${objName}${NAME_DELIMITER}${propertyName}`
         if (isPrimtiveType(propertyInfo.type)) {
             const flattenedType = propertyInfo.type
-            const flattenedArrayType = propertyInfo.isArray ? IS_ARRAY_TYPE_TEXT : ''
+            const flattenedArrayType = propertyInfo.isArray ? ARRAY_TYPE_TEXT : ''
+            flattened[flattenedKey] = `${flattenedType}${flattenedArrayType}`
+        } else if (
+            obj.type === ObjectTypeEnum.ENUM
+        ) {
+            const flattenedType = `enum`
+            const flattenedArrayType = propertyInfo.isArray ? ARRAY_TYPE_TEXT : ''
             flattened[flattenedKey] = `${flattenedType}${flattenedArrayType}`
         } else if (
             propertyInfo.isTypeReferenceNode

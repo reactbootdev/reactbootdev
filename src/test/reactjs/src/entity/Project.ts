@@ -35,8 +35,15 @@ export class Project extends BaseEntity {
     testcol2a?: string
     testcol3a?: boolean
     testcol4a?: number
+    testcol5a?: TestEnum
+    testcol6a?: TestEnum[]
 
     subProject?: SubProject
 
 }
 
+export enum TestEnum {
+    test1 = "test1",
+    test2 = "test2",
+    test3 = "test3",
+}
