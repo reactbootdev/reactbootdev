@@ -8,6 +8,7 @@ export interface StringInputProps {
     renderType: RenderTypeEnum
     repositoryKey: string
     propertyKey: string
+    propertyType: string
     initValue: string
 }
 

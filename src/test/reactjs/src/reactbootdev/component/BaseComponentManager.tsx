@@ -10,56 +10,17 @@ import {BaseApi} from "src/reactbootdev/api/BaseApi";
 import {StringOutput} from "src/reactbootdev/component/StringOutput";
 
 
-export enum BaseComponentTypeMapKeyEnum {
-    booleanInput = 'booleanInput',
-    booleanArrayInput = 'booleanArrayInput',
-    booleanOutput = 'booleanOutput',
-    booleanArrayOutput = 'booleanArrayOutput',
-    numberInput = 'numberInput',
-    numberArrayInput = 'numberArrayInput',
-    numberOutput = 'numberOutput',
-    numberArrayOutput = 'numberArrayOutput',
-    stringInput = 'stringInput',
-    stringArrayInput = 'stringArrayInput',
-    stringOutput = 'stringOutput',
-    stringArrayOutput = 'stringArrayOutput',
+export class ComponentManager {
+    booleanInput = StringInput
+    booleanOutput = StringOutput
+    numberInput = StringInput
+    numberOutput = StringOutput
+    stringInput = StringInput
+    stringOutput = StringOutput
+    container = CreateContainer
 
-    createContainer = 'createContainer',
-    readListContainer = 'readListContainer',
-    readDetailContainer = 'readDetailContainer',
-    updateContainer = 'updateContainer',
-    deleteContainer = 'deleteContainer',
-
+    customMap = new Map<string, JSX.Element>
 }
-
-interface BaseComponentTypeMapInterface {
-    [key: string]: (args: any) => JSX.Element;
-}
-
-export const baseComponentTypeMap : BaseComponentTypeMapInterface = {
-    booleanInput: StringInput,
-    booleanArrayInput: StringInput,
-    booleanOutput: StringOutput,
-    booleanArrayOutput: StringOutput,
-    numberInput: StringInput,
-    numberArrayInput: StringInput,
-    numberOutput: StringOutput,
-    numberArrayOutput: StringOutput,
-    stringInput: StringInput,
-    stringArrayInput: StringInput,
-    stringOutput: StringOutput,
-    stringArrayOutput: StringOutput,
-
-    createContainer: CreateContainer,
-    readListContainer: CreateContainer,
-    readDetailContainer: CreateContainer,
-    updateContainer: CreateContainer,
-    deleteContainer: CreateContainer,
-}
-
-
-export const IS_ARRAY_TYPE_TEXT = 'Array'
-
 
 export enum RenderTypeEnum {
     CREATE = 'CREATE',
@@ -71,16 +32,7 @@ export enum RenderTypeEnum {
 }
 
 export type EntityType<T> = T extends BaseEntity ? T : never;
-
 export type RepositoryType<T extends BaseEntity> = T extends BaseRepository<infer EntityType> ? BaseRepository<EntityType> : never;
-// export type RepositoryType = BaseRepositoryType<EntityType>
-
-// export type BaseEntityType<T> = T extends BaseEntity ? T : never;
-// export type EntityType = BaseEntityType<BaseEntity>
-//
-// export type BaseRepositoryType<T extends BaseEntity> = T extends BaseRepository<infer BaseEntityType> ? BaseRepository<BaseEntityType> : never;
-// export type RepositoryType = BaseRepositoryType<EntityType>
-
 export type BaseApiType<T> = T extends BaseApi ? T : never;
 export type ApiType = BaseApiType<BaseApi>
 
@@ -89,35 +41,16 @@ export function entityRenderer (
     repository: RepositoryType<EntityType<any>>,
     api: ApiType,
     renderType: RenderTypeEnum,
-    refiner: BaseComponentTypeMapInterface
+    refiner: any
 ) : JSX.Element {
 
-    // TODO :: entityBean. repository 둘 다 평문화 시켜서 렌더링 하는 수외에는 없다고 봐.
-    // 각 key랑, [type, value] 에 따라 component mapping
-    // delimiter `////`
-    // 데이터 정제 및 custom component render용 callback 함수 인자
-    // 우선 CREATE 부터.
-    // isAppend option
-    // repository 부터 recoil
-    // https://rjsf-team.github.io/react-jsonschema-form/
-
-    // TODO :: render 연결 방법.. 문제는 여러 개 복합 칼럼 일 때. > 같은 name인 것들을 전부 해당 renderer로 전송?
-    // class 정의 시. @outer("name")
-    // class properties > @out("name")
-    // class 정의 시. @inner("name")
-    // class properties > @in("name")
-
-    // 문제는 반환된 state-repository mapping. react hook form?
-    // inner component에 update callback 세팅?
-
-    const REPOSITORY_KEY = repository.repositoryKey
     const ElementComponents = getElementComponents(entity, repository, api, renderType, refiner)
     const ContainerComponent = getContainerComponent(entity, repository, api, renderType, refiner)
 
     return (
         <>
             <ContainerComponent
-                repositoryKey={REPOSITORY_KEY}
+                repositoryKey={repository.repositoryKey}
             >
                 {JSON.stringify(repository.entityList)}
                 {ElementComponents}
@@ -131,29 +64,71 @@ function getContainerComponent (
     repository: RepositoryType<EntityType<any>>,
     api: ApiType,
     renderType: RenderTypeEnum,
-    refiner: BaseComponentTypeMapInterface
+    refiner: any
 ) {
+    const componentManager = new ComponentManager()
     let ContainerComponent
     switch (renderType) {
         case RenderTypeEnum.CREATE:
-            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.createContainer]
+            ContainerComponent = componentManager.container
             break
         case RenderTypeEnum.READ_LIST:
-            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.readListContainer]
+            ContainerComponent = componentManager.container
             break
         case RenderTypeEnum.READ_DETAIL:
-            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.readDetailContainer]
+            ContainerComponent = componentManager.container
             break
         case RenderTypeEnum.UPDATE:
-            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.updateContainer]
+            ContainerComponent = componentManager.container
             break
         case RenderTypeEnum.DELETE:
-            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.deleteContainer]
+            ContainerComponent = componentManager.container
             break
         default:
-            ContainerComponent = baseComponentTypeMap[BaseComponentTypeMapKeyEnum.createContainer]
+            ContainerComponent = componentManager.container
     }
     return ContainerComponent
+}
+
+function getMappedComponent (renderType: RenderTypeEnum, type: string, isOutput: boolean) {
+    let componentManager = new ComponentManager()
+    let MappedComponent;
+    if (isOutput) {
+        switch (type) {
+            case 'string':
+            case 'stringArray':
+                MappedComponent = componentManager.stringOutput
+                break
+            case 'number':
+            case 'numberArray':
+                MappedComponent = componentManager.numberOutput
+                break
+            case 'boolean':
+            case 'booleanArray':
+                MappedComponent = componentManager.booleanOutput
+                break
+            default:
+                MappedComponent = componentManager.stringOutput
+        }
+    } else {
+        switch (type) {
+            case 'string':
+            case 'stringArray':
+                MappedComponent = componentManager.stringInput
+                break
+            case 'number':
+            case 'numberArray':
+                MappedComponent = componentManager.numberInput
+                break
+            case 'boolean':
+            case 'booleanArray':
+                MappedComponent = componentManager.booleanInput
+                break
+            default:
+                MappedComponent = componentManager.stringInput
+        }
+    }
+    return MappedComponent
 }
 
 function getElementComponents (
@@ -161,10 +136,8 @@ function getElementComponents (
     repository: RepositoryType<EntityType<any>>,
     api: ApiType,
     renderType: RenderTypeEnum,
-    refiner: BaseComponentTypeMapInterface
+    refiner: any
 ) {
-    const REPOSITORY_KEY = repository.repositoryKey
-
     let bean;
     let entityName;
     Object.entries(entityImportMap).find(([key, value]) => {
@@ -184,94 +157,22 @@ function getElementComponents (
 
     const flattedObject = flattenObject(bean, entityName);
 
-    // TODO :: C, R, U, D 는 각각 Repository 특정 IDX에 종속. 그러나, R > `List`은 특정 IDX에 종속되지 않는다.
-    // TODO :: renderer 인자값 설정. 고려. groupName도.
-    // TODO :: Test API Mockup 작성 및 프로토타입 renderer 전체적인 흐름 연동.
+    let generatedForm = Object.entries(flattedObject).map(([key, type]) => {
+        const MappedComponent = getMappedComponent(renderType, type, true)
+        const initValue = ``
 
-    let generatedForm
-    if (renderType === RenderTypeEnum.READ_DETAIL) {
-        generatedForm = Object.entries(flattedObject).map(([key, type]) => {
-            const compKey = `${type}Output`
-            const MappedComponent = baseComponentTypeMap[compKey]
-            const initValue = ``
-
-            return (
-                <div>
-                    <MappedComponent
-                        renderType={RenderTypeEnum.READ_DETAIL}
-                        repositoryKey={REPOSITORY_KEY}
-                        propertyKey={key}
-                        initValue={initValue}
-                    />
-                </div>
-            )
-        })
-    } else if (renderType === RenderTypeEnum.READ_LIST) {
-        generatedForm = Object.entries(flattedObject).map(([key, type]) => {
-            const compKey = `${type}Output`
-            const MappedComponent = baseComponentTypeMap[compKey]
-            const initValue = ``
-
-            return (
-                <>
-                    <MappedComponent
-                        renderType={RenderTypeEnum.READ_LIST}
-                        repositoryKey={REPOSITORY_KEY}
-                        propertyKey={key}
-                        initValue={initValue}
-                    />
-                </>
-            )
-        })
-    } else if (renderType === RenderTypeEnum.CREATE) {
-        generatedForm = Object.entries(flattedObject).map(([key, type]) => {
-            const compKey = `${type}Input`
-            const MappedComponent = baseComponentTypeMap[compKey]
-            const initValue = ``
-
-            return (
-                <div>
-                    <MappedComponent
-                        repositoryKey={REPOSITORY_KEY}
-                        propertyKey={key}
-                        initValue={initValue}
-                    />
-                </div>
-            )
-        })
-    } else if (renderType === RenderTypeEnum.UPDATE) {
-        generatedForm = Object.entries(flattedObject).map(([key, type]) => {
-            const compKey = `${type}Input`
-            const MappedComponent = baseComponentTypeMap[compKey]
-            const initValue = ``
-
-            return (
-                <div>
-                    <MappedComponent
-                        repositoryKey={REPOSITORY_KEY}
-                        propertyKey={key}
-                        initValue={initValue}
-                    />
-                </div>
-            )
-        })
-    } else if (renderType === RenderTypeEnum.DELETE) {
-        generatedForm = Object.entries(flattedObject).map(([key, type]) => {
-            const compKey = `${type}Input`
-            const MappedComponent = baseComponentTypeMap[compKey]
-            const initValue = ``
-
-            return (
-                <div>
-                    <MappedComponent
-                        repositoryKey={REPOSITORY_KEY}
-                        propertyKey={key}
-                        initValue={initValue}
-                    />
-                </div>
-            )
-        })
-    }
+        return (
+            <>
+                <MappedComponent
+                    repositoryKey={repository.repositoryKey}
+                    renderType={renderType}
+                    propertyKey={key}
+                    propertyType={type}
+                    initValue={initValue}
+                />
+            </>
+        )
+    })
 
     return (
         <>
@@ -280,10 +181,11 @@ function getElementComponents (
     )
 }
 
-
 function isPrimtiveType (type: string) {
     return type === 'string' || type === 'number' || type === 'boolean'
 }
+
+export const IS_ARRAY_TYPE_TEXT = 'Array'
 
 function flattenObject(obj: ClassType, objName: string) {
     const flattened : Record<string, string> = {}
