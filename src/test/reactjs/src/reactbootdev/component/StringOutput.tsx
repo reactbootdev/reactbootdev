@@ -5,9 +5,11 @@ import {useRecoilState} from "recoil";
 import {RenderTypeEnum} from "src/reactbootdev/component/BaseComponentManager";
 
 export interface StringOutputProps {
+    itemId: number
     renderType: RenderTypeEnum
     repositoryKey: string
     propertyKey: string
+    propertyType: string
     initValue: string
 }
 
@@ -19,7 +21,7 @@ export const StringOutput = (props: StringOutputProps) => {
     const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
     baseRepository.init(entityList, setEntityList)
 
-    const itemId = 0
+    const itemId = props.itemId
     // const testInit = baseRepository.getValuesByDelimiterKey(itemId, props.propertyKey)
     const testInit = baseRepository.getValuesByDelimiterKey(itemId, refinedRepository)
 

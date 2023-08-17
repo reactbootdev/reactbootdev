@@ -38,13 +38,15 @@ export type EntityType<T> = T extends BaseEntity ? T : never;
 export type RepositoryType<T extends BaseEntity> = T extends BaseRepository<infer EntityType> ? BaseRepository<EntityType> : never;
 export type BaseApiType<T> = T extends BaseApi ? T : never;
 export type ApiType = BaseApiType<BaseApi>
-
+export type RefinerType = {
+    itemId?: number
+}
 export function entityRenderer (
     entity: unknown,
     repository: RepositoryType<EntityType<any>>,
     api: ApiType,
     renderType: RenderTypeEnum,
-    refiner: any
+    refiner: RefinerType = {}
 ) : JSX.Element {
 
     const ElementComponents = getElementComponents(entity, repository, api, renderType, refiner)
@@ -68,7 +70,7 @@ function getElementComponents (
     repository: RepositoryType<EntityType<any>>,
     api: ApiType,
     renderType: RenderTypeEnum,
-    refiner: any
+    refiner: RefinerType
 ) {
     let bean;
     let entityName;
@@ -88,37 +90,57 @@ function getElementComponents (
     }
 
     const flattedObject = flattenObject(bean, entityName);
+    let generatedForms
+    if (refiner.itemId !== undefined) {
+        generatedForms = getGeneratedForm(flattedObject, refiner.itemId, entity, repository, api, renderType, refiner)
+        return (
+            <>
+                {generatedForms}
+            </>
+        )
+    }
 
+    generatedForms = repository.entityList.map((entity: any, index: number) => {
+        return getGeneratedForm(flattedObject, index, entity, repository, api, renderType, refiner)
+    })
+
+    return (
+        <>
+            {generatedForms}
+        </>
+    )
+}
+
+function getGeneratedForm(
+    flattedObject: Record<string, string>,
+    itemId: number, entity: unknown, repository: RepositoryType<EntityType<any>>, api: ApiType, renderType: RenderTypeEnum, refiner: RefinerType
+) {
     let generatedForm = Object.entries(flattedObject).map(([key, type]) => {
         const MappedComponent = getMappedComponent(renderType, type)
         const initValue = ``
 
         return (
-            <>
-                <MappedComponent
-                    repositoryKey={repository.repositoryKey}
-                    renderType={renderType}
-                    propertyKey={key}
-                    propertyType={type}
-                    initValue={initValue}
-                />
-            </>
+            <MappedComponent
+                key={refiner.itemId}
+                itemId={refiner.itemId as number}
+                repositoryKey={repository.repositoryKey}
+                renderType={renderType}
+                propertyKey={key}
+                propertyType={type}
+                initValue={initValue}
+            />
         )
     })
-
-    return (
-        <>
-            {generatedForm}
-        </>
-    )
+    return generatedForm
 }
+
 
 function getContainerComponent (
     entity: unknown,
     repository: RepositoryType<EntityType<any>>,
     api: ApiType,
     renderType: RenderTypeEnum,
-    refiner: any
+    refiner: RefinerType
 ) {
     const componentManager = new ComponentManager()
     let ContainerComponent

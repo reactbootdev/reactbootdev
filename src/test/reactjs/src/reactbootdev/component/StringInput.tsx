@@ -3,8 +3,10 @@ import {NAME_DELIMITER} from "src/reactbootdev/config/config";
 import BaseRepository from "src/reactbootdev/repository/BaseRepository";
 import {useRecoilState} from "recoil";
 import {RenderTypeEnum} from "src/reactbootdev/component/BaseComponentManager";
+import {TextField} from "@mui/material";
 
 export interface StringInputProps {
+    itemId: number
     renderType: RenderTypeEnum
     repositoryKey: string
     propertyKey: string
@@ -26,8 +28,7 @@ export const StringInput = (props: StringInputProps) => {
         setInputValue(value)
     }
 
-
-    const itemId = 0
+    const itemId = props.itemId
     // testInit as string
 
     const value = baseRepository.getValuesByDelimiterKey(itemId, props.propertyKey) ?? ""
@@ -35,19 +36,19 @@ export const StringInput = (props: StringInputProps) => {
 
     return (
         <div>
-            String input
             <div>{props.renderType}</div>
             <div>{props.initValue}</div>
             <div>{refinedRepository}</div>
             <div>{JSON.stringify(value)}</div>
             <div>{JSON.stringify(baseRepository.entityList)}</div>
-            <input
-                type="text"
+            <TextField
+                id="outlined-basic" label="Outlined" variant="outlined"
                 value={refinedValue}
                 onChange={(e) => {
                     baseRepository.updateEntityByDelimiterKey(0, e.target.value, props.propertyKey)
                     // setInputValue(e.target.value);
-                }}/>
+                }}
+            />
             {/*adwf : {props.testValue}*/}
         </div>
     )

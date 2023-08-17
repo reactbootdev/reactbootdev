@@ -65,15 +65,16 @@ const BasePageContent = () => {
         createProjectRepository,
         projectApi,
         RenderTypeEnum.CREATE,
-        {},
+        {
+            itemId: 0,
+        },
     )
 
     const readListEntity = entityRenderer(
         Project,
         readListProjectRepository,
         projectApi,
-        RenderTypeEnum.READ_LIST,
-        {},
+        RenderTypeEnum.READ_LIST
     )
 
     const readDetailEntity = entityRenderer(
@@ -81,7 +82,9 @@ const BasePageContent = () => {
         readDetailProjectRepository,
         projectApi,
         RenderTypeEnum.READ_DETAIL,
-        {},
+        {
+            itemId: 0,
+        },
     )
 
     const updateEntity = entityRenderer(
@@ -89,7 +92,9 @@ const BasePageContent = () => {
         updateProjectRepository,
         projectApi,
         RenderTypeEnum.UPDATE,
-        {},
+        {
+            itemId: 0,
+        },
     )
 
     const deleteEntity = entityRenderer(
@@ -97,7 +102,9 @@ const BasePageContent = () => {
         deleteProjectRepository,
         projectApi,
         RenderTypeEnum.DELETE,
-        {},
+        {
+            itemId: 0,
+        },
     )
 
     // TODO :: 아래와 같은 형태로 변환예정. 변수는 상속관계.

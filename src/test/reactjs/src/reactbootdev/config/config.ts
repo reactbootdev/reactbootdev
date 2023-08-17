@@ -1,1 +1,1 @@
-export const NAME_DELIMITER = '////';
+export const NAME_DELIMITER = '//';
