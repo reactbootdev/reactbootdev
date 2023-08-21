@@ -29,7 +29,6 @@ export const StringInput = (props: StringInputProps) => {
     }
 
     const itemId = props.itemId
-    // testInit as string
 
     const value = baseRepository.getValuesByDelimiterKey(itemId, props.propertyKey) ?? ""
     const refinedValue = String(value)

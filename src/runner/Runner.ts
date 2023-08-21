@@ -85,7 +85,17 @@ export function runner(args: string[]){
 
     program.getSourceFiles().forEach(sourceFile => {
     // sourceFileNames.forEach(sourceFile => {
-    //     console.log(sourceFile.fileName)
+
+        const ignoreSubString = [`node_modules`]
+        const isIgnoreFile = ignoreSubString.some((subString) => {
+            return sourceFile.fileName.includes(subString)
+        })
+
+        if (isIgnoreFile) {
+            return
+        }
+
+        console.log(`sourceFile: ${sourceFile.fileName}`)
         decoratorTasks.forEach((decoratorTask) => {
             commonDecoratorPreTask(sourceFile, program, checker, decoratorTask)
         })

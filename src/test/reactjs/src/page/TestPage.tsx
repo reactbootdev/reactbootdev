@@ -36,21 +36,10 @@ const ReadListComponent = () => {
         RenderTypeEnum.READ_LIST
     )
 
-
     return (
-        <div>
-            <div>
-                defaultRepositoryKey : {BaseRepository.defaultRepositoryKey}
-            </div>
-
-            <div>--- --- ---</div>
-            <div>{readListEntity}</div>
-            <div>--- --- ---</div>
-
-
-            <div>{JSON.stringify(readListEntityList)}</div>
-            {/*<button onClick={addDate}>aadd</button>*/}
-        </div>
+        <>
+            {readListEntity}
+        </>
     );
 
 }
@@ -84,18 +73,9 @@ const ReadDetailComponent = () => {
     )
 
     return (
-        <div>
-            <div>
-                defaultRepositoryKey : {BaseRepository.defaultRepositoryKey}
-            </div>
-
-            <div>--- --- ---</div>
-            <div>{readDetailEntity}</div>
-            <div>--- --- ---</div>
-
-
-            <div>{JSON.stringify(readDetailEntityList)}</div>
-        </div>
+        <>
+            {readDetailEntity}
+        </>
     );
 
 }
@@ -129,18 +109,9 @@ const UpdateComponent = () => {
     )
 
     return (
-        <div>
-            <div>
-                defaultRepositoryKey : {BaseRepository.defaultRepositoryKey}
-            </div>
-
-            <div>--- --- ---</div>
-            <div>{updateEntity}</div>
-            <div>--- --- ---</div>
-
-            <div>{JSON.stringify(updateEntityList)}</div>
-            {/*<button onClick={addDate}>aadd</button>*/}
-        </div>
+        <>
+            {updateEntity}
+        </>
     );
 
 }
@@ -166,19 +137,9 @@ const DeleteComponent = () => {
     )
 
     return (
-        <div>
-            <div>
-                defaultRepositoryKey : {BaseRepository.defaultRepositoryKey}
-            </div>
-
-            <div>--- --- ---</div>
-            <div>{deleteEntity}</div>
-            <div>--- --- ---</div>
-
-
-            <div>{JSON.stringify(deleteEntityList)}</div>
-            {/*<button onClick={addDate}>aadd</button>*/}
-        </div>
+        <>
+            {deleteEntity}
+        </>
     );
 }
 
@@ -202,19 +163,9 @@ const CreateComponent = () => {
     )
 
     return (
-        <div>
-            <div>
-                defaultRepositoryKey : {BaseRepository.defaultRepositoryKey}
-            </div>
-
-            <div>--- --- ---</div>
-            <div>{createEntity}</div>
-            <div>--- --- ---</div>
-
-
-            <div>{JSON.stringify(createEntityList)}</div>
-            {/*<button onClick={addDate}>aadd</button>*/}
-        </div>
+        <>
+            {createEntity}
+        </>
     );
 
 };

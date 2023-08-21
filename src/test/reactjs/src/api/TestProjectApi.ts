@@ -1,5 +1,4 @@
 import {BASE_URL, BaseApi} from "src/reactbootdev/api/BaseApi";
-import axios from "axios";
 
 
 export class TestProjectApi extends BaseApi {
