@@ -25,7 +25,7 @@ export const StringOutput = (props: StringOutputProps) => {
     const itemId = props.itemId
     // remove first element and join again
     const refinedRepository = props.propertyKey.split(NAME_DELIMITER).slice(1).join(NAME_DELIMITER)
-    const outputValue = baseRepository.getValuesByDelimiterKey(itemId, refinedRepository) as StringOutputValueType
+    const outputValue = baseRepository.getValueByDelimiterKey(itemId, refinedRepository) as StringOutputValueType
     const valueComponent = Array.isArray(outputValue) ? outputValue.join(", ") : outputValue
 
     const renderType = props.renderType

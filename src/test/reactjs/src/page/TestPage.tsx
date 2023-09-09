@@ -22,9 +22,11 @@ const ReadListComponent = () => {
 
     // set readDetailProjectRepository by projectApi
     useEffect(() => {
+        console.log(`ReadListComponent.useEffect`)
         // readList
         const readListRes = projectApi.handleReadList(undefined)
         const resData = readListRes.result.data as Project[]
+        readListProjectRepository.truncate() // TODO :: ??
         readListProjectRepository.addEntities(resData)
 
     }, [])

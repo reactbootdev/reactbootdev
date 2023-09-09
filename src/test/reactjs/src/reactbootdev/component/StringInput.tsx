@@ -30,7 +30,7 @@ export const StringInput = (props: StringInputProps) => {
 
     const itemId = props.itemId
 
-    const value = baseRepository.getValuesByDelimiterKey(itemId, props.propertyKey) ?? ""
+    const value = baseRepository.getValueByDelimiterKey(itemId, props.propertyKey) ?? ""
     const refinedValue = String(value)
 
     return (
