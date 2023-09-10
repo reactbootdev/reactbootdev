@@ -65,6 +65,20 @@ export class TestProjectApi extends BaseApi {
                         startDate: "2021-01-01",
                         endDate: "2021-01-01",
                         testcol1a: "testcol2axxx",
+                        subProject: {
+                            id: 1,
+                            name: "subProject1",
+                            description: "subProject1",
+                        },
+                        subProject2: [{
+                            id: 1,
+                            name: "subProject1",
+                            description: "subProject1",
+                        }, {
+                            id: 2,
+                            name: "subProject1",
+                            description: "subProject1",
+                        }]
                     },
                 ],
                 pagination: {

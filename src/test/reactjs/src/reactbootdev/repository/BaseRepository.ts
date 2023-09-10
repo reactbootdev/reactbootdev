@@ -9,6 +9,7 @@ import {
     updateByDelimiterKey,
     updateItem
 } from "@src/reactbootdev/util/RepositoryUtil";
+import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
 
 
 export default class BaseRepository<T extends BaseEntity> {
@@ -88,7 +89,8 @@ export default class BaseRepository<T extends BaseEntity> {
         return result;
     }
     getEntitiKey = () => {
-        return getEntitiKeyByType(this.entityClass) as T
+        const result = getEntitiKeyByType(this.entityClass) as T
+        return result
     }
 
     constructor(entityClass: new () => T, repositoryKey: string = uuidv4()) {
