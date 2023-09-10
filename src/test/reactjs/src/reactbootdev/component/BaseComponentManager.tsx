@@ -41,15 +41,16 @@ export type RepositoryType<T extends BaseEntity> = T extends BaseRepository<infe
 export type BaseApiType<T> = T extends BaseApi ? T : never;
 export type ApiType = BaseApiType<BaseApi>
 export type RefinerType = {
-    itemId?: number
+    itemId?: number,
+    dataCallback?: <T extends BaseEntity>(data: T) => void
 }
 export type IntRefinerType = {
     flattenObject: Record<string, string>
     itemId?: number
 }
 
-export function entityRenderer (
-    entity: unknown,
+export function entityRenderer  <T extends BaseEntity> (
+    entity: (new () => T),
     repository: RepositoryType<EntityType<any>>,
     api: ApiType,
     renderType: RenderTypeEnum,

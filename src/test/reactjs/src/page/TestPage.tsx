@@ -1,11 +1,10 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useMemo} from "react";
 import {useRecoilState} from "recoil";
 import {page} from "@src/reactbootdev/decorator/Page";
 import {Project} from "@src/entity/Project";
 import {entityRenderer, RenderTypeEnum} from "@src/reactbootdev/component/BaseComponentManager";
 import {ProjectRepository} from "@src/repository/ProjectRepository";
 import {TestProjectApi} from "@src/api/TestProjectApi";
-import {extractEntityKeyWithFullPath, getEntitiKeyByType} from "@src/reactbootdev/util/RepositoryUtil";
 
 
 const ReadListComponent = () => {
@@ -18,12 +17,13 @@ const ReadListComponent = () => {
     const [readListEntityList, setReadListEntityList] = useRecoilState(readListProjectRepository.entityListState);
     readListProjectRepository.init(readListEntityList, setReadListEntityList);
 
+    const entityKey = useMemo(() => {
+        return readListProjectRepository.getEntitiKey()
+    }, [readListProjectRepository])
 
-    console.log(`entityKey ###2`, extractEntityKeyWithFullPath({}, ""))
 
-    console.log(`entityKey ###3`, getEntitiKeyByType(Project))
-    console.log(`entityKey ###3`, getEntitiKeyByType(Project)?.subProject?.testcol1b)
-    console.log(`entityKey ###5`, readListProjectRepository.getEntitiKey())
+    console.log(`entityKey ###5`, entityKey)
+    console.log(`entityKey ###5a`, entityKey.subProject?.testcol1b)
 
 
     // set readDetailProjectRepository by projectApi
@@ -37,11 +37,16 @@ const ReadListComponent = () => {
 
     }, [])
 
-    const readListEntity = entityRenderer(
+    const readListEntity = entityRenderer (
         Project,
         readListProjectRepository,
         projectApi,
-        RenderTypeEnum.READ_LIST
+        RenderTypeEnum.READ_LIST,
+        {
+            dataCallback: (data) => {
+                console.log(`ReadListComponent.dataCallback`, data)
+            }
+        }
     )
 
     return (
