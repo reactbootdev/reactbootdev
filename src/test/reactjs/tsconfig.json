@@ -1,11 +1,12 @@
 {
+  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "experimentalDecorators": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
-      "@src/*": [
-        "src/*"
-      ]
+      "@src/*": ["./*"],
+      "@components/*": ["components/*"],
+      "@utils/*": ["utils/*"]
     },
     "target": "es5",
     "lib": [
@@ -28,6 +29,7 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "craco.config.js"
   ]
 }

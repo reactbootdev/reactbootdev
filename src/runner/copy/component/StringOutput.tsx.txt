@@ -1,9 +1,10 @@
 import React from "react";
-import {NAME_DELIMITER} from "src/reactbootdev/config/config";
-import BaseRepository from "src/reactbootdev/repository/BaseRepository";
+import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
+import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
 import {useRecoilState} from "recoil";
-import {RenderTypeEnum} from "src/reactbootdev/component/BaseComponentManager";
-import {Item} from "src/reactbootdev/component/CreateContainer";
+import {RenderTypeEnum} from "@src/reactbootdev/component/BaseComponentManager";
+import {Item} from "@src/reactbootdev/component/CreateContainer";
+import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 
 export interface StringOutputProps {
     itemId: number
@@ -18,14 +19,14 @@ export type StringOutputValueType = string | string[]
 
 export const StringOutput = (props: StringOutputProps) => {
 
-    const baseRepository = new BaseRepository(props.repositoryKey);
+    const baseRepository = new BaseRepository(BaseEntity, props.repositoryKey);
     const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
     baseRepository.init(entityList, setEntityList)
 
     const itemId = props.itemId
     // remove first element and join again
     const refinedRepository = props.propertyKey.split(NAME_DELIMITER).slice(1).join(NAME_DELIMITER)
-    const outputValue = baseRepository.getValueByDelimiterKey(itemId, refinedRepository) as StringOutputValueType
+    const outputValue = baseRepository.getValueById(itemId, refinedRepository) as StringOutputValueType
     const valueComponent = Array.isArray(outputValue) ? outputValue.join(", ") : outputValue
 
     const renderType = props.renderType

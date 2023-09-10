@@ -1,5 +1,4 @@
 import axios from 'axios';
-import BaseRepository from "src/reactbootdev/repository/BaseRepository";
 
 export const BASE_URL = 'http://localhost:3000';
 

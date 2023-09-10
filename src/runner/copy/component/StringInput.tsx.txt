@@ -1,9 +1,10 @@
 import React from "react";
-import {NAME_DELIMITER} from "src/reactbootdev/config/config";
-import BaseRepository from "src/reactbootdev/repository/BaseRepository";
+import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
+import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
 import {useRecoilState} from "recoil";
-import {RenderTypeEnum} from "src/reactbootdev/component/BaseComponentManager";
+import {RenderTypeEnum} from "@src/reactbootdev/component/BaseComponentManager";
 import {TextField} from "@mui/material";
+import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 
 export interface StringInputProps {
     itemId: number
@@ -20,7 +21,7 @@ export const StringInput = (props: StringInputProps) => {
     // remove first element and join again
     const refinedRepository = props.propertyKey.split(NAME_DELIMITER).slice(1).join(NAME_DELIMITER)
 
-    const baseRepository = new BaseRepository(props.repositoryKey);
+    const baseRepository = new BaseRepository(BaseEntity, props.repositoryKey);
     const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
     baseRepository.init(entityList, setEntityList)
 
@@ -30,7 +31,7 @@ export const StringInput = (props: StringInputProps) => {
 
     const itemId = props.itemId
 
-    const value = baseRepository.getValueByDelimiterKey(itemId, props.propertyKey) ?? ""
+    const value = baseRepository.getValueById(itemId, props.propertyKey) ?? ""
     const refinedValue = String(value)
 
     return (

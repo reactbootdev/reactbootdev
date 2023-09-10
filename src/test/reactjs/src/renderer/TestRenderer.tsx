@@ -1,4 +1,4 @@
-import {renderer, rendererContainer} from "src/entity/Project";
+import {renderer, rendererContainer} from "@src/entity/Project";
 
 
 function TestRendererContainerComponent (args: any) {

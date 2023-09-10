@@ -42,6 +42,7 @@ export const MOVE_TASK_SOURCE_DIST_FOLDER_NAMES = [
     `repository`,
     `decorator`,
     `interface`,
+    `util`,
     `data`
 ]
 export const MOVE_TASK_TARGET_FOLDER =

@@ -1,4 +1,4 @@
-import {entity} from "src/reactbootdev/decorator/Entity";
+import {entity} from "@src/reactbootdev/decorator/Entity";
 
 @entity
 export class SubProject {

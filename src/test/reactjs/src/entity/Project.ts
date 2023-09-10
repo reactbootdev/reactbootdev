@@ -1,6 +1,6 @@
-import {entity} from "src/reactbootdev/decorator/Entity";
-import {SubProject} from "src/entity/SubProject";
-import BaseEntity from "src/reactbootdev/entity/BaseEntity";
+import {entity} from "@src/reactbootdev/decorator/Entity";
+import {SubProject} from "@src/entity/SubProject";
+import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 
 export function render(config: { groupName: string, rendererName: string, propName: string }) {
     return function (target: any, key: string) {
@@ -29,6 +29,7 @@ export function renderer(config: { name: string }) {
 @entity
 @renderContainer({groupName: "testrenderer", rendererName: "testrenderer"})
 export class Project extends BaseEntity {
+    id: number | null = null;
 
     testcol1a?: string
     @render({groupName: "testrenderer", rendererName: "testrenderer", propName: "testcol1a"})

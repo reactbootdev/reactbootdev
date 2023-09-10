@@ -42,43 +42,6 @@ export function runner(args: string[]){
         },
     ]
 
-    // {
-    //     preTask: Function
-    //     postTask: Function,
-    //     taskResult: BaseTaskResultInterface[] | BaseTaskResultInterface | TaskBeansType,
-    //     targetFileName: string
-    // }[] = [
-        // {
-        //     preTask: pageDecoratorPreTask,
-        //     postTask: pageDecoratorPostTask,
-        //     taskResult: [],
-        //     targetFileName: `PageBean.ts`,
-        // },
-        // {
-        //     preTask: entityDecoratorPreTask,
-        //     postTask: entityDecoratorPostTask,
-        //     taskResult: {},
-        //     targetFileName: `EntityBean.ts`,
-        // },
-        // {
-        //     preTask: commonDecoratorPreTask,
-        //     postTask: commonDecoratorPostTask,
-        //     taskResult: {},
-        //     targetFileName: `CommonBean.ts`,
-        // }
-    // ]
-    // const taskArgs : TaskArgsInterface = {
-    //     decoratorNames: [
-    //         `@page`,
-    //         `@entity`,
-    //     ],
-    //     resultFileName: `PageBean.ts`,
-    //     isRecursiveConnection: true,
-    //     maxDepthRecursiveConnection: 3,
-    //     taskBeans: {},
-    // }
-
-
     const sourceFileNames = getSourceFileNames(SOURCE_PATH)
     const program = ts.createProgram(sourceFileNames, COMPILER_OPTIONS);
     const checker = program.getTypeChecker();

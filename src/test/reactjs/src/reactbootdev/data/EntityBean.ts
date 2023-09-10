@@ -1,9 +1,9 @@
 import { TaskBeansType,ObjectTypeEnum } from "../interface/TaskBeansType";
 
 
-import { SubProject } from "src/entity/SubProject";
-import { Project } from "src/entity/Project";
-import { TestEnum } from "src/entity/Project";
+import { SubProject } from "@src/entity/SubProject";
+import { Project } from "@src/entity/Project";
+import { TestEnum } from "@src/entity/Project";
 
 
 export const entityImportMap: { [key: string]: any } = {
@@ -15,7 +15,7 @@ export const entityImportMap: { [key: string]: any } = {
 export const entityBeans: TaskBeansType = {
   "src/entity/SubProject.ts": {
     "importPaths": {
-      "entity": "src/reactbootdev/decorator/Entity.ts"
+      "entity": "src/entity/@src/reactbootdev/decorator/Entity.ts"
     },
     "objects": {
       "SubProject": {
@@ -48,9 +48,9 @@ export const entityBeans: TaskBeansType = {
   },
   "src/entity/Project.ts": {
     "importPaths": {
-      "entity": "src/reactbootdev/decorator/Entity.ts",
-      "SubProject": "src/entity/SubProject.ts",
-      "BaseEntity": "src/reactbootdev/entity/BaseEntity.ts"
+      "entity": "src/entity/@src/reactbootdev/decorator/Entity.ts",
+      "SubProject": "src/entity/@src/entity/SubProject.ts",
+      "BaseEntity": "src/entity/@src/reactbootdev/entity/BaseEntity.ts"
     },
     "objects": {
       "Project": {
@@ -106,33 +106,7 @@ export const entityBeans: TaskBeansType = {
           "subProject": {
             "type": "SubProject",
             "isArray": false,
-            "isTypeReferenceNode": true,
-            "referenceNode": {
-              "type": ObjectTypeEnum.CLASS,
-              "data": {
-                "testcol1b": {
-                  "type": "string",
-                  "isArray": false,
-                  "isTypeReferenceNode": false
-                },
-                "testcol2b": {
-                  "type": "string",
-                  "isArray": false,
-                  "isTypeReferenceNode": false
-                },
-                "testcol3b": {
-                  "type": "boolean",
-                  "isArray": false,
-                  "isTypeReferenceNode": false
-                },
-                "testcol4b": {
-                  "type": "number",
-                  "isArray": false,
-                  "isTypeReferenceNode": false
-                }
-              },
-              "decorators": []
-            }
+            "isTypeReferenceNode": true
           }
         },
         "decorators": [

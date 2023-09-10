@@ -1,50 +1,24 @@
 import path from 'path';
 import * as ts from 'typescript';
-import * as glob from 'glob';
 import {
-    TaskBeansType,
-    ObjectsType,
-    DecoratorType,
-    FileType,
-    ObjectTypeEnum,
-    EnumType,
-    ObjectType,
+    ClassDataType,
     ClassPropertyType,
     ClassType,
-    EnumDataType,
-    ClassDataType,
+    EnumType,
+    FileType,
     ImportPathType,
+    ObjectsType,
+    ObjectTypeEnum,
+    TaskBeansType,
 } from "../copy/interface/TaskBeansType";
 import {
-    convertToAbsolutePath,
-    findTypeLocation,
-    getDecoratorInfo, getDirectoryPath, getDirectoryPathByDelimiter, hasRecursiveFormDecorator,
-    isArrayElementTypeReferenceNode, removeExtension, resolveFilePath, resolvePropertyType,
-    // resolveRecursiveTypes
+    getDecoratorInfo,
+    hasRecursiveFormDecorator,
+    removeExtension,
+    resolveFilePath,
+    resolvePropertyType,
 } from "../util/NodeUtil";
-import {BeanInterface} from "../copy/interface/BeanInterface";
-import {entityDecoratorPostTask} from "./EntityDecoratorTask";
 import {KEY_DELIMITER} from "../config/config";
-
-
-// const PRE_SOURCE_PATH = 'src/source';
-// const SOURCE_PATH = `${PRE_SOURCE_PATH}/**/*.ts?(x)`;
-//
-// const fileNames = glob.sync(SOURCE_PATH, {
-//     ignore: ['**/node_modules/**/*.ts', '**/*.spec.ts'],
-// });
-
-// console.log(fileNames);
-//
-// const compilerOptions: ts.CompilerOptions = {
-//     target: ts.ScriptTarget.ES2015,
-//     module: ts.ModuleKind.CommonJS,
-//     setParentNodes: true,
-// };
-//
-//
-// const program = ts.createProgram(fileNames, compilerOptions);
-// const typeChecker = program.getTypeChecker();
 
 
 export interface TaskArgsInterface {
@@ -328,7 +302,7 @@ export function commonDecoratorPostTask(taskArgs: TaskArgsInterface, joinKey: st
         + Object.entries(fileObjects).map(([filePath, fileType]) => {
             return Object.entries(fileType.objects).map(([objectName, objectMap]) => {
                 filePath = filePath.replace(/\\/g, '/')
-                return `import { ${objectName} } from "${removeExtension(filePath)}";`
+                return `import { ${objectName} } from "@${removeExtension(filePath)}";`
             }).join('\n')
         }).join('\n')
         + `\n`

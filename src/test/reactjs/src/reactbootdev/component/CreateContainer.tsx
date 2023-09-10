@@ -1,10 +1,11 @@
-import {BaseApi} from "src/reactbootdev/api/BaseApi";
-import BaseRepository from "src/reactbootdev/repository/BaseRepository";
+import {BaseApi} from "@src/reactbootdev/api/BaseApi";
+import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
 import {useRecoilState} from "recoil";
 import React from "react";
-import {IntRefinerType, RenderTypeEnum} from "src/reactbootdev/component/BaseComponentManager";
-import {Box, BoxProps, Button, Grid, Tooltip} from "@mui/material";
-import {NAME_DELIMITER} from "src/reactbootdev/config/config";
+import {IntRefinerType, RenderTypeEnum} from "@src/reactbootdev/component/BaseComponentManager";
+import {Box, BoxProps, Tooltip} from "@mui/material";
+import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
+import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 
 export interface CreateContainerProps {
     children: any
@@ -50,7 +51,7 @@ export const CreateContainer = (props: CreateContainerProps) => {
     const baseApi = new BaseApi()
     const handleCreate = baseApi.handleCreate
 
-    const baseRepository = new BaseRepository(props.repositoryKey);
+    const baseRepository = new BaseRepository(BaseEntity, props.repositoryKey);
     const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
     baseRepository.init(entityList, setEntityList)
 

@@ -1,4 +1,4 @@
-import {BASE_URL, BaseApi} from "src/reactbootdev/api/BaseApi";
+import {BASE_URL, BaseApi} from "@src/reactbootdev/api/BaseApi";
 
 
 export class TestProjectApi extends BaseApi {

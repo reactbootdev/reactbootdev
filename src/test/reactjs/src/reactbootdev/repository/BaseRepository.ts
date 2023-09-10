@@ -1,12 +1,22 @@
 import BaseEntity from "../entity/BaseEntity";
-import {RecoilRoot, atom, selector, useRecoilState, useRecoilValue, RecoilState} from 'recoil';
-import { v4 as uuidv4 } from 'uuid';
-import {addItem, addItems, deleteItem, updateItem, updateByDelimiterKey, getByDelimiterKey} from "src/reactbootdev/util/RepositoryUtil";
+import {atom, RecoilState} from 'recoil';
+import {v4 as uuidv4} from 'uuid';
+import {
+    addItem,
+    addItems, createObjectStructure,
+    deleteItem,
+    getByDelimiterKey, getEntitiKeyByType, getEntityKey,
+    updateByDelimiterKey,
+    updateItem
+} from "@src/reactbootdev/util/RepositoryUtil";
+
 
 export default class BaseRepository<T extends BaseEntity> {
 
     static defaultRepositoryKey: string = uuidv4();
 
+    entityClass: new () => T;
+    // entityKey : T;
     repositoryKey: string;
     isDetailRepository: boolean;
     entityListState: RecoilState<T[]>;
@@ -62,10 +72,14 @@ export default class BaseRepository<T extends BaseEntity> {
         const updatedList = deleteItem(this.entityList, itemId);
         this.setEntityList(updatedList);
     };
-    getValueByDelimiterKey = (itemId: number, multiKeys: string) => {
+    getValue = (multiKeys: string) => {
+        const itemId = 0
         return getByDelimiterKey(this.entityList, itemId, multiKeys);
     }
-    getValuesByDelimiterKey = (multiKeys: string) => {
+    getValueById = (itemId: number, multiKeys: string) => {
+        return getByDelimiterKey(this.entityList, itemId, multiKeys);
+    }
+    getValues = (multiKeys: string) => {
         let idxs = this.entityList.map((item: any, idx: number) => idx);
         let result = idxs.map((idx: number) => {
             let itemId = idx;
@@ -73,8 +87,15 @@ export default class BaseRepository<T extends BaseEntity> {
         })
         return result;
     }
+    getEntitiKey = () => {
+        return getEntitiKeyByType(this.entityClass) as T
+    }
 
-    constructor(repositoryKey: string = uuidv4()) {
+    constructor(entityClass: new () => T, repositoryKey: string = uuidv4()) {
+        this.entityClass = entityClass;
+        // this.entityKey = this.createObjectStructure(entityClass) as unknown as T
+        // console.log(`entityKey: ${JSON.stringify(this.entityKey)}`, this.entityKey, entityClass)
+
         this.repositoryKey = repositoryKey
         // 상세 값. 관련해서 저장 방법.
         this.isDetailRepository = false;

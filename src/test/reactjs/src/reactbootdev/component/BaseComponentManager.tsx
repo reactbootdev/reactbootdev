@@ -1,13 +1,13 @@
 import React from 'react';
-import {entityBeans, entityImportMap} from "src/reactbootdev/data/EntityBean";
-import {NAME_DELIMITER} from "src/reactbootdev/config/config";
-import {ClassType, ObjectType, ObjectTypeEnum} from "src/reactbootdev/interface/TaskBeansType";
-import {CreateContainer} from "src/reactbootdev/component/CreateContainer";
-import {StringInput} from "src/reactbootdev/component/StringInput";
-import BaseRepository from "src/reactbootdev/repository/BaseRepository";
-import BaseEntity from "src/reactbootdev/entity/BaseEntity";
-import {BaseApi} from "src/reactbootdev/api/BaseApi";
-import {StringOutput} from "src/reactbootdev/component/StringOutput";
+import {entityBeans, entityImportMap} from "@src/reactbootdev/data/EntityBean";
+import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
+import {ClassType, ObjectType, ObjectTypeEnum} from "@src/reactbootdev/interface/TaskBeansType";
+import {CreateContainer} from "@src/reactbootdev/component/CreateContainer";
+import {StringInput} from "@src/reactbootdev/component/StringInput";
+import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
+import {BaseApi} from "@src/reactbootdev/api/BaseApi";
+import {StringOutput} from "@src/reactbootdev/component/StringOutput";
 import {Box} from "@mui/material";
 
 

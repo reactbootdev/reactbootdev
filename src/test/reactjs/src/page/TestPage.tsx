@@ -1,13 +1,11 @@
 import React, {useEffect} from "react";
-import {useRecoilState, useRecoilValue} from "recoil";
-import BaseRepository from "src/reactbootdev/repository/BaseRepository";
-import {page} from "src/reactbootdev/decorator/Page";
-import {Project} from "src/entity/Project";
-import {entityRenderer, RenderTypeEnum} from "src/reactbootdev/component/BaseComponentManager";
-import {ProjectRepository} from "src/repository/ProjectRepository";
-import {ProjectApi} from "src/api/ProjectApi";
-import {TestProjectApi} from "src/api/TestProjectApi";
-
+import {useRecoilState} from "recoil";
+import {page} from "@src/reactbootdev/decorator/Page";
+import {Project} from "@src/entity/Project";
+import {entityRenderer, RenderTypeEnum} from "@src/reactbootdev/component/BaseComponentManager";
+import {ProjectRepository} from "@src/repository/ProjectRepository";
+import {TestProjectApi} from "@src/api/TestProjectApi";
+import {extractEntityKeyWithFullPath, getEntitiKeyByType} from "@src/reactbootdev/util/RepositoryUtil";
 
 
 const ReadListComponent = () => {
@@ -16,9 +14,17 @@ const ReadListComponent = () => {
     const projectApi = new TestProjectApi()
 
     // readList
-    const readListProjectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey + `readList`)
+    const readListProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `readList`)
     const [readListEntityList, setReadListEntityList] = useRecoilState(readListProjectRepository.entityListState);
     readListProjectRepository.init(readListEntityList, setReadListEntityList);
+
+
+    console.log(`entityKey ###2`, extractEntityKeyWithFullPath({}, ""))
+
+    console.log(`entityKey ###3`, getEntitiKeyByType(Project))
+    console.log(`entityKey ###3`, getEntitiKeyByType(Project)?.subProject?.testcol1b)
+    console.log(`entityKey ###5`, readListProjectRepository.getEntitiKey())
+
 
     // set readDetailProjectRepository by projectApi
     useEffect(() => {
@@ -26,8 +32,8 @@ const ReadListComponent = () => {
         // readList
         const readListRes = projectApi.handleReadList(undefined)
         const resData = readListRes.result.data as Project[]
-        readListProjectRepository.truncate() // TODO :: ??
-        readListProjectRepository.addEntities(resData)
+        // readListProjectRepository.truncate() // TODO :: ??
+        readListProjectRepository.setEntities(resData)
 
     }, [])
 
@@ -52,7 +58,7 @@ const ReadDetailComponent = () => {
     const projectApi = new TestProjectApi()
 
     // readDetail
-    const readDetailProjectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey + `readDetail`)
+    const readDetailProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `readDetail`)
     const [readDetailEntityList, setReadDetailEntityList] = useRecoilState(readDetailProjectRepository.entityListState);
     readDetailProjectRepository.init(readDetailEntityList, setReadDetailEntityList);
 
@@ -88,9 +94,11 @@ const UpdateComponent = () => {
     const projectApi = new TestProjectApi()
 
     // update
-    const updateProjectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey + `update`)
+    const updateProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `update`)
     const [updateEntityList, setUpdateEntityList] = useRecoilState(updateProjectRepository.entityListState);
     updateProjectRepository.init(updateEntityList, setUpdateEntityList);
+
+
 
     // set readDetailProjectRepository by projectApi
     useEffect(() => {
@@ -108,6 +116,7 @@ const UpdateComponent = () => {
         {
             itemId: 0,
         },
+
     )
 
     return (
@@ -124,7 +133,7 @@ const DeleteComponent = () => {
     const projectApi = new TestProjectApi()
 
     // delete
-    const deleteProjectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey + `delete`)
+    const deleteProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `delete`)
     const [deleteEntityList, setDeleteEntityList] = useRecoilState(deleteProjectRepository.entityListState);
     deleteProjectRepository.init(deleteEntityList, setDeleteEntityList);
 
@@ -150,7 +159,7 @@ const CreateComponent = () => {
     const projectApi = new TestProjectApi()
 
     // create
-    const createProjectRepository = new ProjectRepository(ProjectRepository.defaultRepositoryKey + `create`)
+    const createProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `create`)
     const [createEntityList, setCreateEntityList] = useRecoilState(createProjectRepository.entityListState);
     createProjectRepository.init(createEntityList, setCreateEntityList);
 
@@ -198,7 +207,7 @@ export class UpdatePage {
     }
 }
 @page("/d")
-export class DeltePage {
+export class DeletePage {
     render() {
         return <DeleteComponent />;
     }
