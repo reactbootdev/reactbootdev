@@ -1,7 +1,7 @@
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 import {DOUBLE_NAME_DELIMITER, NAME_DELIMITER} from "@src/reactbootdev/config/config";
 import {produce} from "immer";
-import {ObjectsType, ObjectType} from "@src/reactbootdev/interface/TaskBeansType";
+import {ObjectType} from "@src/reactbootdev/interface/TaskBeansType";
 import {entityBeans, entityImportMap} from "@src/reactbootdev/data/EntityBean";
 
 export const addItem = <T extends BaseEntity>(list: T[], newItem: T): T[] => {
@@ -216,7 +216,7 @@ export function extractEntityKey(
 export function extractEntityKeyWithFullPath(result : any = {}, parentKey: string, depth : number = 0, maxDepth : number = 5) {
     Object.entries(entityBeans).map((entry) => {
         const [fullFilePath, fileDetail] = entry;
-        const objects = fileDetail.objects as ObjectsType
+        const objects = fileDetail.objects
         Object.entries(objects).map((entry) => {
             const [objectName, objectDetail] = entry;
             const newFileNameQentity = `${fullFilePath}${DOUBLE_NAME_DELIMITER}${objectName}`

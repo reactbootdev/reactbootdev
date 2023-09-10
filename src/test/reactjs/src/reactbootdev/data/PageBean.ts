@@ -1,7 +1,7 @@
 import { TaskBeansType,ObjectTypeEnum } from "../interface/TaskBeansType";
 
 
-import {CreatePage} from "@src/page/TestPage";
+import { CreatePage } from "@src/page/TestPage";
 import { ReadListPage } from "@src/page/TestPage";
 import { ReadDetailPage } from "@src/page/TestPage";
 import { UpdatePage } from "@src/page/TestPage";
@@ -26,14 +26,14 @@ export const pageBeans: TaskBeansType = {
       "React": "src/page/react.ts",
       "useEffect": "src/page/react.ts",
       "useRecoilState": "src/page/recoil.ts",
-      "page": "src/page/@src/reactbootdev/decorator/Page.ts",
-      "Project": "src/page/@src/entity/Project.ts",
-      "entityRenderer": "src/page/@src/reactbootdev/component/BaseComponentManager.ts",
-      "RenderTypeEnum": "src/page/@src/reactbootdev/component/BaseComponentManager.ts",
-      "ProjectRepository": "src/page/@src/repository/ProjectRepository.ts",
-      "TestProjectApi": "src/page/@src/api/TestProjectApi.ts",
-      "extractEntityKeyWithFullPath": "src/page/@src/reactbootdev/util/RepositoryUtil.ts",
-      "getEntitiKeyByType": "src/page/@src/reactbootdev/util/RepositoryUtil.ts"
+      "page": "src/reactbootdev/decorator/Page.ts",
+      "Project": "src/entity/Project.ts",
+      "entityRenderer": "src/reactbootdev/component/BaseComponentManager.ts",
+      "RenderTypeEnum": "src/reactbootdev/component/BaseComponentManager.ts",
+      "ProjectRepository": "src/repository/ProjectRepository.ts",
+      "TestProjectApi": "src/api/TestProjectApi.ts",
+      "extractEntityKeyWithFullPath": "src/reactbootdev/util/RepositoryUtil.ts",
+      "getEntitiKeyByType": "src/reactbootdev/util/RepositoryUtil.ts"
     },
     "objects": {
       "CreatePage": {
@@ -149,9 +149,9 @@ export const pageBeans: TaskBeansType = {
   },
   "src/entity/Project.ts": {
     "importPaths": {
-      "entity": "src/entity/@src/reactbootdev/decorator/Entity.ts",
-      "SubProject": "src/entity/@src/entity/SubProject.ts",
-      "BaseEntity": "src/entity/@src/reactbootdev/entity/BaseEntity.ts"
+      "entity": "src/reactbootdev/decorator/Entity.ts",
+      "SubProject": "src/entity/SubProject.ts",
+      "BaseEntity": "src/reactbootdev/entity/BaseEntity.ts"
     },
     "objects": {
       "TestEnum": {

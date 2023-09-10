@@ -149,6 +149,10 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
                 // TODO :: json, ts, tsx ?
                 importPath += '.ts';
             }
+            // remove before `@` string in importPath
+            importPath = importPath.replace(/.*@/, '');
+            console.log(`importPath: ${importPath}`)
+
             const importName = node.importClause?.getText(sourceFile);
             if (importName) {
                 const importNameArr = importName.split(',');
