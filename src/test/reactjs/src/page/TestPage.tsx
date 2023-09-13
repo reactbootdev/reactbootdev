@@ -15,7 +15,7 @@ import {ProjectRepository} from "@src/repository/ProjectRepository";
 import {TestProjectApi} from "@src/api/TestProjectApi";
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 import {
-    Box,
+    Box, Button,
     createTheme,
     Paper,
     Table,
@@ -23,13 +23,15 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow,
+    TableRow, TextField,
     ThemeProvider,
     Tooltip,
     Typography
 } from "@mui/material";
 import {BoxPropsExt} from "@src/reactbootdev/component/CreateContainer";
 import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
+import styled from 'styled-components';
+
 
 
 const darkTheme = createTheme({
@@ -402,6 +404,10 @@ function flattenBaseEntity<T extends BaseEntity>(obj: T, objName: string | undef
     }
 
     Object.entries(obj).map(([propertyName, propertyInfo]) => {
+        if (propertyInfo === null) {
+            return flattened
+        }
+
         const flattenedKey =
             typeof objName !== 'undefined' ? `${objName}${NAME_DELIMITER}${propertyName}` : propertyName
 
@@ -414,6 +420,175 @@ function flattenBaseEntity<T extends BaseEntity>(obj: T, objName: string | undef
 
     return flattened
 }
+
+
+
+function InputMyTableReverse (
+    props: TableProps
+) {
+
+    const isRenderTableHead = false
+
+    const matrix = props.header.map(header => {
+        return header.data.map(data => {
+            return data
+        })
+    })
+
+    const maxRowMatrix = matrix.reduce((acc, cur) => {
+        return acc.length > cur.length ? acc : cur
+    }, []).length
+
+    return (
+        <ThemeProvider theme={darkTheme}>
+            <TableContainer component={Paper}>
+                <Typography variant="h5" gutterBottom>
+                    My Table
+                </Typography>
+                <Table>
+                    {isRenderTableHead && (
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>
+                                    <Item
+                                        tooltipText={"속성"}
+                                    >
+                                        속성
+                                    </Item>
+                                </TableCell>
+                                {
+                                    Array(maxRowMatrix).fill(0).map((header, idx) => {
+                                        return (
+                                            <TableCell key={idx}>
+                                                <Item
+                                                    tooltipText={String(idx)}
+                                                >
+                                                    {idx}
+                                                </Item>
+                                            </TableCell>
+                                        )
+                                    })
+                                }
+                            </TableRow>
+                        </TableHead>
+                    )}
+
+                    <TableBody>
+                        {matrix.map((row, idx) => (
+                            <TableRow key={idx}>
+                                <TableCell>
+                                    <Item
+                                        tooltipText={props.header[idx].desc}
+                                    >
+                                        {props.header[idx].name}
+                                    </Item>
+                                </TableCell>
+
+                                {row.map((d, idx2) => (
+                                    <TableCell key={idx2}>
+                                        <Item
+                                            tooltipText={d.desc}
+                                        >
+                                            2{d.value}
+                                        </Item>
+                                        <TextField
+                                            id="outlined-basic" label="Outlined" variant="outlined"
+                                            // value={refinedValue}
+                                            onChange={(e) => {
+                                                // baseRepository.updateEntityByDelimiterKey(0, e.target.value, props.propertyKey)
+                                                // setInputValue(e.target.value);
+                                            }}
+                                        />
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </ThemeProvider>
+    );
+};
+
+const containerStyle = {
+    backgroundColor: 'lightblue',
+    padding: '20px',
+    border: '1px solid blue',
+    borderRadius: '5px',
+};
+
+
+interface StyledButtonProps {
+    primary?: boolean;
+}
+const StyledButton = styled.button<StyledButtonProps>`
+  // 스타일 정의에서 primary prop 사용
+  background-color: ${(props: any) => (props.primary ? 'blue' : 'red')};
+  color: white;
+  padding: 10px 20px;
+`;
+
+
+const CreateComponent = () => {
+
+    // create container style
+    // useStyle
+    const useStyle = () => {
+
+    }
+
+    // api
+    const projectApi = new TestProjectApi()
+
+    // create
+    const createProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `create`)
+    const [createEntityList, setCreateEntityList] = useRecoilState(createProjectRepository.entityListState);
+    createProjectRepository.init(createEntityList, setCreateEntityList);
+
+
+    useEffect(() => {
+
+        const defaultEntity = new Project()
+        defaultEntity.testcol1a = `testcol1a`
+        defaultEntity.testcol2a = ``
+
+        // update
+        createProjectRepository.setEntity(defaultEntity)
+    }, [])
+
+
+    const createEntity = entityRenderer(
+        Project,
+        createProjectRepository,
+        projectApi,
+        RenderTypeEnum.CREATE,
+        {
+            itemId: 0,
+        },
+    )
+
+    const whiteList: any[] = [
+        // entityKey.testcol1a
+    ]
+    const blackList: any[] = [
+        // entityKey.testcol1a
+    ]
+
+    const header = getHeader(createEntityList, whiteList, blackList)
+
+    const tableData : TableProps = {
+        header: header,
+    }
+
+    return (
+        <>
+            {InputMyTableReverse(tableData)}
+
+            {/*{createEntity}*/}
+        </>
+    );
+
+};
 
 
 const UpdateComponent = () => {
@@ -433,7 +608,7 @@ const UpdateComponent = () => {
         // update
         const updateRes = projectApi.handleReadDetail(undefined)
         const updateResData = updateRes.result.data as Project
-        updateProjectRepository.addEntity(updateResData)
+        updateProjectRepository.setEntity(updateResData)
     }, [])
 
     const updateEntity = entityRenderer(
@@ -444,12 +619,26 @@ const UpdateComponent = () => {
         {
             itemId: 0,
         },
-
     )
+
+    const whiteList: any[] = [
+        // entityKey.testcol1a
+    ]
+    const blackList: any[] = [
+        // entityKey.testcol1a
+    ]
+
+    const header = getHeader(updateEntityList, whiteList, blackList)
+
+    const tableData : TableProps = {
+        header: header,
+    }
 
     return (
         <>
-            {updateEntity}
+            {InputMyTableReverse(tableData)}
+            {/*<div>test2</div>*/}
+            {/*{updateEntity}*/}
         </>
     );
 
@@ -481,34 +670,6 @@ const DeleteComponent = () => {
         </>
     );
 }
-
-const CreateComponent = () => {
-    // api
-    const projectApi = new TestProjectApi()
-
-    // create
-    const createProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `create`)
-    const [createEntityList, setCreateEntityList] = useRecoilState(createProjectRepository.entityListState);
-    createProjectRepository.init(createEntityList, setCreateEntityList);
-
-    const createEntity = entityRenderer(
-        Project,
-        createProjectRepository,
-        projectApi,
-        RenderTypeEnum.CREATE,
-        {
-            itemId: 0,
-        },
-    )
-
-    return (
-        <>
-            {createEntity}
-        </>
-    );
-
-};
-
 
 @page("/c")
 export class CreatePage {
