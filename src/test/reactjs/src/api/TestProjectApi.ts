@@ -112,6 +112,9 @@ export class TestProjectApi extends BaseApi {
                     startDate: "2021-01-01",
                     endDate: "2021-01-01",
                     testcol1a: "xxxxx1",
+                    subProject: {
+                        id: 33,
+                    }
                 },
                 search: {
                     name: "test1",

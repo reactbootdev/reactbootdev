@@ -158,12 +158,15 @@ export function createOrSetProperty<T, K extends keyof T>(
         return newObj;
     }
 
+    // plain object
+    const newObj = Object.assign({}, obj);
+
     // If obj exists, ensure key is a string and then split it to set the nested property.
     // remove empty string
     const keys = key.split(NAME_DELIMITER).filter((key) => key.length > 0)
 
     // Use the helper export function to update the nested property safely
-    return produce(obj, (draft) => {
+    return produce(newObj, (draft) => {
         return updateNestedProperty(draft, keys, value);
     });
 }

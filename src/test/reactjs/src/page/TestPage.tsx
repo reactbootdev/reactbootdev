@@ -31,6 +31,8 @@ import {
 import {BoxPropsExt} from "@src/reactbootdev/component/CreateContainer";
 import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
 import styled from 'styled-components';
+import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import {SubProject} from "@src/entity/SubProject";
 
 
 
@@ -52,6 +54,7 @@ interface TableHeader {
     data: TableData[];
 }
 interface TableProps {
+    repositoryKey: string;
     header: TableHeader[];
 }
 const MyTable = (
@@ -261,6 +264,7 @@ const ReadListComponent = () => {
     const header = getHeader(readListEntityList, whiteList, blackList)
 
     const tableData : TableProps = {
+        repositoryKey: readListProjectRepository.repositoryKey,
         header: header,
     }
 
@@ -318,6 +322,7 @@ const ReadDetailComponent = () => {
     const header = getHeader(readDetailEntityList, whiteList, blackList)
 
     const tableData : TableProps = {
+        repositoryKey: readDetailProjectRepository.repositoryKey,
         header: header,
     }
 
@@ -427,6 +432,10 @@ function InputMyTableReverse (
     props: TableProps
 ) {
 
+    const baseRepository = new BaseRepository(BaseEntity, props.repositoryKey);
+    const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
+    baseRepository.init(entityList, setEntityList)
+
     const isRenderTableHead = false
 
     const matrix = props.header.map(header => {
@@ -444,6 +453,7 @@ function InputMyTableReverse (
             <TableContainer component={Paper}>
                 <Typography variant="h5" gutterBottom>
                     My Table
+                    {JSON.stringify(entityList)}
                 </Typography>
                 <Table>
                     {isRenderTableHead && (
@@ -489,13 +499,14 @@ function InputMyTableReverse (
                                         <Item
                                             tooltipText={d.desc}
                                         >
-                                            2{d.value}
+                                            {d.value}
                                         </Item>
                                         <TextField
-                                            id="outlined-basic" label="Outlined" variant="outlined"
+                                            label={d.desc} variant="outlined"
+                                            value={d.value}
                                             // value={refinedValue}
                                             onChange={(e) => {
-                                                // baseRepository.updateEntityByDelimiterKey(0, e.target.value, props.propertyKey)
+                                                baseRepository.updateEntityByDelimiterKey(0, e.target.value, d.desc)
                                                 // setInputValue(e.target.value);
                                             }}
                                         />
@@ -545,13 +556,31 @@ const CreateComponent = () => {
     const [createEntityList, setCreateEntityList] = useRecoilState(createProjectRepository.entityListState);
     createProjectRepository.init(createEntityList, setCreateEntityList);
 
+    // {
+    //     "id": 1,
+    //     "name": "test1",
+    //     "description": "test1",
+    //     "startDate": "2021-01-01",
+    //     "endDate": "2021-01-01",
+    //     "testcol1a": "xxxxx1",
+    //     "subProject": {
+    //     "id": 33
+    // }
+    // }
 
     useEffect(() => {
 
         const defaultEntity = new Project()
         defaultEntity.testcol1a = `testcol1a`
-        defaultEntity.testcol2a = ``
+        defaultEntity.testcol2a = `s`
+        defaultEntity.testcol4a = 34
 
+        defaultEntity.subProject = new SubProject()
+        defaultEntity.subProject.testcol1b = `testcol1b`
+
+        // update
+        const updateRes = projectApi.handleReadDetail(undefined)
+        const updateResData = updateRes.result.data as Project
         // update
         createProjectRepository.setEntity(defaultEntity)
     }, [])
@@ -577,6 +606,7 @@ const CreateComponent = () => {
     const header = getHeader(createEntityList, whiteList, blackList)
 
     const tableData : TableProps = {
+        repositoryKey: createProjectRepository.repositoryKey,
         header: header,
     }
 
@@ -631,6 +661,7 @@ const UpdateComponent = () => {
     const header = getHeader(updateEntityList, whiteList, blackList)
 
     const tableData : TableProps = {
+        repositoryKey: updateProjectRepository.repositoryKey,
         header: header,
     }
 
