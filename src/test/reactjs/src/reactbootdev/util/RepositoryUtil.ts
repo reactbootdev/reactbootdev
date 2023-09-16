@@ -259,3 +259,129 @@ export function mergeSubObjects(obj: any): any {
 
     return result;
 }
+
+
+
+
+export function getEntitiTypeyByType<T extends BaseEntity>(entityType : new () => T) : T {
+    const result = extractEntityTypeWithFullPath({}, "")
+    const toFind = Object.entries(entityImportMap).filter((entry) => {
+        const [key, value] = entry
+
+        return value === entityType
+    })
+    if (toFind.length === 0) {
+        throw new Error(`entityType not found in entityImportMap`)
+    }
+    const toFindKey = toFind[0][0]
+
+    const entityKeyMap = result[toFindKey]
+
+    return mergeSubObjects(entityKeyMap) as T
+}
+
+export function extractEntityTypeWithFullPath(result : any = {}, parentKey: string, depth : number = 0, maxDepth : number = 5) {
+    Object.entries(entityBeans).map((entry) => {
+        const [fullFilePath, fileDetail] = entry;
+        const objects = fileDetail.objects
+        Object.entries(objects).map((entry) => {
+            const [objectName, objectDetail] = entry;
+            const newFileNameQentity = `${fullFilePath}${DOUBLE_NAME_DELIMITER}${objectName}`
+
+            result[newFileNameQentity] = extractEntityType(objectDetail, objectName, objectName)
+        })
+
+    })
+    return result
+}
+
+
+export function extractEntityType(
+    // obj: ObjectType,
+    obj: any,
+
+    myKey: string,
+    totalParentKey: string = ``,
+
+    result: any = {},
+
+    depth: number = 0,
+    maxDepth: number = 10
+) {
+    const totalKey = `${totalParentKey}${NAME_DELIMITER}${myKey}`
+        .split(NAME_DELIMITER)
+        .filter(v => v.length > 0)
+        .join(NAME_DELIMITER)
+
+    const value = {
+        totalKey: totalKey,
+        type: obj.type,
+        isArray: obj.isArray,
+    }
+
+    if (depth > maxDepth) {
+        result = createOrSetPropertyForType(result, totalKey, value)
+        return result
+    }
+
+    const isDataOwned = obj.data !== undefined
+    if (!isDataOwned) {
+        result = createOrSetPropertyForType(result, totalKey, value)
+        return result
+    }
+
+    Object.entries(obj.data).map((entry : [string, any]) => {
+        const [subObjKey, subObj] = entry;
+        const isReferenceNode = subObj.referenceNode !== undefined
+        if(isReferenceNode) {
+            totalParentKey = `${totalParentKey}${NAME_DELIMITER}${subObjKey}`
+            result = extractEntityType(subObj.referenceNode, subObjKey, totalParentKey, result, depth + 1, maxDepth)
+            return result
+        }
+
+        result = extractEntityType(subObj, subObjKey, totalParentKey, result, depth + 1, maxDepth)
+        return result
+    })
+
+    return result
+}
+export function createOrSetPropertyForType<T, K extends keyof T>(
+    obj: T | undefined,
+    key: string,
+    value: unknown
+): T {
+    if (!obj) {
+        // If obj is undefined, create a new object with the property and return it.
+        const newObj = { [key]: value } as T;
+        return newObj;
+    }
+
+    // plain object
+    const newObj = Object.assign({}, obj);
+
+    // If obj exists, ensure key is a string and then split it to set the nested property.
+    // remove empty string
+    const keys = key.split(NAME_DELIMITER).filter((key) => key.length > 0)
+
+    // Use the helper export function to update the nested property safely
+    return produce(newObj, (draft) => {
+        return updateNestedPropertyForType(draft, keys, value);
+    });
+}
+
+// Helper export function to update nested properties safely
+export function updateNestedPropertyForType<T, K extends keyof T>(
+    obj: T,
+    keys: string[],
+    value: unknown
+): T {
+    const result = { ...obj };
+    let current: any = result;
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        current[key] = { ...current[key] };
+        current = current[key];
+    }
+    current[keys[keys.length - 1]] = value;
+    return result;
+}

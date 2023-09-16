@@ -3,13 +3,14 @@ import {atom, RecoilState} from 'recoil';
 import {v4 as uuidv4} from 'uuid';
 import {
     addItem,
-    addItems, createObjectStructure,
+    addItems,
     deleteItem,
-    getByDelimiterKey, getEntitiKeyByType, getEntityKey,
+    getByDelimiterKey,
+    getEntitiKeyByType,
+    getEntitiTypeyByType,
     updateByDelimiterKey,
     updateItem
 } from "@src/reactbootdev/util/RepositoryUtil";
-import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
 
 
 export default class BaseRepository<T extends BaseEntity> {
@@ -90,6 +91,11 @@ export default class BaseRepository<T extends BaseEntity> {
     }
     getEntitiKey = () => {
         const result = getEntitiKeyByType(this.entityClass) as T
+        return result
+    }
+
+    getEntityType = () => {
+        const result = getEntitiTypeyByType(this.entityClass) as T
         return result
     }
 

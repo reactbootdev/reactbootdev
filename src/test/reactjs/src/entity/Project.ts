@@ -36,6 +36,7 @@ export class Project extends BaseEntity {
     testcol2a?: string
     testcol3a?: boolean
     testcol4a?: number
+    testArray?: string[]
     testcol5a?: TestEnum
     testcol6a?: TestEnum[]
 

@@ -15,7 +15,7 @@ import {ProjectRepository} from "@src/repository/ProjectRepository";
 import {TestProjectApi} from "@src/api/TestProjectApi";
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 import {
-    Box, Button,
+    Box,
     createTheme,
     Paper,
     Table,
@@ -23,7 +23,8 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, TextField,
+    TableRow,
+    TextField,
     ThemeProvider,
     Tooltip,
     Typography
@@ -33,7 +34,7 @@ import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
 import styled from 'styled-components';
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
 import {SubProject} from "@src/entity/SubProject";
-
+import {StringOutputValueType} from "@src/reactbootdev/component/StringOutput";
 
 
 const darkTheme = createTheme({
@@ -350,6 +351,10 @@ function getHeader<T extends BaseEntity>(
     const flattenObj = getFlattenObj(readListEntityList)
     Object.values(flattenObj).forEach(row => {
         row.forEach(col => {
+
+            // TODO :: add element type in Array ?
+            const colType = typeof col?.value
+
             if (isWhiteList) {
                 const isWhiteList = whiteList.find(white => removeFirstElementFromKey(white) === col?.fullKey)
                 if (typeof isWhiteList === 'undefined') {
@@ -432,6 +437,7 @@ function InputMyTableReverse (
     props: TableProps
 ) {
 
+
     const baseRepository = new BaseRepository(BaseEntity, props.repositoryKey);
     const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
     baseRepository.init(entityList, setEntityList)
@@ -494,13 +500,37 @@ function InputMyTableReverse (
                                     </Item>
                                 </TableCell>
 
-                                {row.map((d, idx2) => (
+                                {row.map((d, idx2) => {
+                                    // TODO :: type > add el in array
+
+                                    // const createEntity = entityRenderer(
+                                    //     Project,
+                                    //     createProjectRepository,
+                                    //     projectApi,
+                                    //     RenderTypeEnum.CREATE,
+                                    //     {
+                                    //         itemId: 0,
+                                    //     },
+                                    // )
+                                    // const beanInfo = findBean(entity)
+                                    // const beanInfo = findBean(Project)
+                                    // const flattenObj = flattenObject(beanInfo.bean, beanInfo.entityName);
+
+
+                                    // TODO :: remove
+                                    const outputValue = baseRepository.getValueById(idx2, d.desc) as StringOutputValueType
+                                    const valueComponent = Array.isArray(outputValue) ? outputValue.join(", ") : outputValue
+
+                                    return (
                                     <TableCell key={idx2}>
                                         <Item
                                             tooltipText={d.desc}
                                         >
                                             {d.value}
                                         </Item>
+
+                                        { valueComponent}
+
                                         <TextField
                                             label={d.desc} variant="outlined"
                                             value={d.value}
@@ -511,7 +541,7 @@ function InputMyTableReverse (
                                             }}
                                         />
                                     </TableCell>
-                                ))}
+                                )})}
                             </TableRow>
                         ))}
                     </TableBody>
@@ -556,6 +586,9 @@ const CreateComponent = () => {
     const [createEntityList, setCreateEntityList] = useRecoilState(createProjectRepository.entityListState);
     createProjectRepository.init(createEntityList, setCreateEntityList);
 
+
+    console.log(`### getEntityType`, createProjectRepository.getEntityType())
+
     // {
     //     "id": 1,
     //     "name": "test1",
@@ -577,6 +610,9 @@ const CreateComponent = () => {
 
         defaultEntity.subProject = new SubProject()
         defaultEntity.subProject.testcol1b = `testcol1b`
+
+        const testArray = ["df", "adf"]
+        defaultEntity.testArray = testArray
 
         // update
         const updateRes = projectApi.handleReadDetail(undefined)
