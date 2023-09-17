@@ -434,6 +434,119 @@ function flattenBaseEntity<T extends BaseEntity>(obj: T, objName: string | undef
 }
 
 
+export enum TableDataForArrayType {
+    NUMBER = "NUMBER",
+    STRING = "STRING",
+    BOOLEAN = "BOOLEAN",
+
+    ARRAY = "ARRAY",
+    OBJECT = "OBJECT",
+}
+export function convertTableDataForArrayType(obj: any) {
+    if (Array.isArray(obj)) {
+        return TableDataForArrayType.ARRAY
+    } else if (typeof obj === 'undefined') {
+        return TableDataForArrayType.STRING
+    } else if (typeof obj === 'number') {
+        return TableDataForArrayType.NUMBER
+    } else if (typeof obj === 'string') {
+        return TableDataForArrayType.STRING
+    } else if (typeof obj === 'boolean') {
+        return TableDataForArrayType.BOOLEAN
+    } else if (typeof obj === 'object') {
+        return TableDataForArrayType.OBJECT
+    } else {
+        return TableDataForArrayType.STRING
+    }
+}
+
+export interface TableDataForArray {
+    fullKey: string,
+    type?: string,
+    value?: object,
+    valueString?: string,
+    tableData?: TableDataForArray[];
+}
+
+function getFlattenObjForArray<T extends BaseEntity>(readListEntityList: T[]): TableDataForArray[] {
+    const flattenObj = readListEntityList.map((entity, idx) => {
+        return flattenBaseEntityForArray(entity, String(idx))
+    }).filter((entity) => typeof entity !== 'undefined') as TableDataForArray[]
+    return flattenObj
+}
+
+// TODO :: 01 :: remove Element
+// TODO :: 02 :: add Element
+// TODO :: 03 :: update Element
+
+function flattenBaseEntityForArray<T extends BaseEntity>(obj: T, objName: string): TableDataForArray | undefined {
+
+    if(typeof obj === 'undefined') {
+        return undefined
+    }
+
+    if (isPrimtiveType(typeof obj)) {
+        // Case 01 :: Primtive Type
+        const tableData: TableDataForArray = {
+            fullKey: objName,
+            type: convertTableDataForArrayType(obj),
+            value: obj,
+            valueString: String(obj),
+            tableData: undefined,
+        }
+        return tableData
+    }
+
+    const mainTableData: TableDataForArray[] = Object.entries(obj).map(([propertyName, propertyInfo]) => {
+        if (propertyInfo === null) {
+            return undefined
+        }
+
+        const flattenedKey =
+            typeof objName !== 'undefined' ? `${objName}${NAME_DELIMITER}${propertyName}` : propertyName
+
+
+        if (isPrimtiveType(typeof propertyInfo)) {
+            // Case 01 :: Primtive Type
+            const tableData: TableDataForArray = {
+                fullKey: flattenedKey,
+                type: convertTableDataForArrayType(propertyInfo),
+                value: propertyInfo,
+                valueString: String(propertyInfo),
+                tableData: undefined,
+            }
+            return tableData
+        } else if(Array.isArray(propertyInfo)) {
+            // Case 02 :: Array Type
+            const subTableData = propertyInfo.map((entity) => {
+                return flattenBaseEntityForArray(entity, flattenedKey)
+            }).filter((entity) => typeof entity !== 'undefined') as TableDataForArray[]
+
+            const tableData: TableDataForArray = {
+                fullKey: flattenedKey,
+                type: TableDataForArrayType.ARRAY,
+                value: undefined,
+                valueString: String(undefined),
+                tableData: subTableData,
+            }
+
+            return tableData
+        } else {
+            // Case 03 :: Object Type
+            return flattenBaseEntityForArray(propertyInfo, flattenedKey)
+        }
+    }).filter((entity) => typeof entity !== 'undefined') as TableDataForArray[]
+
+    const mainTableDataForArray = {
+        fullKey: objName,
+        value: undefined,
+        valueString: String(undefined),
+        tableData: mainTableData,
+    } as TableDataForArray
+
+    return mainTableDataForArray
+}
+
 
 const InputMyTableReverse = <T extends BaseEntity>(
     props: TableProps<T>
@@ -591,6 +704,7 @@ const CreateComponent = () => {
 
 
     console.log(`### getEntityType`, createProjectRepository.getEntityType())
+    console.log(`### getFlattenObjForArray`, getFlattenObjForArray(createEntityList))
 
     // {
     //     "id": 1,
@@ -670,6 +784,7 @@ const UpdateComponent = () => {
     const [updateEntityList, setUpdateEntityList] = useRecoilState(updateProjectRepository.entityListState);
     updateProjectRepository.init(updateEntityList, setUpdateEntityList);
 
+    console.log(`### getFlattenObjForArray`, getFlattenObjForArray(updateEntityList))
 
 
     // set readDetailProjectRepository by projectApi

@@ -7,6 +7,8 @@ export class SubProject {
     testcol2b?: string
     testcol3b?: boolean
     testcol4b?: number
+    subStringArray?: string[]
+    subNumberArray?: number[]
 
 }
 

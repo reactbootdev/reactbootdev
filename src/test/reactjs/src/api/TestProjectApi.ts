@@ -114,6 +114,8 @@ export class TestProjectApi extends BaseApi {
                     testcol1a: "xxxxx1",
                     subProject: {
                         id: 33,
+                        subStringArray: ["ng1a", "2315", "3adf"],
+                        subNumberArray: [1, 2, 3, 45, 0.3],
                     }
                 },
                 search: {
