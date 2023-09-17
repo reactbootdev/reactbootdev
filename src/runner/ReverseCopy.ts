@@ -12,9 +12,13 @@ function copyFilesRecursively(sourceDir: string, targetDir: string) {
 
         const stat = fs.lstatSync(sourcePath);
 
+        if (sourcePath.includes('data')) { // 1. 제외 폴더
+            return;
+        }
+
         if (stat.isFile()) {
             // 파일인 경우
-            if (!sourcePath.includes('interface')) {
+            if (!sourcePath.includes('interface')) { // 2. 확장자 변환 폴더
                 // interface 폴더 내 파일이 아닌 경우만 처리
                 const parsedPath = path.parse(targetPath);
                 const newPath = path.format({
@@ -24,7 +28,7 @@ function copyFilesRecursively(sourceDir: string, targetDir: string) {
 
                 fs.copyFileSync(sourcePath, newPath);
                 console.log(`파일 복사 및 확장자 추가: ${sourcePath} -> ${newPath}`);
-            } else {
+            } else { // 3. 확장자 유지 폴더
                 // interface 폴더 내 파일인 경우 그냥 복사
                 fs.copyFileSync(sourcePath, targetPath);
                 console.log(`파일 복사: ${sourcePath} -> ${targetPath}`);
