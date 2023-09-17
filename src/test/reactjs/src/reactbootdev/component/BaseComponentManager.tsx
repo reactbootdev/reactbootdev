@@ -1,7 +1,7 @@
 import React from 'react';
 import {entityBeans, entityImportMap} from "@src/reactbootdev/data/EntityBean";
 import {NAME_DELIMITER, PRETTER_DELIMITER} from "@src/reactbootdev/config/config";
-import {ClassType, ObjectType, ObjectTypeEnum} from "@src/reactbootdev/interface/TaskBeansType";
+import {ObjectType, ObjectTypeEnum} from "@src/reactbootdev/interface/TaskBeansType";
 import {CreateContainer} from "@src/reactbootdev/component/CreateContainer";
 import {StringInput} from "@src/reactbootdev/component/StringInput";
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
@@ -311,6 +311,11 @@ export function transposeMatrix(matrix: any[][]) {
 
 export function extractShortKeyFromLongKey (longKey: string) {
     const shortKey = longKey.split(NAME_DELIMITER).slice(-1)[0]
+    if (shortKey.match(/^[0-9]+$/)) {
+        const refinedLongKey = longKey.split(NAME_DELIMITER).slice(-2).join(NAME_DELIMITER)
+        return refinedLongKey
+    }
+
     return shortKey
 }
 

@@ -5,7 +5,6 @@ import {Project} from "@src/entity/Project";
 import {
     entityRenderer,
     extractShortKeyFromLongKey,
-    isPrimtiveType,
     prettierLongKey,
     removeFirstElementFromKey,
     RenderTypeEnum,
@@ -16,6 +15,7 @@ import {TestProjectApi} from "@src/api/TestProjectApi";
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 import {
     Box,
+    Button,
     createTheme,
     Paper,
     Table,
@@ -30,11 +30,18 @@ import {
     Typography
 } from "@mui/material";
 import {BoxPropsExt} from "@src/reactbootdev/component/CreateContainer";
-import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
 import styled from 'styled-components';
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
 import {SubProject} from "@src/entity/SubProject";
 import {StringOutputValueType} from "@src/reactbootdev/component/StringOutput";
+import {
+    exploreForEachTableData,
+    getFlattenObj,
+    getFlattenObjForArray,
+    isCanOutputType,
+    TableDataForArray,
+    TableDataForArrayType
+} from "@src/reactbootdev/util/RepositoryUtil";
 
 
 const darkTheme = createTheme({
@@ -49,15 +56,18 @@ interface TableData {
     desc: string;
     value: string;
 }
+
 interface TableHeader {
     name: string;
     desc: string;
     data: TableData[];
 }
+
 interface TableProps<T extends BaseEntity> {
     repository: BaseRepository<T>;
     header: TableHeader[];
 }
+
 const MyTable = <T extends BaseEntity>(
     props: TableProps<T>
 ) => {
@@ -195,7 +205,7 @@ const MyTableReverse = <T extends BaseEntity>(
 };
 
 export function Item(props: BoxPropsExt) {
-    const { sx, ...other } = props;
+    const {sx, ...other} = props;
     return (
         <Tooltip
             title={prettierLongKey(props.tooltipText)}
@@ -245,7 +255,7 @@ const ReadListComponent = () => {
         readListProjectRepository.setEntities(resData)
     }, [])
 
-    const readListEntity = entityRenderer (
+    const readListEntity = entityRenderer(
         Project,
         readListProjectRepository,
         projectApi,
@@ -266,7 +276,7 @@ const ReadListComponent = () => {
 
     const header = getHeader(readListEntityList, whiteList, blackList)
 
-    const tableData : TableProps<Project> = {
+    const tableData: TableProps<Project> = {
         repository: readListProjectRepository,
         header: header,
     }
@@ -324,7 +334,7 @@ const ReadDetailComponent = () => {
 
     const header = getHeader(readDetailEntityList, whiteList, blackList)
 
-    const tableData : TableProps<Project> = {
+    const tableData: TableProps<Project> = {
         repository: readDetailProjectRepository,
         header: header,
     }
@@ -349,7 +359,7 @@ function getHeader<T extends BaseEntity>(
     const isWhiteList = whiteList.length > 0
     const isBlackList = blackList.length > 0
 
-    const headerKeyMap : Record<string, TableData[]> = {}
+    const headerKeyMap: Record<string, TableData[]> = {}
     const flattenObj = getFlattenObj(readListEntityList)
     Object.values(flattenObj).forEach(row => {
         row.forEach(col => {
@@ -395,44 +405,6 @@ function getHeader<T extends BaseEntity>(
 
     return header
 }
-
-function getFlattenObj<T extends BaseEntity>(readListEntityList: T[]) {
-    const flattenObj = readListEntityList.map((entity) => {
-        return Object.entries(flattenBaseEntity(entity)).map(([key, value]) => {
-            return {
-                fullKey: key,
-                value: value,
-            }
-        })
-    })
-    return flattenObj
-}
-
-function flattenBaseEntity<T extends BaseEntity>(obj: T, objName: string | undefined = undefined) {
-    const flattened : Record<string, string> = {}
-
-    if(typeof obj === 'undefined') {
-        return flattened
-    }
-
-    Object.entries(obj).map(([propertyName, propertyInfo]) => {
-        if (propertyInfo === null) {
-            return flattened
-        }
-
-        const flattenedKey =
-            typeof objName !== 'undefined' ? `${objName}${NAME_DELIMITER}${propertyName}` : propertyName
-
-        if (isPrimtiveType(typeof propertyInfo)) {
-            flattened[flattenedKey] = String(propertyInfo)
-        } else {
-            Object.assign(flattened, flattenBaseEntity(propertyInfo, `${flattenedKey}`))
-        }
-    })
-
-    return flattened
-}
-
 
 
 const InputMyTableReverse = <T extends BaseEntity>(
@@ -525,28 +497,199 @@ const InputMyTableReverse = <T extends BaseEntity>(
                                     // const addEl
 
                                     return (
-                                    <TableCell key={idx2}>
-                                        {/*<Item*/}
-                                        {/*    tooltipText={d.desc}*/}
-                                        {/*>*/}
-                                        {/*    {d.value}*/}
-                                        {/*</Item>*/}
+                                        <TableCell key={idx2}>
+                                            {/*<Item*/}
+                                            {/*    tooltipText={d.desc}*/}
+                                            {/*>*/}
+                                            {/*    {d.value}*/}
+                                            {/*</Item>*/}
 
-                                        {/*{ valueComponent}*/}
+                                            {/*{ valueComponent}*/}
 
-                                        <TextField
-                                            label={d.desc} variant="outlined"
-                                            value={d.value}
-                                            // value={refinedValue}
-                                            onChange={(e) => {
-                                                baseRepository.updateEntityByDelimiterKey(0, e.target.value, d.desc)
-                                                // setInputValue(e.target.value);
-                                            }}
-                                        />
-                                    </TableCell>
-                                )})}
+                                            <TextField
+                                                label={d.desc} variant="outlined"
+                                                value={d.value}
+                                                // value={refinedValue}
+                                                onChange={(e) => {
+                                                    baseRepository.updateEntityByDelimiterKey(0, e.target.value, d.desc)
+                                                    // setInputValue(e.target.value);
+                                                }}
+                                            />
+                                        </TableCell>
+                                    )
+                                })}
                             </TableRow>
                         ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </ThemeProvider>
+    );
+};
+
+
+interface TableProps<T extends BaseEntity> {
+    repository: BaseRepository<T>;
+    header: TableHeader[];
+
+}
+
+const InputMyTableReverseForArray = <T extends BaseEntity>(
+    props: TableProps<T>
+) => {
+
+
+    const baseRepository = props.repository
+    const flattenObjForArray = getFlattenObjForArray(baseRepository)
+    const entityList = baseRepository.entityList
+
+    const isRenderTableHead = false
+
+    const matrix = props.header.map(header => {
+        return header.data.map(data => {
+            return data
+        })
+    })
+
+    const maxRowMatrix = matrix.reduce((acc, cur) => {
+        return acc.length > cur.length ? acc : cur
+    }, []).length
+
+
+    const forEachTableData: TableDataForArray[] = []
+    exploreForEachTableData(flattenObjForArray, (item: TableDataForArray) => {
+        forEachTableData.push(item)
+    })
+
+    const refinedForEachTableData = forEachTableData.filter(item => {
+        return isCanOutputType(item.type)
+    })
+
+    console.log(`refinedForEachTableData`, refinedForEachTableData)
+
+    return (
+        <ThemeProvider theme={darkTheme}>
+            <TableContainer component={Paper}>
+                <Typography variant="h5" gutterBottom>
+                    My Table
+                    {JSON.stringify(entityList)}
+                </Typography>
+                <Table>
+                    {isRenderTableHead && (
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>
+                                    <Item
+                                        tooltipText={"속성"}
+                                    >
+                                        속성
+                                    </Item>
+                                </TableCell>
+                                {
+                                    Array(maxRowMatrix).fill(0).map((header, idx) => {
+                                        return (
+                                            <TableCell key={idx}>
+                                                <Item
+                                                    tooltipText={String(idx)}
+                                                >
+                                                    {idx}
+                                                </Item>
+                                            </TableCell>
+                                        )
+                                    })
+                                }
+                            </TableRow>
+                        </TableHead>
+                    )}
+
+                    <TableBody>
+
+
+                        {refinedForEachTableData.map((d, idx2) => {
+                            // {matrix.map((row, idx) => (
+
+                            return (
+                                <TableRow key={idx2}>
+                                    <TableCell>
+                                        <Item
+                                            tooltipText={d.fullKey}
+                                        >
+                                            {d.shortKey}
+                                        </Item>
+                                    </TableCell>
+
+                                    <TableCell key={idx2}>
+
+                                        {/*    TODO:: 재구현 필요 > 각 하위 요소임. `entity`가 아니라. */}
+                                        {
+                                            d.addFunction !== undefined && (
+                                                <>
+                                                    <Button
+                                                        onClick={(e) => {
+                                                            if (d.addFunction === undefined) {
+                                                                return
+                                                            }
+                                                            const addFunc = d.addFunction(undefined)
+                                                            addFunc(e)
+
+
+                                                            const typeTest = Project
+                                                            const typeTest2 = new Project()
+                                                            // TODO :: 결국 entitiy Bean으로 불러와야하고, string이 아닌 실제로 설정해야..
+
+                                                        }}
+                                                    >
+                                                        add
+                                                    </Button>
+                                                    <Button
+                                                            onClick={(e) => {
+                                                            if (d.removeFunction === undefined) {
+                                                            return
+                                                        }
+                                                            // TODO :: deleteBydelimiterKey 구현
+                                                            // TODO :: UI 위치관련 구현.
+
+                                                            // const removeFunc = d.removeFunction()
+                                                            // removeFunc(e)
+                                                        }}
+                                                    >
+                                                        remove
+                                                    </Button>
+                                                </>
+                                            )
+                                        }
+
+                                        {
+                                            d.type !== TableDataForArrayType.ARRAY && (
+
+                                                <TextField
+                                                    label={d.fullKey} variant="outlined"
+                                                    value={d.value}
+                                                    // value={refinedValue}
+                                                    onChange={(e) => {
+                                                        if (d.updateFunction === undefined) {
+                                                            return
+                                                        }
+
+                                                        const updateFunc = d.updateFunction(e.target.value)
+                                                        updateFunc(e)
+                                                        console.log(`updateFunc`, updateFunc)
+                                                        console.log(updateFunc)
+                                                        console.log(JSON.stringify(updateFunc))
+
+                                                        // TODO :: update 시에 `ARRAY` type 데이터 삭제 됨. 덮어쓰기 되는듯.
+                                                        // baseRepository.updateEntityByDelimiterKey(0, e.target.value, d.desc)
+                                                        // setInputValue(e.target.value);
+                                                    }}
+                                                />
+                                            )
+                                        }
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
+
+
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -565,6 +708,7 @@ const containerStyle = {
 interface StyledButtonProps {
     primary?: boolean;
 }
+
 const StyledButton = styled.button<StyledButtonProps>`
   // 스타일 정의에서 primary prop 사용
   background-color: ${(props: any) => (props.primary ? 'blue' : 'red')};
@@ -591,6 +735,7 @@ const CreateComponent = () => {
 
 
     console.log(`### getEntityType`, createProjectRepository.getEntityType())
+    console.log(`### getFlattenObjForArray`, getFlattenObjForArray(createProjectRepository))
 
     // {
     //     "id": 1,
@@ -644,7 +789,7 @@ const CreateComponent = () => {
 
     const header = getHeader(createEntityList, whiteList, blackList)
 
-    const tableData : TableProps<Project> = {
+    const tableData: TableProps<Project> = {
         repository: createProjectRepository,
         header: header,
     }
@@ -670,6 +815,7 @@ const UpdateComponent = () => {
     const [updateEntityList, setUpdateEntityList] = useRecoilState(updateProjectRepository.entityListState);
     updateProjectRepository.init(updateEntityList, setUpdateEntityList);
 
+    console.log(`### getFlattenObjForArray`, getFlattenObjForArray(updateProjectRepository))
 
 
     // set readDetailProjectRepository by projectApi
@@ -699,14 +845,15 @@ const UpdateComponent = () => {
 
     const header = getHeader(updateEntityList, whiteList, blackList)
 
-    const tableData : TableProps<Project> = {
+    const tableData: TableProps<Project> = {
         repository: updateProjectRepository,
         header: header,
     }
 
     return (
         <>
-            {InputMyTableReverse(tableData)}
+            {/*{InputMyTableReverse(tableData)}*/}
+            {InputMyTableReverseForArray(tableData)}
             {/*<div>test2</div>*/}
             {/*{updateEntity}*/}
         </>
@@ -744,31 +891,35 @@ const DeleteComponent = () => {
 @page("/c")
 export class CreatePage {
     render() {
-        return <CreateComponent />;
+        return <CreateComponent/>;
     }
 }
+
 @page("/r")
 export class ReadListPage {
     render() {
-        return <ReadListComponent />;
+        return <ReadListComponent/>;
     }
 }
+
 @page("/rd")
 export class ReadDetailPage {
     render() {
-        return <ReadDetailComponent />;
+        return <ReadDetailComponent/>;
     }
 }
+
 @page("/u")
 export class UpdatePage {
     render() {
-        return <UpdateComponent />;
+        return <UpdateComponent/>;
     }
 }
+
 @page("/d")
 export class DeletePage {
     render() {
-        return <DeleteComponent />;
+        return <DeleteComponent/>;
     }
 }
 
