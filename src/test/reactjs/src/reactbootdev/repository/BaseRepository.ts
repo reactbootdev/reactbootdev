@@ -32,6 +32,10 @@ export default class BaseRepository<T extends BaseEntity> {
         this.setEntityList = setEntityList;
     }
 
+    getRepositoryKey = () => {
+        return this.repositoryKey;
+    }
+
     truncate = () => {
         const updatedList = addItem([], {} as T);
         this.setEntityList([]);

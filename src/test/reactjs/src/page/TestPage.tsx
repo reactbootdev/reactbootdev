@@ -54,12 +54,12 @@ interface TableHeader {
     desc: string;
     data: TableData[];
 }
-interface TableProps {
-    repositoryKey: string;
+interface TableProps<T extends BaseEntity> {
+    repository: BaseRepository<T>;
     header: TableHeader[];
 }
-const MyTable = (
-    props: TableProps
+const MyTable = <T extends BaseEntity>(
+    props: TableProps<T>
 ) => {
 
     const matrix = props.header.map(header => {
@@ -114,9 +114,10 @@ const MyTable = (
         </ThemeProvider>
     );
 };
-function MyTableReverse (
-    props: TableProps
-) {
+
+const MyTableReverse = <T extends BaseEntity>(
+    props: TableProps<T>
+) => {
 
     const isRenderTableHead = false
 
@@ -192,6 +193,7 @@ function MyTableReverse (
         </ThemeProvider>
     );
 };
+
 export function Item(props: BoxPropsExt) {
     const { sx, ...other } = props;
     return (
@@ -264,8 +266,8 @@ const ReadListComponent = () => {
 
     const header = getHeader(readListEntityList, whiteList, blackList)
 
-    const tableData : TableProps = {
-        repositoryKey: readListProjectRepository.repositoryKey,
+    const tableData : TableProps<Project> = {
+        repository: readListProjectRepository,
         header: header,
     }
 
@@ -322,8 +324,8 @@ const ReadDetailComponent = () => {
 
     const header = getHeader(readDetailEntityList, whiteList, blackList)
 
-    const tableData : TableProps = {
-        repositoryKey: readDetailProjectRepository.repositoryKey,
+    const tableData : TableProps<Project> = {
+        repository: readDetailProjectRepository,
         header: header,
     }
 
@@ -433,14 +435,13 @@ function flattenBaseEntity<T extends BaseEntity>(obj: T, objName: string | undef
 
 
 
-function InputMyTableReverse (
-    props: TableProps
-) {
+const InputMyTableReverse = <T extends BaseEntity>(
+    props: TableProps<T>
+) => {
 
 
-    const baseRepository = new BaseRepository(BaseEntity, props.repositoryKey);
-    const [entityList, setEntityList] = useRecoilState(baseRepository.entityListState);
-    baseRepository.init(entityList, setEntityList)
+    const baseRepository = props.repository
+    const entityList = baseRepository.entityList
 
     const isRenderTableHead = false
 
@@ -521,15 +522,17 @@ function InputMyTableReverse (
                                     const outputValue = baseRepository.getValueById(idx2, d.desc) as StringOutputValueType
                                     const valueComponent = Array.isArray(outputValue) ? outputValue.join(", ") : outputValue
 
+                                    // const addEl
+
                                     return (
                                     <TableCell key={idx2}>
-                                        <Item
-                                            tooltipText={d.desc}
-                                        >
-                                            {d.value}
-                                        </Item>
+                                        {/*<Item*/}
+                                        {/*    tooltipText={d.desc}*/}
+                                        {/*>*/}
+                                        {/*    {d.value}*/}
+                                        {/*</Item>*/}
 
-                                        { valueComponent}
+                                        {/*{ valueComponent}*/}
 
                                         <TextField
                                             label={d.desc} variant="outlined"
@@ -641,8 +644,8 @@ const CreateComponent = () => {
 
     const header = getHeader(createEntityList, whiteList, blackList)
 
-    const tableData : TableProps = {
-        repositoryKey: createProjectRepository.repositoryKey,
+    const tableData : TableProps<Project> = {
+        repository: createProjectRepository,
         header: header,
     }
 
@@ -696,8 +699,8 @@ const UpdateComponent = () => {
 
     const header = getHeader(updateEntityList, whiteList, blackList)
 
-    const tableData : TableProps = {
-        repositoryKey: updateProjectRepository.repositoryKey,
+    const tableData : TableProps<Project> = {
+        repository: updateProjectRepository,
         header: header,
     }
 
