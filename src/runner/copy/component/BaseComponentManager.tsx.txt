@@ -1,6 +1,6 @@
 import React from 'react';
 import {entityBeans, entityImportMap} from "@src/reactbootdev/data/EntityBean";
-import {NAME_DELIMITER} from "@src/reactbootdev/config/config";
+import {NAME_DELIMITER, PRETTER_DELIMITER} from "@src/reactbootdev/config/config";
 import {ClassType, ObjectType, ObjectTypeEnum} from "@src/reactbootdev/interface/TaskBeansType";
 import {CreateContainer} from "@src/reactbootdev/component/CreateContainer";
 import {StringInput} from "@src/reactbootdev/component/StringInput";
@@ -258,7 +258,7 @@ function getMappedComponent (renderType: RenderTypeEnum, type: string) {
     return MappedComponent
 }
 
-function isPrimtiveType (type: string) {
+export function isPrimtiveType (type: string) {
     return type === 'string' || type === 'number' || type === 'boolean'
 }
 
@@ -288,4 +288,38 @@ function flattenObject(obj: ObjectType, objName: string) {
     })
 
     return flattened
+}
+export function transposeMatrix(matrix: any[][]) {
+    if (!matrix.length) {
+        return [];
+    }
+    const numRows = matrix.length;
+    const numCols = matrix[0].length;
+
+    const transposedMatrix = [];
+
+    for (let j = 0; j < numCols; j++) {
+        const newRow = [];
+        for (let i = 0; i < numRows; i++) {
+            newRow.push(matrix[i][j]);
+        }
+        transposedMatrix.push(newRow);
+    }
+
+    return transposedMatrix;
+}
+
+export function extractShortKeyFromLongKey (longKey: string) {
+    const shortKey = longKey.split(NAME_DELIMITER).slice(-1)[0]
+    return shortKey
+}
+
+export function prettierLongKey (longKey: string) {
+    const prettierLongKey = longKey.replaceAll(NAME_DELIMITER, PRETTER_DELIMITER)
+    return prettierLongKey
+}
+
+export function removeFirstElementFromKey (longKey: string) {
+    const refinedKey = longKey.split(NAME_DELIMITER).slice(1).join(NAME_DELIMITER)
+    return refinedKey
 }
