@@ -24,7 +24,7 @@ export const deleteItem = <T extends BaseEntity>(list: T[], itemId: number): T[]
 export const updateItem = <T extends BaseEntity>(list: T[], itemId: number, newItem: T): T[] => {
     const updatedList = list.map(item => {
         if (item.id === itemId) {
-            return { ...item, ...newItem };
+            return {...item, ...newItem};
         }
         return item;
     });
@@ -37,19 +37,19 @@ export interface ResultObject {
 }
 
 
-export function  getEntityKey<T extends BaseEntity>
-(classType: new () => T) : ResultObject {
-    const classInstance= new classType() as T;
+export function getEntityKey<T extends BaseEntity>
+(classType: new () => T): ResultObject {
+    const classInstance = new classType() as T;
     console.log(`classInstance: ${classInstance}`, classInstance)
 
-    console.log( classInstance.constructor.name)
+    console.log(classInstance.constructor.name)
     const structure = createObjectStructure(classInstance)
     return structure;
 }
 
 export function createObjectStructure(
     obj: any, parentKey = '', depth = 0, maxDepth = 5
-) : ResultObject {
+): ResultObject {
     if (depth > maxDepth) {
         throw new Error("Maximum call stack size exceeded ")
     }
@@ -80,7 +80,7 @@ export function createObjectStructure(
 }
 
 
-export const getByDelimiterKey = <T extends BaseEntity> (
+export const getByDelimiterKey = <T extends BaseEntity>(
     list: T[],
     idx: number,
     multiKeys: string,
@@ -98,18 +98,18 @@ export function getNestedProperty<T, K extends keyof T>(
     obj: T,
     keys: string[]
 ) {
-    const result = { ...obj };
+    const result = {...obj};
     let current: any = result;
     for (let i = 0; i < keys.length - 1; i++) {
         const key = keys[i];
-        current[key] = { ...current[key] };
+        current[key] = {...current[key]};
         current = current[key];
     }
     return current[keys[keys.length - 1]]
 }
 
 
-export const updateByDelimiterKey =  <T extends BaseEntity> (
+export const updateByDelimiterKey = <T extends BaseEntity>(
     list: T[],
     idx: number,
     newValue: unknown,
@@ -138,11 +138,11 @@ export function updateNestedProperty<T, K extends keyof T>(
     keys: string[],
     value: unknown
 ): T {
-    const result = { ...obj };
+    const result = {...obj};
     let current: any = result;
     for (let i = 0; i < keys.length - 1; i++) {
         const key = keys[i];
-        current[key] = { ...current[key] };
+        current[key] = {...current[key]};
         current = current[key];
     }
     current[keys[keys.length - 1]] = value;
@@ -156,7 +156,7 @@ export function createOrSetProperty<T, K extends keyof T>(
 ): T {
     if (!obj) {
         // If obj is undefined, create a new object with the property and return it.
-        const newObj = { [key]: value } as T;
+        const newObj = {[key]: value} as T;
         return newObj;
     }
 
@@ -174,15 +174,11 @@ export function createOrSetProperty<T, K extends keyof T>(
 }
 
 
-
 export function extractEntityKey(
     obj: ObjectType,
-
     myKey: string,
     totalParentKey: string = ``,
-
     result: any = {},
-
     depth: number = 0,
     maxDepth: number = 10
 ) {
@@ -205,7 +201,7 @@ export function extractEntityKey(
     Object.entries(obj.data).map((entry) => {
         const [subObjKey, subObj] = entry;
         const isReferenceNode = subObj.referenceNode !== undefined
-        if(isReferenceNode) {
+        if (isReferenceNode) {
             totalParentKey = `${totalParentKey}${NAME_DELIMITER}${subObjKey}`
             result = extractEntityKey(subObj.referenceNode, subObjKey, totalParentKey, result, depth + 1, maxDepth)
             return result
@@ -218,7 +214,7 @@ export function extractEntityKey(
     return result
 }
 
-export function extractEntityKeyWithFullPath(result : any = {}, parentKey: string, depth : number = 0, maxDepth : number = 5) {
+export function extractEntityKeyWithFullPath(result: any = {}, parentKey: string, depth: number = 0, maxDepth: number = 5) {
     Object.entries(entityBeans).map((entry) => {
         const [fullFilePath, fileDetail] = entry;
         const objects = fileDetail.objects
@@ -233,7 +229,7 @@ export function extractEntityKeyWithFullPath(result : any = {}, parentKey: strin
     return result
 }
 
-export function getEntitiKeyByType<T extends BaseEntity>(entityType : new () => T) : T {
+export function getEntitiKeyByType<T extends BaseEntity>(entityType: new () => T): T {
     const result = extractEntityKeyWithFullPath({}, "")
     const toFind = Object.entries(entityImportMap).filter((entry) => {
         const [key, value] = entry
@@ -282,7 +278,7 @@ export function getEntityTypeyByType<T extends BaseEntity>(entityType: new () =>
     return mergeSubObjects(entityKeyMap) as T
 }
 
-export function extractEntityTypeWithFullPath(result : any = {}, parentKey: string, depth : number = 0, maxDepth : number = 5) {
+export function extractEntityTypeWithFullPath(result: any = {}, parentKey: string, depth: number = 0, maxDepth: number = 5) {
     Object.entries(entityBeans).map(([fullFilePath, fileDetail]) => {
         const objects = fileDetail.objects
         Object.entries(objects).map(([objectName, objectDetail]) => {
@@ -301,12 +297,9 @@ export function extractEntityTypeWithFullPath(result : any = {}, parentKey: stri
 export function extractEntityType(
     // obj: ObjectType,
     obj: any,
-
     myKey: string,
     totalParentKey: string = ``,
-
     result: any = {},
-
     depth: number = 0,
     maxDepth: number = 100
 ) {
@@ -333,11 +326,11 @@ export function extractEntityType(
         return result
     }
 
-    Object.entries(obj.data).map((entry : [string, any]) => {
+    Object.entries(obj.data).map((entry: [string, any]) => {
         const [subObjKey, subObj] = entry;
         const isReferenceNode = subObj.referenceNode !== undefined
         const newTotalParentKey = `${totalParentKey}${NAME_DELIMITER}${subObjKey}`
-        if(isReferenceNode) {
+        if (isReferenceNode) {
             result = extractEntityType(subObj.referenceNode, subObjKey, newTotalParentKey, result, depth + 1, maxDepth)
             return result
         }
@@ -348,6 +341,7 @@ export function extractEntityType(
 
     return result
 }
+
 export function createOrSetPropertyForType<T, K extends keyof T>(
     obj: T | undefined,
     key: string,
@@ -355,7 +349,7 @@ export function createOrSetPropertyForType<T, K extends keyof T>(
 ): T {
     if (!obj) {
         // If obj is undefined, create a new object with the property and return it.
-        const newObj = { [key]: value } as T;
+        const newObj = {[key]: value} as T;
         return newObj;
     }
 
@@ -378,11 +372,11 @@ export function updateNestedPropertyForType<T, K extends keyof T>(
     keys: string[],
     value: unknown
 ): T {
-    const result = { ...obj };
+    const result = {...obj};
     let current: any = result;
     for (let i = 0; i < keys.length - 1; i++) {
         const key = keys[i];
-        current[key] = { ...current[key] };
+        current[key] = {...current[key]};
         current = current[key];
     }
     current[keys[keys.length - 1]] = value;
@@ -405,7 +399,7 @@ export function getFlattenObj<T extends BaseEntity>(readListEntityList: T[]) {
 export function flattenBaseEntity<T extends BaseEntity>(obj: T, objName: string | undefined = undefined) {
     const flattened: Record<string, any> = {}
 
-    if(typeof obj === 'undefined') {
+    if (typeof obj === 'undefined') {
         return flattened
     }
 
@@ -442,6 +436,7 @@ export enum TableDataForArrayType {
     ARRAY = "ARRAY",
     OBJECT = "OBJECT",
 }
+
 export function convertTableDataForArrayType(obj: any) {
     if (Array.isArray(obj)) {
         return TableDataForArrayType.ARRAY
@@ -491,10 +486,9 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
     baseRepository: BaseRepository<T>
     , obj: T
     , objName: string
-
 ): TableDataForArray | undefined {
 
-    if(typeof obj === 'undefined') {
+    if (typeof obj === 'undefined') {
         return undefined
     }
 
@@ -507,17 +501,18 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
             value: obj,
             valueString: String(obj),
             tableData: undefined,
-            updateFunction: function (value: any) { return function (e) {
-                console.log(`### updateFunction`, objName, value)
-                const entityNumber = objName.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
-                const entityNumberInt = Number(entityNumber)
-                const entityKey = objName
-                    .split(NAME_DELIMITER)
-                    .filter((v, index) => index > 0 && v.length > 0)
-                    .join(NAME_DELIMITER)
-                console.log(`entityNumber: ${entityNumber}, entityKey: ${entityKey}`)
-                baseRepository.updateEntityByDelimiterKey(entityNumberInt, value, entityKey)
-            }
+            updateFunction: function (value: any) {
+                return function (e) {
+                    console.log(`### updateFunction`, objName, value)
+                    const entityNumber = objName.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
+                    const entityNumberInt = Number(entityNumber)
+                    const entityKey = objName
+                        .split(NAME_DELIMITER)
+                        .filter((v, index) => index > 0 && v.length > 0)
+                        .join(NAME_DELIMITER)
+                    console.log(`entityNumber: ${entityNumber}, entityKey: ${entityKey}`)
+                    baseRepository.updateEntityByDelimiterKey(entityNumberInt, value, entityKey)
+                }
             },
             removeFunction: (idx: number) => (e) => {
                 const entityNumber = objName.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
@@ -555,17 +550,18 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                 value: propertyInfo,
                 valueString: String(propertyInfo),
                 tableData: undefined,
-                updateFunction: function (value: any) { return function (e) {
-                    console.log(`### updateFunction`, flattenedKey, value)
-                    const entityNumber = flattenedKey.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
-                    const entityNumberInt = Number(entityNumber)
-                    const entityKey = flattenedKey
-                        .split(NAME_DELIMITER)
-                        .filter((v, index) => index > 0 && v.length > 0)
-                        .join(NAME_DELIMITER)
-                    console.log(`entityNumber: ${entityNumber}, entityKey: ${entityKey}`)
-                    baseRepository.updateEntityByDelimiterKey(entityNumberInt, value, entityKey)
-                }
+                updateFunction: function (value: any) {
+                    return function (e) {
+                        console.log(`### updateFunction`, flattenedKey, value)
+                        const entityNumber = flattenedKey.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
+                        const entityNumberInt = Number(entityNumber)
+                        const entityKey = flattenedKey
+                            .split(NAME_DELIMITER)
+                            .filter((v, index) => index > 0 && v.length > 0)
+                            .join(NAME_DELIMITER)
+                        console.log(`entityNumber: ${entityNumber}, entityKey: ${entityKey}`)
+                        baseRepository.updateEntityByDelimiterKey(entityNumberInt, value, entityKey)
+                    }
                 },
 
                 removeFunction: (idx: number) => (e) => {
@@ -585,7 +581,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                 }
             }
             return tableData
-        } else if(Array.isArray(propertyInfo)) {
+        } else if (Array.isArray(propertyInfo)) {
             // Case 02 :: Array Type
             const subTableData = propertyInfo.map((entity, idx) => {
                 const subFlattenedKey = `${flattenedKey}${NAME_DELIMITER}${idx}`
@@ -645,7 +641,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
             return tableData
         } else {
             const baseEntityForArray = flattenBaseEntityForArray(baseRepository, propertyInfo, flattenedKey)
-            if(typeof baseEntityForArray !== 'undefined') {
+            if (typeof baseEntityForArray !== 'undefined') {
                 baseEntityForArray.type = TableDataForArrayType.OBJECT
             }
 

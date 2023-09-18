@@ -5,9 +5,10 @@ import {
     addItem,
     addItems,
     deleteItem,
+    flattenBaseEntity,
     getByDelimiterKey,
     getEntitiKeyByType,
-    getEntitiTypeyByType,
+    getEntityTypeyByType,
     updateByDelimiterKey,
     updateItem
 } from "@src/reactbootdev/util/RepositoryUtil";
@@ -93,14 +94,20 @@ export default class BaseRepository<T extends BaseEntity> {
         })
         return result;
     }
-    getEntitiKey = () => {
+    getEntityKey = () => {
         const result = getEntitiKeyByType(this.entityClass) as T
         return result
     }
 
     getEntityType = () => {
-        const result = getEntitiTypeyByType(this.entityClass) as T
+        const result = getEntityTypeyByType(this.entityClass) as T
         return result
+    }
+
+    getFlattenEntityType = () => {
+        const result = getEntityTypeyByType(this.entityClass) as T
+
+        return flattenBaseEntity(result)
     }
 
     constructor(entityClass: new () => T, repositoryKey: string = uuidv4()) {
