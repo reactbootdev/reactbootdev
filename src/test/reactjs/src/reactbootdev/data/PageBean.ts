@@ -1,13 +1,9 @@
-import { TaskBeansType,ObjectTypeEnum } from "../interface/TaskBeansType";
+import {ObjectTypeEnum, TaskBeansType} from "../interface/TaskBeansType";
 
 
-import { CreatePage } from "@src/page/TestPage";
-import { ReadListPage } from "@src/page/TestPage";
-import { ReadDetailPage } from "@src/page/TestPage";
-import { UpdatePage } from "@src/page/TestPage";
-import { DeletePage } from "@src/page/TestPage";
-import { Welcome } from "@src/page/home";
-import { TestEnum } from "@src/entity/Project";
+import {CreatePage, DeletePage, ReadDetailPage, ReadListPage, UpdatePage} from "@src/page/TestPage";
+import {Welcome} from "@src/page/home";
+import {TestEnum} from "@src/entity/Project";
 
 
 export const pageImportMap: { [key: string]: any } = {
@@ -25,15 +21,44 @@ export const pageBeans: TaskBeansType = {
     "importPaths": {
       "React": "src/page/react.ts",
       "useEffect": "src/page/react.ts",
+        "useMemo": "src/page/react.ts",
       "useRecoilState": "src/page/recoil.ts",
       "page": "src/reactbootdev/decorator/Page.ts",
       "Project": "src/entity/Project.ts",
-      "entityRenderer": "src/reactbootdev/component/BaseComponentManager.ts",
+        "\r\n    entityRenderer": "src/reactbootdev/component/BaseComponentManager.ts",
+        "extractShortKeyFromLongKey": "src/reactbootdev/component/BaseComponentManager.ts",
+        "prettierLongKey": "src/reactbootdev/component/BaseComponentManager.ts",
+        "removeFirstElementFromKey": "src/reactbootdev/component/BaseComponentManager.ts",
       "RenderTypeEnum": "src/reactbootdev/component/BaseComponentManager.ts",
+        "transposeMatrix\r\n": "src/reactbootdev/component/BaseComponentManager.ts",
       "ProjectRepository": "src/repository/ProjectRepository.ts",
       "TestProjectApi": "src/api/TestProjectApi.ts",
-      "extractEntityKeyWithFullPath": "src/reactbootdev/util/RepositoryUtil.ts",
-      "getEntitiKeyByType": "src/reactbootdev/util/RepositoryUtil.ts"
+        "BaseEntity": "src/reactbootdev/entity/BaseEntity.ts",
+        "\r\n    Box": "mui/material.ts",
+        "Button": "mui/material.ts",
+        "createTheme": "mui/material.ts",
+        "Paper": "mui/material.ts",
+        "Table": "mui/material.ts",
+        "TableBody": "mui/material.ts",
+        "TableCell": "mui/material.ts",
+        "TableContainer": "mui/material.ts",
+        "TableHead": "mui/material.ts",
+        "TableRow": "mui/material.ts",
+        "TextField": "mui/material.ts",
+        "ThemeProvider": "mui/material.ts",
+        "Tooltip": "mui/material.ts",
+        "Typography\r\n": "mui/material.ts",
+        "BoxPropsExt": "src/reactbootdev/component/CreateContainer.ts",
+        "styled": "src/page/styled-components.ts",
+        "BaseRepository": "src/reactbootdev/repository/BaseRepository.ts",
+        "SubProject": "src/entity/SubProject.ts",
+        "StringOutputValueType": "src/reactbootdev/component/StringOutput.ts",
+        "\r\n    exploreForEachTableData": "src/reactbootdev/util/RepositoryUtil.ts",
+        "getFlattenObj": "src/reactbootdev/util/RepositoryUtil.ts",
+        "getFlattenObjForArray": "src/reactbootdev/util/RepositoryUtil.ts",
+        "isCanOutputType": "src/reactbootdev/util/RepositoryUtil.ts",
+        "TableDataForArray": "src/reactbootdev/util/RepositoryUtil.ts",
+        "TableDataForArrayType\r\n": "src/reactbootdev/util/RepositoryUtil.ts"
     },
     "objects": {
       "CreatePage": {

@@ -311,11 +311,6 @@ export function transposeMatrix(matrix: any[][]) {
 
 export function extractShortKeyFromLongKey (longKey: string) {
     const shortKey = longKey.split(NAME_DELIMITER).slice(-1)[0]
-    if (shortKey.match(/^[0-9]+$/)) {
-        const refinedLongKey = longKey.split(NAME_DELIMITER).slice(-2).join(NAME_DELIMITER)
-        return refinedLongKey
-    }
-
     return shortKey
 }
 
