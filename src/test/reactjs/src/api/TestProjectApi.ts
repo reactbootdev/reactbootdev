@@ -1,4 +1,5 @@
 import {BASE_URL, BaseApi} from "@src/reactbootdev/api/BaseApi";
+import {Project} from "@src/entity/Project";
 
 
 export class TestProjectApi extends BaseApi {
@@ -101,23 +102,25 @@ export class TestProjectApi extends BaseApi {
     }
 
     handleReadDetail = (data: any) => {
+        const project: Project = {
+            id: 1,
+            name: "test1",
+            description: "test1",
+            startDate: "2021-01-01",
+            endDate: "2021-01-01",
+            testcol1a: "xxxxx1",
+            subProject: {
+                id: 33,
+                subStringArray: ["ng1a", "2315", "3adf"],
+                subNumberArray: [1, 2, 3, 45, 0.3],
+            }
+        }
+
         const testRes = {
             code: 200,
             message: "success",
             result: {
-                data: {
-                    id: 1,
-                    name: "test1",
-                    description: "test1",
-                    startDate: "2021-01-01",
-                    endDate: "2021-01-01",
-                    testcol1a: "xxxxx1",
-                    subProject: {
-                        id: 33,
-                        subStringArray: ["ng1a", "2315", "3adf"],
-                        subNumberArray: [1, 2, 3, 45, 0.3],
-                    }
-                },
+                data: project,
                 search: {
                     name: "test1",
                     description: "test1",

@@ -30,6 +30,10 @@ export function renderer(config: { name: string }) {
 @renderContainer({groupName: "testrenderer", rendererName: "testrenderer"})
 export class Project extends BaseEntity {
     id: number | null = null;
+    name?: string
+    description?: string
+    startDate?: string
+    endDate?: string
 
     testcol1a?: string
     @render({groupName: "testrenderer", rendererName: "testrenderer", propName: "testcol1a"})

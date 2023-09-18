@@ -64,7 +64,12 @@ export const pageBeans: TaskBeansType = {
       "getFlattenObjForArray": "src/reactbootdev/util/RepositoryUtil.ts",
       "isCanOutputType": "src/reactbootdev/util/RepositoryUtil.ts",
       "TableDataForArray": "src/reactbootdev/util/RepositoryUtil.ts",
-      "TableDataForArrayType": "src/reactbootdev/util/RepositoryUtil.ts"
+      "TableDataForArrayType": "src/reactbootdev/util/RepositoryUtil.ts",
+      "CreatePage": "src/page/TestPage.tsx",
+      "ReadListPage": "src/page/TestPage.tsx",
+      "ReadDetailPage": "src/page/TestPage.tsx",
+      "UpdatePage": "src/page/TestPage.tsx",
+      "DeletePage": "src/page/TestPage.tsx"
     },
     "objects": {
       "CreatePage": {
@@ -156,7 +161,8 @@ export const pageBeans: TaskBeansType = {
   },
   "src/page/home.tsx": {
     "importPaths": {
-      "page": "src/reactbootdev/decorator/Page.ts"
+      "page": "src/reactbootdev/decorator/Page.ts",
+      "Welcome": "src/page/home.tsx"
     },
     "objects": {
       "Welcome": {
@@ -182,7 +188,8 @@ export const pageBeans: TaskBeansType = {
     "importPaths": {
       "entity": "src/reactbootdev/decorator/Entity.ts",
       "SubProject": "src/entity/SubProject.ts",
-      "BaseEntity": "src/reactbootdev/entity/BaseEntity.ts"
+      "BaseEntity": "src/reactbootdev/entity/BaseEntity.ts",
+      "TestEnum": "src/entity/Project.ts"
     },
     "objects": {
       "TestEnum": {

@@ -305,6 +305,21 @@ export function getRefinedObjectName(filePath: string, objectName: string) {
     return refinedObjectName
 }
 
+export function updateRefSelfImportPath(taskArgs: TaskArgsInterface) {
+    const fileObjects = taskArgs.taskBeans
+    const resultFileName = taskArgs.resultFileName
+
+    Object.entries(fileObjects).forEach(([filePath, fileType]) => {
+        const importPaths = fileType.importPaths
+
+        const objects = fileType.objects
+
+        Object.entries(objects).forEach(([objectName, objectMap]) => {
+            importPaths[objectName] = filePath
+        })
+    })
+}
+
 
 // const resJson = {}
 // default depth 0
@@ -312,6 +327,7 @@ export function commonDecoratorPostTask(taskArgs: TaskArgsInterface, joinKey: st
 
     const fileObjects = taskArgs.taskBeans
     const resultFileName = taskArgs.resultFileName
+    updateRefSelfImportPath(taskArgs)
     recursiveUpdate(fileObjects, undefined, maxDepth, depth, taskArgs)
 
     const importStatements = ``
@@ -369,9 +385,9 @@ function replaceStringTypeToEnum(text: string) {
     text = text.replace(/"\%\%\%\%/g, '')
     text = text.replace(/\%\%\%\%"/g, '')
 
-    text = text.replace(/"type": "string"/g, `"type": String`)
-    text = text.replace(/"type": "number"/g, `"type": Number`)
-    text = text.replace(/"type": "boolean"/g, `"type": Boolean`)
+    text = text.replace(/"realType": "string"/g, `"realType": String`)
+    text = text.replace(/"realType": "number"/g, `"realType": Number`)
+    text = text.replace(/"realType": "boolean"/g, `"realType": Boolean`)
 
     return text
 }

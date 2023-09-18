@@ -263,9 +263,7 @@ export function mergeSubObjects(obj: any): any {
 }
 
 
-
-
-export function getEntitiTypeyByType<T extends BaseEntity>(entityType : new () => T) : T {
+export function getEntityTypeyByType<T extends BaseEntity>(entityType: new () => T): T {
     const result = extractEntityTypeWithFullPath({}, "")
     const toFind = Object.entries(entityImportMap).filter((entry) => {
         const [key, value] = entry
@@ -319,6 +317,7 @@ export function extractEntityType(
         totalKey: totalKey,
         type: obj.type,
         isArray: obj.isArray,
+        realType: obj.realType,
     }
 
     if (depth > maxDepth) {
@@ -402,7 +401,7 @@ export function getFlattenObj<T extends BaseEntity>(readListEntityList: T[]) {
 }
 
 export function flattenBaseEntity<T extends BaseEntity>(obj: T, objName: string | undefined = undefined) {
-    const flattened : Record<string, string> = {}
+    const flattened: Record<string, any> = {}
 
     if(typeof obj === 'undefined') {
         return flattened
@@ -463,6 +462,7 @@ export interface TableDataForArray {
     fullKey: string,
     shortKey: string,
     type?: string,
+    realType?: any,
     value?: object,
     valueString?: string,
     tableData?: TableDataForArray[];
@@ -574,20 +574,34 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         .join(NAME_DELIMITER)
                     console.log(`entityNumber: ${entityNumber}, entityKey: ${entityKey}`)
 
-                    // TODO :: implement add function > default value
-                    baseRepository.addEntity(value)
+
+                    const entityFlattenTypeMap = baseRepository.getFlattenEntityType()
+
+                    console.log(`realType: ${entityKey}`)
+                    console.log(entityFlattenTypeMap)
+
+                    if (entityFlattenTypeMap[entityKey] === undefined) {
+                        console.error(`entityFlattenTypeMap['${entityKey}'] === undefined`)
+                    }
+
+
+                    // const realType = baseRepository.getFlattenEntityType()[entityKey].realType as new () => T
+                    //
+                    //
+                    // const realTypeInstance = new realType()
+                    //
+                    // // TODO :: implement add function > default value
+                    // baseRepository.addEntity(realTypeInstance)
                 },
-                removeFunction: (value: number) => (e) => {
+                removeFunction: (idx: number) => (e) => {
                     console.log(`### removeFunction`, flattenedKey)
-                    const entityNumber = flattenedKey.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
-                    const entityNumberInt = Number(entityNumber)
                     const entityKey = flattenedKey
                         .split(NAME_DELIMITER)
                         .filter((v, index) => index > 0 && v.length > 0)
                         .join(NAME_DELIMITER)
-                    console.log(`entityNumber: ${entityNumber}, entityKey: ${entityKey}`)
+                    console.log(`entityNumber: ${idx}, entityKey: ${entityKey}`)
                     // TODO :: deleteBydelimiterKey 구현
-                    // baseRepository.delete
+                    baseRepository.updateEntityByDelimiterKey(idx, undefined, entityKey)
                 }
             }
 

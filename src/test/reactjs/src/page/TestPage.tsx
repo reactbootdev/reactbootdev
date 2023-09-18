@@ -242,7 +242,7 @@ const ReadListComponent = () => {
 
     // entityKey
     const entityKey = useMemo(() => {
-        return readListProjectRepository.getEntitiKey()
+        return readListProjectRepository.getEntityKey()
     }, [readListProjectRepository])
 
 
@@ -304,7 +304,7 @@ const ReadDetailComponent = () => {
 
     // entityKey
     const entityKey = useMemo(() => {
-        return readDetailProjectRepository.getEntitiKey()
+        return readDetailProjectRepository.getEntityKey()
     }, [readDetailProjectRepository])
 
     // set readDetailProjectRepository by projectApi
@@ -649,8 +649,8 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
                                                             // TODO :: deleteBydelimiterKey 구현
                                                             // TODO :: UI 위치관련 구현.
 
-                                                            // const removeFunc = d.removeFunction()
-                                                            // removeFunc(e)
+                                                                const removeFunc = d.removeFunction(0)
+                                                                removeFunc(e)
                                                         }}
                                                     >
                                                         remove

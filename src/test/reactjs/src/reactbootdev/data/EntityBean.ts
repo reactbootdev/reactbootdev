@@ -17,7 +17,8 @@ export const entityImportMap: { [key: string]: any } = {
 export const entityBeans: TaskBeansType = {
   "src/entity/SubProject.ts": {
     "importPaths": {
-      "entity": "src/reactbootdev/decorator/Entity.ts"
+      "entity": "src/reactbootdev/decorator/Entity.ts",
+      "SubProject": "src/entity/SubProject.ts"
     },
     "objects": {
       "SubProject": {
@@ -26,22 +27,26 @@ export const entityBeans: TaskBeansType = {
           "testcol1b": {
             "type": "string",
             "isArray": false,
-            "isTypeReferenceNode": false
+            "isTypeReferenceNode": false,
+            "realType": String
           },
           "testcol2b": {
             "type": "string",
             "isArray": false,
-            "isTypeReferenceNode": false
+            "isTypeReferenceNode": false,
+            "realType": String
           },
           "testcol3b": {
             "type": "boolean",
             "isArray": false,
-            "isTypeReferenceNode": false
+            "isTypeReferenceNode": false,
+            "realType": Boolean
           },
           "testcol4b": {
             "type": "number",
             "isArray": false,
-            "isTypeReferenceNode": false
+            "isTypeReferenceNode": false,
+            "realType": Number
           }
         },
         "decorators": []
@@ -52,7 +57,9 @@ export const entityBeans: TaskBeansType = {
     "importPaths": {
       "entity": "src/reactbootdev/decorator/Entity.ts",
       "SubProject": "src/entity/SubProject.ts",
-      "BaseEntity": "src/reactbootdev/entity/BaseEntity.ts"
+      "BaseEntity": "src/reactbootdev/entity/BaseEntity.ts",
+      "Project": "src/entity/Project.ts",
+      "TestEnum": "src/entity/Project.ts"
     },
     "objects": {
       "Project": {
@@ -61,7 +68,8 @@ export const entityBeans: TaskBeansType = {
           "testcol1a": {
             "type": "string",
             "isArray": false,
-            "isTypeReferenceNode": false
+            "isTypeReferenceNode": false,
+            "realType": String
           },
           "testcol2a": {
             "type": "string",
@@ -83,27 +91,48 @@ export const entityBeans: TaskBeansType = {
                   }
                 ]
               }
-            ]
+            ],
+            "realType": String
           },
           "testcol3a": {
             "type": "boolean",
             "isArray": false,
-            "isTypeReferenceNode": false
+            "isTypeReferenceNode": false,
+            "realType": Boolean
           },
           "testcol4a": {
             "type": "number",
             "isArray": false,
-            "isTypeReferenceNode": false
+            "isTypeReferenceNode": false,
+            "realType": Number
           },
           "testcol5a": {
             "type": "TestEnum",
             "isArray": false,
-            "isTypeReferenceNode": true
+            "isTypeReferenceNode": true,
+            "realType": entityImportMap['src/entity/Project.ts////TestEnum'],
+            "referenceNode": {
+              "type": ObjectTypeEnum.ENUM,
+              "data": {
+                "test1": "\"test1\"",
+                "test2": "\"test2\"",
+                "test3": "\"test3\""
+              }
+            }
           },
           "testcol6a": {
             "type": "TestEnum",
             "isArray": true,
-            "isTypeReferenceNode": true
+            "isTypeReferenceNode": true,
+            "realType": entityImportMap['src/entity/Project.ts////TestEnum'],
+            "referenceNode": {
+              "type": ObjectTypeEnum.ENUM,
+              "data": {
+                "test1": "\"test1\"",
+                "test2": "\"test2\"",
+                "test3": "\"test3\""
+              }
+            }
           },
           "subProject": {
             "type": "SubProject",
@@ -116,22 +145,26 @@ export const entityBeans: TaskBeansType = {
                 "testcol1b": {
                   "type": "string",
                   "isArray": false,
-                  "isTypeReferenceNode": false
+                  "isTypeReferenceNode": false,
+                  "realType": String
                 },
                 "testcol2b": {
                   "type": "string",
                   "isArray": false,
-                  "isTypeReferenceNode": false
+                  "isTypeReferenceNode": false,
+                  "realType": String
                 },
                 "testcol3b": {
                   "type": "boolean",
                   "isArray": false,
-                  "isTypeReferenceNode": false
+                  "isTypeReferenceNode": false,
+                  "realType": Boolean
                 },
                 "testcol4b": {
                   "type": "number",
                   "isArray": false,
-                  "isTypeReferenceNode": false
+                  "isTypeReferenceNode": false,
+                  "realType": Number
                 }
               },
               "decorators": []
