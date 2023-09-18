@@ -37,15 +37,15 @@ export const entityBeans: TaskBeansType = {
             "isTypeReferenceNode": false,
             "realType": String
           },
-          "testcol3b": {
-            "type": "boolean",
-            "isArray": false,
+          "subStringArray": {
+            "type": "string",
+            "isArray": true,
             "isTypeReferenceNode": false,
-            "realType": Boolean
+            "realType": String
           },
-          "testcol4b": {
+          "subNumberArray": {
             "type": "number",
-            "isArray": false,
+            "isArray": true,
             "isTypeReferenceNode": false,
             "realType": Number
           }
@@ -66,6 +66,12 @@ export const entityBeans: TaskBeansType = {
       "Project": {
         "type": ObjectTypeEnum.CLASS,
         "data": {
+          "id": {
+            "type": "number | null",
+            "isArray": false,
+            "isTypeReferenceNode": false,
+            "realType": "number | null"
+          },
           "name": {
             "type": "string",
             "isArray": false,
@@ -131,6 +137,12 @@ export const entityBeans: TaskBeansType = {
             "isTypeReferenceNode": false,
             "realType": Number
           },
+          "testArray": {
+            "type": "string",
+            "isArray": true,
+            "isTypeReferenceNode": false,
+            "realType": String
+          },
           "testcol5a": {
             "type": "TestEnum",
             "isArray": false,
@@ -179,15 +191,15 @@ export const entityBeans: TaskBeansType = {
                   "isTypeReferenceNode": false,
                   "realType": String
                 },
-                "testcol3b": {
-                  "type": "boolean",
-                  "isArray": false,
+                "subStringArray": {
+                  "type": "string",
+                  "isArray": true,
                   "isTypeReferenceNode": false,
-                  "realType": Boolean
+                  "realType": String
                 },
-                "testcol4b": {
+                "subNumberArray": {
                   "type": "number",
-                  "isArray": false,
+                  "isArray": true,
                   "isTypeReferenceNode": false,
                   "realType": Number
                 }

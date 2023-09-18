@@ -100,11 +100,17 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
             const targetName = node.name.text;
             const properties: ClassDataType = {};
 
-
             node.members.forEach((member: ts.ClassElement) => {
+
+                const propertyNameTmp = member?.name?.getText(sourceFile);
+                console.log(`222 propertyName: ${propertyNameTmp} || property: ${JSON.stringify(propertyNameTmp)}`)
+
+
                 if (ts.isPropertyDeclaration(member)) {
                     const propertyName = member.name.getText(sourceFile);
                     const property = resolvePropertyType(member, sourceFile, program);
+                    console.log(`333 propertyName: ${propertyName} || property: ${JSON.stringify(property)}`)
+
 
                     if (!property) return;
                     properties[propertyName] = property;
@@ -123,6 +129,8 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
                     property.decorators = tobeMemberDecorators;
                 }
             });
+            console.log(`555 : ${JSON.stringify(properties)}`)
+
             // classInfo[targetName] = properties;
 
             const classObject: ClassType = {

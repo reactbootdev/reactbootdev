@@ -1,14 +1,6 @@
 import * as ts from "typescript";
 import {DecoratorInfoInterface} from "../copy/interface/BeanInterface";
-import {
-    ClassPropertyType,
-    ClassType,
-    EnumType,
-    TaskBeansType,
-    FileType,
-    ImportPathType,
-    ObjectTypeEnum
-} from "../copy/interface/TaskBeansType";
+import {ClassPropertyType} from "../copy/interface/TaskBeansType";
 import path from "path";
 
 export function stringifyWithDepth(obj: any, maxDepth: number, currentDepth: number = 0): string {
@@ -341,6 +333,7 @@ export function resolvePropertyType(member: ts.PropertyDeclaration, sourceFile: 
     if (!node) return undefined
 
     const typeName = node.getText(sourceFile);
+    console.log(`resolvePropertyType > ${typeName}`)
     const BASIC_TYPES = ['string', 'number', 'boolean', 'any',]
     if (BASIC_TYPES.includes(typeName)) {
         return {
@@ -355,11 +348,11 @@ export function resolvePropertyType(member: ts.PropertyDeclaration, sourceFile: 
 
     // console.log(typeName)
     const isReferenceNode = isArrayElementTypeReferenceNode(node);
-    const isArray = ts.isArrayTypeNode(node);
+    const isArray = typeName.includes('[]');
     const reTypeName = isArray ? typeName.replace('[]', '') : typeName;
     // const isEnum = isPropertyOfTypeEnum(member);
     const filePath = findTypeLocation(sourceFile, node, program);
-    if (!isReferenceNode) return undefined
+    // if (!isReferenceNode) return undefined
 
     return {
         type: reTypeName,
