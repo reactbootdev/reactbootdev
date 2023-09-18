@@ -678,6 +678,7 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
                                                         console.log(JSON.stringify(updateFunc))
 
                                                         // TODO :: update 시에 `ARRAY` type 데이터 삭제 됨. 덮어쓰기 되는듯.
+                                                        // TODO :: Array가 Object로 바뀌면서 저장. 분기 처리 필요. setByDelimiterKey에서.
                                                         // baseRepository.updateEntityByDelimiterKey(0, e.target.value, d.desc)
                                                         // setInputValue(e.target.value);
                                                     }}

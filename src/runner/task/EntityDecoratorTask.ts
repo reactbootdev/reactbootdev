@@ -1,26 +1,22 @@
 import path from 'path';
 import * as ts from 'typescript';
-import * as glob from 'glob';
 import {
-    TaskBeansType,
-    ObjectsType,
-    DecoratorType,
-    FileType,
-    ObjectTypeEnum,
-    EnumType,
-    ObjectType,
+    ClassDataType,
     ClassPropertyType,
     ClassType,
-    EnumDataType,
-    ClassDataType,
+    EnumType,
+    FileType,
     ImportPathType,
+    ObjectsType,
+    ObjectTypeEnum,
+    TaskBeansType,
 } from "../copy/interface/TaskBeansType";
 import {
     convertToAbsolutePath,
-    findTypeLocation,
-    getDecoratorInfo, getDirectoryPath, hasRecursiveFormDecorator,
-    isArrayElementTypeReferenceNode, resolvePropertyType,
-    // resolveRecursiveTypes
+    getDecoratorInfo,
+    getDirectoryPath,
+    hasRecursiveFormDecorator,
+    resolvePropertyType,
 } from "../util/NodeUtil";
 
 

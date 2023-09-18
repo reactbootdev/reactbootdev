@@ -1,6 +1,3 @@
-import {BaseTaskResultInterface} from "./BaseTaskResultInterface";
-
-
 export type DecoratorType = {
     name: string,
     definition: string,
@@ -12,7 +9,7 @@ export type DecoratorType = {
 }
 
 export type ClassPropertyType = {
-    type: string,
+    type: any,
     isArray: boolean,
     isTypeReferenceNode: boolean,
     // isEnum: boolean,

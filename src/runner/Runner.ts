@@ -3,25 +3,18 @@
 import {moveTask} from "./task/MoveTask";
 import {copyTask} from "./task/CopyTask";
 import ts from "typescript";
-import {
-    COMPILER_OPTIONS,
-    getSourceFileNames,
-    SOURCE_PATH,
-    DECORATOR_TASK_TARGET_FOLDER
-} from "./config/config";
-import {pageDecoratorPostTask, pageDecoratorPreTask} from "./task/PageDecoratorTask";
+import {COMPILER_OPTIONS, DECORATOR_TASK_TARGET_FOLDER, getSourceFileNames, SOURCE_PATH} from "./config/config";
 import {createFolderSync} from "./util/FileUtil";
-import {entityDecoratorPreTask, entityDecoratorPostTask} from "./task/EntityDecoratorTask";
 import fs from "fs";
 import {commonDecoratorPostTask, commonDecoratorPreTask, TaskArgsInterface} from "./task/CommonDecoratorTask";
 
 
-export function runner(args: string[]){
+export function runner(args: string[]) {
 
     // create folder dist `data`
     createFolderSync(DECORATOR_TASK_TARGET_FOLDER)
 
-    const decoratorTasks : TaskArgsInterface[] = [
+    const decoratorTasks: TaskArgsInterface[] = [
         {
             decoratorNames: [
                 `@page`
@@ -47,7 +40,7 @@ export function runner(args: string[]){
     const checker = program.getTypeChecker();
 
     program.getSourceFiles().forEach(sourceFile => {
-    // sourceFileNames.forEach(sourceFile => {
+        // sourceFileNames.forEach(sourceFile => {
 
         const ignoreSubString = [`node_modules`]
         const isIgnoreFile = ignoreSubString.some((subString) => {
