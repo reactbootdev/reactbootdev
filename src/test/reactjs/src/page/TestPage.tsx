@@ -641,20 +641,6 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
                                                     >
                                                         add
                                                     </Button>
-                                                    <Button
-                                                            onClick={(e) => {
-                                                            if (d.removeFunction === undefined) {
-                                                            return
-                                                        }
-                                                            // TODO :: deleteBydelimiterKey 구현
-                                                            // TODO :: UI 위치관련 구현.
-
-                                                                const removeFunc = d.removeFunction(0)
-                                                                removeFunc(e)
-                                                        }}
-                                                    >
-                                                        remove
-                                                    </Button>
                                                 </>
                                             )
                                         }
@@ -683,6 +669,27 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
                                                         // setInputValue(e.target.value);
                                                     }}
                                                 />
+                                            )
+                                        }
+
+                                        {
+                                            d.removeFunction !== undefined && (
+                                                <>
+                                                    <Button
+                                                        onClick={(e) => {
+                                                            if (d.removeFunction === undefined) {
+                                                                return
+                                                            }
+                                                            // TODO :: deleteBydelimiterKey 구현
+                                                            // TODO :: UI 위치관련 구현.
+
+                                                            const removeFunc = d.removeFunction(0)
+                                                            removeFunc(e)
+                                                        }}
+                                                    >
+                                                        remove
+                                                    </Button>
+                                                </>
                                             )
                                         }
                                     </TableCell>
@@ -827,15 +834,15 @@ const UpdateComponent = () => {
         updateProjectRepository.setEntity(updateResData)
     }, [])
 
-    const updateEntity = entityRenderer(
-        Project,
-        updateProjectRepository,
-        projectApi,
-        RenderTypeEnum.UPDATE,
-        {
-            itemId: 0,
-        },
-    )
+    // const updateEntity = entityRenderer(
+    //     Project,
+    //     updateProjectRepository,
+    //     projectApi,
+    //     RenderTypeEnum.UPDATE,
+    //     {
+    //         itemId: 0,
+    //     },
+    // )
 
     const whiteList: any[] = [
         // entityKey.testcol1a

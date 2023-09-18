@@ -265,6 +265,8 @@ export function mergeSubObjects(obj: any): any {
 
 export function getEntityTypeyByType<T extends BaseEntity>(entityType: new () => T): T {
     const result = extractEntityTypeWithFullPath({}, "")
+    console.log(`getEntityTypeyByType: ${result}`)
+    console.log(result)
     const toFind = Object.entries(entityImportMap).filter((entry) => {
         const [key, value] = entry
 
@@ -281,14 +283,14 @@ export function getEntityTypeyByType<T extends BaseEntity>(entityType: new () =>
 }
 
 export function extractEntityTypeWithFullPath(result : any = {}, parentKey: string, depth : number = 0, maxDepth : number = 5) {
-    Object.entries(entityBeans).map((entry) => {
-        const [fullFilePath, fileDetail] = entry;
+    Object.entries(entityBeans).map(([fullFilePath, fileDetail]) => {
         const objects = fileDetail.objects
-        Object.entries(objects).map((entry) => {
-            const [objectName, objectDetail] = entry;
-            const newFileNameQentity = `${fullFilePath}${DOUBLE_NAME_DELIMITER}${objectName}`
+        Object.entries(objects).map(([objectName, objectDetail]) => {
+            const newFileNameQEntity = `${fullFilePath}${DOUBLE_NAME_DELIMITER}${objectName}`
+            console.log(`newFileNameQEntity: ${newFileNameQEntity}`)
+            console.log(newFileNameQEntity)
 
-            result[newFileNameQentity] = extractEntityType(objectDetail, objectName, objectName)
+            result[newFileNameQEntity] = extractEntityType(objectDetail, objectName, objectName)
         })
 
     })
@@ -306,7 +308,7 @@ export function extractEntityType(
     result: any = {},
 
     depth: number = 0,
-    maxDepth: number = 10
+    maxDepth: number = 100
 ) {
     const totalKey = `${totalParentKey}${NAME_DELIMITER}${myKey}`
         .split(NAME_DELIMITER)
@@ -334,13 +336,13 @@ export function extractEntityType(
     Object.entries(obj.data).map((entry : [string, any]) => {
         const [subObjKey, subObj] = entry;
         const isReferenceNode = subObj.referenceNode !== undefined
+        const newTotalParentKey = `${totalParentKey}${NAME_DELIMITER}${subObjKey}`
         if(isReferenceNode) {
-            totalParentKey = `${totalParentKey}${NAME_DELIMITER}${subObjKey}`
-            result = extractEntityType(subObj.referenceNode, subObjKey, totalParentKey, result, depth + 1, maxDepth)
+            result = extractEntityType(subObj.referenceNode, subObjKey, newTotalParentKey, result, depth + 1, maxDepth)
             return result
         }
 
-        result = extractEntityType(subObj, subObjKey, totalParentKey, result, depth + 1, maxDepth)
+        result = extractEntityType(subObj, subObjKey, newTotalParentKey, result, depth + 1, maxDepth)
         return result
     })
 
@@ -472,7 +474,8 @@ export interface TableDataForArray {
 }
 
 export function getFlattenObjForArray<T extends BaseEntity>(baseRepository: BaseRepository<T>): TableDataForArray[] {
-
+    console.log(`baseRepository.entityList`)
+    console.log(baseRepository.entityList)
     const baseEntityList = baseRepository.entityList
     const flattenObj = baseEntityList.map((entity: T, idx: number) => {
         return flattenBaseEntityForArray(baseRepository, entity, String(idx))
@@ -514,7 +517,22 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                     .join(NAME_DELIMITER)
                 console.log(`entityNumber: ${entityNumber}, entityKey: ${entityKey}`)
                 baseRepository.updateEntityByDelimiterKey(entityNumberInt, value, entityKey)
-            }}
+            }
+            },
+            removeFunction: (idx: number) => (e) => {
+                const entityNumber = objName.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
+                if (entityNumber === undefined) {
+                    console.error(`entityNumber === undefined`)
+                    return
+                }
+                const entityKey = objName
+                    .split(NAME_DELIMITER)
+                    .filter((v, index) => index > 0 && v.length > 0)
+                    .join(NAME_DELIMITER)
+                console.log(`entityNumber: ${idx}, entityKey: ${entityKey}`)
+                // TODO :: deleteBydelimiterKey 구현
+                baseRepository.updateEntityByDelimiterKey(Number(entityNumber), undefined, entityKey)
+            }
         }
         return tableData
     }
@@ -547,7 +565,24 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         .join(NAME_DELIMITER)
                     console.log(`entityNumber: ${entityNumber}, entityKey: ${entityKey}`)
                     baseRepository.updateEntityByDelimiterKey(entityNumberInt, value, entityKey)
-                }}
+                }
+                },
+
+                removeFunction: (idx: number) => (e) => {
+                    console.log(`### removeFunction`, flattenedKey)
+                    const entityNumber = flattenedKey.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
+                    if (entityNumber === undefined) {
+                        console.error(`entityNumber === undefined`)
+                        return
+                    }
+                    const entityKey = flattenedKey
+                        .split(NAME_DELIMITER)
+                        .filter((v, index) => index > 0 && v.length > 0)
+                        .join(NAME_DELIMITER)
+                    console.log(`entityNumber: ${idx}, entityKey: ${entityKey}`)
+                    // TODO :: deleteBydelimiterKey 구현
+                    baseRepository.updateEntityByDelimiterKey(Number(entityNumber), undefined, entityKey)
+                }
             }
             return tableData
         } else if(Array.isArray(propertyInfo)) {
@@ -575,9 +610,11 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                     console.log(`entityNumber: ${entityNumber}, entityKey: ${entityKey}`)
 
 
+                    const entityTypeMap = baseRepository.getEntityType()
                     const entityFlattenTypeMap = baseRepository.getFlattenEntityType()
 
                     console.log(`realType: ${entityKey}`)
+                    console.log(entityTypeMap)
                     console.log(entityFlattenTypeMap)
 
                     if (entityFlattenTypeMap[entityKey] === undefined) {
