@@ -131,6 +131,28 @@ export const updateByDelimiterKey = <T extends BaseEntity>(
     return updatedList;
 }
 
+export const updateByDelimiterKeyForArray = <T extends BaseEntity>(
+    list: T[],
+    idx: number,
+    newValue: unknown,
+    multiKeys: string,
+): T[] => {
+
+    if (list.length === 0) {
+        const newItem = createOrSetPropertyForArray({} as T, multiKeys, newValue);
+        return [newItem];
+    }
+
+    const updatedList = list.map((item, listIdx) => {
+        if (listIdx === idx) {
+            const newItem = createOrSetPropertyForArray(item, multiKeys, newValue);
+            return newItem;
+        }
+        return item;
+    });
+    return updatedList;
+}
+
 
 // Helper export function to update nested properties safely
 export function updateNestedProperty<T, K extends keyof T>(
@@ -146,6 +168,37 @@ export function updateNestedProperty<T, K extends keyof T>(
         current = current[key];
     }
     current[keys[keys.length - 1]] = value;
+    return result;
+}
+
+
+// Helper export function to update nested properties safely
+export function updateNestedPropertyForArray<T, K extends keyof T>(
+    draft: T,
+    keys: string[],
+    value: unknown
+): T {
+
+    const result = {...draft};
+    let current: any = result;
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+
+        // last
+        if (i === keys.length - 2) {
+            const currentKey = current[key]
+            current[key] = [...current[key]]
+            current = current[key];
+            break
+        }
+        current[key] = {...current[key]};
+        current = current[key];
+    }
+    current[keys[keys.length - 1]] = value;
+    current = Array.from(Object.values(current));
+    // current.push(value);
+    // current = Array.from(Object.values(current));
+
     return result;
 }
 
@@ -173,6 +226,29 @@ export function createOrSetProperty<T, K extends keyof T>(
     });
 }
 
+export function createOrSetPropertyForArray<T, K extends keyof T>(
+    obj: T | undefined,
+    key: string,
+    value: unknown
+): T {
+    if (!obj) {
+        // If obj is undefined, create a new object with the property and return it.
+        const newObj = {[key]: value} as T;
+        return newObj;
+    }
+
+    // plain object
+    const newObj = Object.assign({}, obj);
+
+    // If obj exists, ensure key is a string and then split it to set the nested property.
+    // remove empty string
+    const keys = key.split(NAME_DELIMITER).filter((key) => key.length > 0)
+
+    // Use the helper export function to update the nested property safely
+    return produce(newObj, (draft) => {
+        return updateNestedPropertyForArray(draft, keys, value);
+    });
+}
 
 export function extractEntityKey(
     obj: ObjectType,
@@ -308,21 +384,22 @@ export function extractEntityType(
         .filter(v => v.length > 0)
         .join(NAME_DELIMITER)
 
-    const value = {
-        totalKey: totalKey,
-        type: obj.type,
-        isArray: obj.isArray,
-        realType: obj.realType,
-    }
+    // const value = {
+    //     totalKey: totalKey,
+    //     type: obj.type,
+    //     isArray: obj.isArray,
+    //     realType: obj.realType,
+    // }
+    const value = obj.realType
 
     if (depth > maxDepth) {
-        result = createOrSetPropertyForType(result, totalKey, value)
+        result = createOrSetPropertyForType(result, totalParentKey, value)
         return result
     }
 
     const isDataOwned = obj.data !== undefined
     if (!isDataOwned) {
-        result = createOrSetPropertyForType(result, totalKey, value)
+        result = createOrSetPropertyForType(result, totalParentKey, value)
         return result
     }
 
@@ -604,6 +681,12 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         .filter((v, index) => index > 0 && v.length > 0)
                         .join(NAME_DELIMITER)
                     console.log(`entityNumber: ${entityNumber}, entityKey: ${entityKey}`)
+                    console.log(
+                        baseRepository.getValueById(entityNumberInt, entityKey)
+                    )
+                    const entityArray =
+                        baseRepository.getValueById(entityNumberInt, entityKey) as T[]
+                    const entityArrayLength = entityArray.length
 
 
                     const entityTypeMap = baseRepository.getEntityType()
@@ -617,14 +700,22 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         console.error(`entityFlattenTypeMap['${entityKey}'] === undefined`)
                     }
 
-
                     // const realType = baseRepository.getFlattenEntityType()[entityKey].realType as new () => T
                     //
                     //
                     // const realTypeInstance = new realType()
+                    // TODO :: implement add function > default value
+                    const realTypeInstance = String()
+
                     //
                     // // TODO :: implement add function > default value
                     // baseRepository.addEntity(realTypeInstance)
+                    baseRepository.updateEntityByDelimiterKeyForArray(
+                        entityNumberInt
+                        , realTypeInstance
+                        , `${entityKey}${NAME_DELIMITER}${entityArrayLength}`
+                    )
+
                 },
                 removeFunction: (idx: number) => (e) => {
                     console.log(`### removeFunction`, flattenedKey)

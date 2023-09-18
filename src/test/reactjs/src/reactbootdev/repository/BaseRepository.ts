@@ -10,6 +10,7 @@ import {
     getEntitiKeyByType,
     getEntityTypeyByType,
     updateByDelimiterKey,
+    updateByDelimiterKeyForArray,
     updateItem
 } from "@src/reactbootdev/util/RepositoryUtil";
 
@@ -75,6 +76,12 @@ export default class BaseRepository<T extends BaseEntity> {
         const updatedList = updateByDelimiterKey(this.entityList, itemId, newItem, multiKeys);
         this.setEntityList(updatedList);
     };
+
+    updateEntityByDelimiterKeyForArray = (itemId: number, newItem: unknown, multiKeys: string) => {
+        const updatedList = updateByDelimiterKeyForArray(this.entityList, itemId, newItem, multiKeys);
+        this.setEntityList(updatedList);
+    };
+
     deleteEntity = (itemId: number) => {
         const updatedList = deleteItem(this.entityList, itemId);
         this.setEntityList(updatedList);
