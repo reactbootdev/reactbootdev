@@ -13,7 +13,7 @@ function copyFilesRecursively(sourceDir: string, targetDir: string) {
         const stat = fs.lstatSync(sourcePath);
 
         if (sourcePath.includes('data')) { // 1. 제외 폴더
-            return;
+            break;
         }
 
         if (stat.isFile()) {

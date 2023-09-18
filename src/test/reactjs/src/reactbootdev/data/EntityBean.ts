@@ -18,6 +18,7 @@ export const entityBeans: TaskBeansType = {
   "src/entity/SubProject.ts": {
     "importPaths": {
       "entity": "src/reactbootdev/decorator/Entity.ts",
+      "BaseEntity": "src/reactbootdev/entity/BaseEntity.ts",
       "SubProject": "src/entity/SubProject.ts"
     },
     "objects": {
@@ -65,6 +66,30 @@ export const entityBeans: TaskBeansType = {
       "Project": {
         "type": ObjectTypeEnum.CLASS,
         "data": {
+          "name": {
+            "type": "string",
+            "isArray": false,
+            "isTypeReferenceNode": false,
+            "realType": String
+          },
+          "description": {
+            "type": "string",
+            "isArray": false,
+            "isTypeReferenceNode": false,
+            "realType": String
+          },
+          "startDate": {
+            "type": "string",
+            "isArray": false,
+            "isTypeReferenceNode": false,
+            "realType": String
+          },
+          "endDate": {
+            "type": "string",
+            "isArray": false,
+            "isTypeReferenceNode": false,
+            "realType": String
+          },
           "testcol1a": {
             "type": "string",
             "isArray": false,
