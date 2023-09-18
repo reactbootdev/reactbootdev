@@ -97,7 +97,6 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
             });
 
 
-
             const targetName = node.name.text;
             const properties: ClassDataType = {};
 
@@ -153,11 +152,13 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
             importPath = importPath.replace(/.*@/, '');
             console.log(`importPath: ${importPath}`)
 
-            const importName = node.importClause?.getText(sourceFile);
+            let importName = node.importClause?.getText(sourceFile);
+
             if (importName) {
                 const importNameArr = importName.split(',');
                 importNameArr.forEach((name) => {
-                    const importName = name.trim().replace(/[{}]/g, '');
+                    let importName = name.trim().replace(/[{}]/g, '');
+                    importName = importName.replace(/\r\n/g, '').trim();
                     if (importName) {
                         importPaths[importName] = importPath;
                     }
@@ -195,11 +196,9 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
 }
 
 
-
-
-export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0): any {
+export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0, taskArgs: TaskArgsInterface): any {
     console.log(`depth : ${depth} / maxDepth : ${maxDepth} / joinKey : ${joinKey}`)
-
+    const resultFileName = taskArgs.resultFileName
 
     depth++
 
@@ -257,7 +256,7 @@ export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | un
     joinKeys.forEach(joinKey => {
         const classInfoObject = filePathClassNameObjects[joinKey];
         const importPaths = classInfoObject?.importPaths;
-        if(!importPaths) return
+        if (!importPaths) return
         console.log(`classInfoObject : ${JSON.stringify(classInfoObject)}`)
 
         Object.keys(classInfoObject.classObject.data).forEach(propertyName => {
@@ -279,12 +278,15 @@ export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | un
             console.log(`targetFileObjectKey : ${targetFileObjectKey}`)
             console.log(`filePathClassNameObject : ${filePathClassNameObject}`)
 
+            classProperty.realType = classProperty.type
+
             if (!filePathClassNameObject) return
             const isClassType = filePathClassNameObject.classObject.type === ObjectTypeEnum.CLASS
 
             if (isTypeReferenceNode) {
+                classProperty.realType = `%%%%${resultFileName}${importMapName}['${targetFilePath}${KEY_DELIMITER}${typeName}']%%%%`
                 if (isClassType) {
-                    recursiveUpdate(fileObjects, targetFileObjectKey, maxDepth, depth)
+                    recursiveUpdate(fileObjects, targetFileObjectKey, maxDepth, depth, taskArgs)
                 }
                 return classProperty.referenceNode = filePathClassNameObject.classObject
             }
@@ -293,41 +295,57 @@ export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | un
     });
 }
 
+export function getRefinedObjectName(filePath: string, objectName: string) {
+    filePath = filePath.replace(/\\/g, '/')
+    const removedExtensionFilePath = removeExtension(filePath) ?? ``
+    // remove first `@`
+    let refinedObjectName = removedExtensionFilePath.replace(/.*@/, '')
+    refinedObjectName = refinedObjectName.replace(/\//g, '_')
+    refinedObjectName += `____${objectName}`
+    return refinedObjectName
+}
+
+
 // const resJson = {}
 // default depth 0
 export function commonDecoratorPostTask(taskArgs: TaskArgsInterface, joinKey: string | undefined, maxDepth: number = 5, depth: number = 0): any {
 
     const fileObjects = taskArgs.taskBeans
     const resultFileName = taskArgs.resultFileName
-    recursiveUpdate(fileObjects, undefined, maxDepth, depth)
+    recursiveUpdate(fileObjects, undefined, maxDepth, depth, taskArgs)
 
     const importStatements = ``
         + `\n`
         + Object.entries(fileObjects).map(([filePath, fileType]) => {
             return Object.entries(fileType.objects).map(([objectName, objectMap]) => {
                 filePath = filePath.replace(/\\/g, '/')
-                return `import { ${objectName} } from "@${removeExtension(filePath)}";`
+                const removedExtensionFilePath = removeExtension(filePath) ?? ``
+                const refinedObjectName = getRefinedObjectName(filePath, objectName)
+
+                return `import { ${objectName} as ${refinedObjectName} } from "@${removedExtensionFilePath}";`
             }).join('\n')
         }).join('\n')
         + `\n`
 
 
     const importMap = ``
-    + `export const ${resultFileName}${importMapName}: { [key: string]: any } = {`
-    + `\n`
-    + Object.entries(fileObjects).map(([filePath, fileType]) => {
-        return Object.entries(fileType.objects).map(([objectName, objectMap]) => {
-            filePath = filePath.replace(/\\/g, '/')
-            return `\t"${filePath}${KEY_DELIMITER}${objectName}" : ${objectName}`
+        + `export const ${resultFileName}${importMapName}: { [key: string]: any } = {`
+        + `\n`
+        + Object.entries(fileObjects).map(([filePath, fileType]) => {
+            return Object.entries(fileType.objects).map(([objectName, objectMap]) => {
+                filePath = filePath.replace(/\\/g, '/')
+                const refinedObjectName = getRefinedObjectName(filePath, objectName)
+
+                return `\t"${filePath}${KEY_DELIMITER}${objectName}" : ${refinedObjectName}`
+            }).join(',\n')
         }).join(',\n')
-    }).join(',\n')
-    + `\n`
-    + `}`
+        + `\n`
+        + `}`
 
     const importType = [`${beanTypeName}`, `${objectTypeEnumName}`]
     const importFrom = `"../interface/${beanTypeName}"`
 
-    const fileContent =``
+    const fileContent = ``
         + `import { ${importType.join(`,`)} } from ${importFrom};`
         + `\n\n`
         + importStatements
@@ -345,9 +363,15 @@ const beansName = `Beans`
 const beanTypeName = `TaskBeansType`
 const objectTypeEnumName = `ObjectTypeEnum`
 
-function replaceStringTypeToEnum(text: string){
+function replaceStringTypeToEnum(text: string) {
     text = text.replace(/"type": "class"/g, `"type": ${objectTypeEnumName}.CLASS`)
     text = text.replace(/"type": "enum"/g, `"type": ${objectTypeEnumName}.ENUM`)
+    text = text.replace(/"\%\%\%\%/g, '')
+    text = text.replace(/\%\%\%\%"/g, '')
+
+    text = text.replace(/"type": "string"/g, `"type": String`)
+    text = text.replace(/"type": "number"/g, `"type": Number`)
+    text = text.replace(/"type": "boolean"/g, `"type": Boolean`)
 
     return text
 }

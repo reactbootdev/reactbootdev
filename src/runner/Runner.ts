@@ -68,7 +68,6 @@ export function runner(args: string[]) {
         )
     })
 
-
     const tasks = [
         copyTask,
         moveTask

@@ -10,6 +10,7 @@ export type DecoratorType = {
 
 export type ClassPropertyType = {
     type: any,
+    realType?: any,
     isArray: boolean,
     isTypeReferenceNode: boolean,
     // isEnum: boolean,

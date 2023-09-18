@@ -3,8 +3,8 @@ import {DOUBLE_NAME_DELIMITER, NAME_DELIMITER} from "@src/reactbootdev/config/co
 import {produce} from "immer";
 import {ObjectType} from "@src/reactbootdev/interface/TaskBeansType";
 import {entityBeans, entityImportMap} from "@src/reactbootdev/data/EntityBean";
-import {extractShortKeyFromLongKey, isPrimtiveType} from "@src/reactbootdev/component/BaseComponentManager";
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import {extractShortKeyFromLongKey, isPrimtiveType} from "@src/reactbootdev/component/BaseComponentManager";
 
 export const addItem = <T extends BaseEntity>(list: T[], newItem: T): T[] => {
     return [...list, newItem];
