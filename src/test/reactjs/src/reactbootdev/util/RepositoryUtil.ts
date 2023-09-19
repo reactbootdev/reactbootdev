@@ -184,10 +184,14 @@ export function updateNestedPropertyForArray<T, K extends keyof T>(
     for (let i = 0; i < keys.length - 1; i++) {
         const key = keys[i];
 
-        // last
         if (i === keys.length - 2) {
             const currentKey = current[key]
             current[key] = [...current[key]]
+            if (typeof value === `undefined`) {
+                current[key][keys[keys.length - 1]] = undefined
+                current[key] = [...(current[key].filter((v: undefined) => v !== undefined))]
+                return result
+            }
             current = current[key];
             break
         }
@@ -195,7 +199,8 @@ export function updateNestedPropertyForArray<T, K extends keyof T>(
         current = current[key];
     }
     current[keys[keys.length - 1]] = value;
-    current = Array.from(Object.values(current));
+    // current = Array.from(Object.values(current)).slice(0, -1);
+
     // current.push(value);
     // current = Array.from(Object.values(current));
 
@@ -603,7 +608,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                     .join(NAME_DELIMITER)
                 console.log(`entityNumber: ${idx}, entityKey: ${entityKey}`)
                 // TODO :: deleteBydelimiterKey 구현
-                baseRepository.updateEntityByDelimiterKey(Number(entityNumber), undefined, entityKey)
+                baseRepository.updateEntityByDelimiterKeyForArray(Number(entityNumber), undefined, entityKey)
             }
         }
         return tableData
