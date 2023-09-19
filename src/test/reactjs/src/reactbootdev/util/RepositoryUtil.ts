@@ -786,9 +786,10 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         console.log(realType)
 
                         const realTypeInstance = realType ? (new realType()) : undefined
-                        const realTypeInstanceDefaultValue = realTypeInstance?.defaultValue
+                        const realTypeInstanceDefaultValue = realTypeInstance?.defaultValue ?? realTypeInstance
 
                         if (typeof realTypeInstanceDefaultValue === 'undefined') {
+                            console.error(`realTypeInstanceDefaultValue === 'undefined'`)
                             return
                         }
 

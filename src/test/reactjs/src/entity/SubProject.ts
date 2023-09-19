@@ -9,5 +9,13 @@ export class SubProject extends BaseEntity {
     subStringArray?: string[]
     subNumberArray?: number[]
 
+    constructor() {
+        super();
+        this.id = Math.random()
+        this.testcol1b = "con1"
+        this.testcol2b = "con2"
+        this.subStringArray = ["con1", "con2"]
+
+    }
 }
 
