@@ -29,25 +29,25 @@ export const entityBeans: TaskBeansType = {
             "type": "string",
             "isArray": false,
             "isTypeReferenceNode": false,
-            "realType": String
+            "realType": "string"
           },
           "testcol2b": {
             "type": "string",
             "isArray": false,
             "isTypeReferenceNode": false,
-            "realType": String
+            "realType": "string"
           },
           "subStringArray": {
             "type": "string",
             "isArray": true,
             "isTypeReferenceNode": false,
-            "realType": String
+            "realType": "string"
           },
           "subNumberArray": {
             "type": "number",
             "isArray": true,
             "isTypeReferenceNode": false,
-            "realType": Number
+            "realType": "number"
           }
         },
         "decorators": []
@@ -76,31 +76,31 @@ export const entityBeans: TaskBeansType = {
             "type": "string",
             "isArray": false,
             "isTypeReferenceNode": false,
-            "realType": String
+            "realType": "string"
           },
           "description": {
             "type": "string",
             "isArray": false,
             "isTypeReferenceNode": false,
-            "realType": String
+            "realType": "string"
           },
           "startDate": {
             "type": "string",
             "isArray": false,
             "isTypeReferenceNode": false,
-            "realType": String
+            "realType": "string"
           },
           "endDate": {
             "type": "string",
             "isArray": false,
             "isTypeReferenceNode": false,
-            "realType": String
+            "realType": "string"
           },
           "testcol1a": {
             "type": "string",
             "isArray": false,
             "isTypeReferenceNode": false,
-            "realType": String
+            "realType": "string"
           },
           "testcol2a": {
             "type": "string",
@@ -123,25 +123,25 @@ export const entityBeans: TaskBeansType = {
                 ]
               }
             ],
-            "realType": String
+            "realType": "string"
           },
           "testcol3a": {
             "type": "boolean",
             "isArray": false,
             "isTypeReferenceNode": false,
-            "realType": Boolean
+            "realType": "boolean"
           },
           "testcol4a": {
             "type": "number",
             "isArray": false,
             "isTypeReferenceNode": false,
-            "realType": Number
+            "realType": "number"
           },
           "testArray": {
             "type": "string",
             "isArray": true,
             "isTypeReferenceNode": false,
-            "realType": String
+            "realType": "string"
           },
           "testcol5a": {
             "type": "TestEnum",
@@ -183,25 +183,25 @@ export const entityBeans: TaskBeansType = {
                   "type": "string",
                   "isArray": false,
                   "isTypeReferenceNode": false,
-                  "realType": String
+                  "realType": "string"
                 },
                 "testcol2b": {
                   "type": "string",
                   "isArray": false,
                   "isTypeReferenceNode": false,
-                  "realType": String
+                  "realType": "string"
                 },
                 "subStringArray": {
                   "type": "string",
                   "isArray": true,
                   "isTypeReferenceNode": false,
-                  "realType": String
+                  "realType": "string"
                 },
                 "subNumberArray": {
                   "type": "number",
                   "isArray": true,
                   "isTypeReferenceNode": false,
-                  "realType": Number
+                  "realType": "number"
                 }
               },
               "decorators": []
@@ -219,25 +219,25 @@ export const entityBeans: TaskBeansType = {
                   "type": "string",
                   "isArray": false,
                   "isTypeReferenceNode": false,
-                  "realType": String
+                  "realType": "string"
                 },
                 "testcol2b": {
                   "type": "string",
                   "isArray": false,
                   "isTypeReferenceNode": false,
-                  "realType": String
+                  "realType": "string"
                 },
                 "subStringArray": {
                   "type": "string",
                   "isArray": true,
                   "isTypeReferenceNode": false,
-                  "realType": String
+                  "realType": "string"
                 },
                 "subNumberArray": {
                   "type": "number",
                   "isArray": true,
                   "isTypeReferenceNode": false,
-                  "realType": Number
+                  "realType": "number"
                 }
               },
               "decorators": []

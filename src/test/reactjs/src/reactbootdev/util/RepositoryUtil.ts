@@ -771,6 +771,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                     const entityTypeMap = baseRepository.getEntityType()
 
                     try {
+                        // TODO :: `Project` 외부 클래스타입 값과 연동.
                         const refinedEntityKey = `Project//${entityKey}`
                             .split(NAME_DELIMITER)
                             .filter((v, index) => {
@@ -784,7 +785,13 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         console.log(refinedEntityKey)
                         console.log(realType)
 
-                        const realTypeInstance = new realType()
+                        const realTypeInstance = realType ? (new realType()) : undefined
+                        const realTypeInstanceDefaultValue = realTypeInstance?.defaultValue
+
+                        if (typeof realTypeInstanceDefaultValue === 'undefined') {
+                            return
+                        }
+
                         // TODO :: implement add function > default value
                         // const realTypeInstance = String()
 
@@ -793,7 +800,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         // baseRepository.addEntity(realTypeInstance)
                         baseRepository.updateEntityByDelimiterKeyForArray(
                             entityNumberInt
-                            , realTypeInstance
+                            , realTypeInstanceDefaultValue
                             , `${entityKey}${NAME_DELIMITER}${entityArrayLength}`
                         )
                     } catch (e) {

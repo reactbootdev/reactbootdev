@@ -393,9 +393,9 @@ function replaceStringTypeToEnum(text: string) {
     text = text.replace(/"\%\%\%\%/g, '')
     text = text.replace(/\%\%\%\%"/g, '')
 
-    text = text.replace(/"realType": "string"/g, `"realType": String`)
-    text = text.replace(/"realType": "number"/g, `"realType": Number`)
-    text = text.replace(/"realType": "boolean"/g, `"realType": Boolean`)
+    // text = text.replace(/"realType": "string"/g, `"realType": String`)
+    // text = text.replace(/"realType": "number"/g, `"realType": Number`)
+    // text = text.replace(/"realType": "boolean"/g, `"realType": Boolean`)
 
     return text
 }

@@ -5,7 +5,6 @@ import {
     addItem,
     addItems,
     deleteItem,
-    flattenBaseEntity,
     getByDelimiterKey,
     getEntitiKeyByType,
     getEntityTypeyByType,
@@ -107,15 +106,15 @@ export default class BaseRepository<T extends BaseEntity> {
     }
 
     getEntityType = () => {
-        const result = getEntityTypeyByType(this.entityClass) as T
+        const result = getEntityTypeyByType(this.entityClass)
         return result
     }
 
-    getFlattenEntityType = () => {
-        const result = getEntityTypeyByType(this.entityClass) as T
-
-        return flattenBaseEntity(result)
-    }
+    // getFlattenEntityType = () => {
+    //     const result = getEntityTypeyByType(this.entityClass)
+    //
+    //     return flattenBaseEntity(result)
+    // }
 
     constructor(entityClass: new () => T, repositoryKey: string = uuidv4()) {
         this.entityClass = entityClass;
