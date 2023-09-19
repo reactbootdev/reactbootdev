@@ -113,7 +113,24 @@ export class TestProjectApi extends BaseApi {
                 id: 33,
                 subStringArray: ["ng1a", "2315", "3adf"],
                 subNumberArray: [1, 2, 3, 45, 0.3],
-            }
+            },
+            subProjectArray: [{
+                id: 1,
+                subStringArray: [
+                    "ngaaa1a",
+                    "ngaaa1a",
+                    "ngaaa1a",
+                    "ngaaa1a",
+                ],
+            }, {
+                id: 2,
+                subStringArray: [
+                    "nxxxag1a",
+                    "nxxxag1a",
+                    "nxxxag1a",
+
+                ],
+            }],
         }
 
         const testRes = {

@@ -45,6 +45,7 @@ export class Project extends BaseEntity {
     testcol6a?: TestEnum[]
 
     subProject?: SubProject
+    subProjectArray?: SubProject[]
 
 }
 

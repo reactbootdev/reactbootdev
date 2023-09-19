@@ -206,6 +206,42 @@ export const entityBeans: TaskBeansType = {
               },
               "decorators": []
             }
+          },
+          "subProjectArray": {
+            "type": "SubProject",
+            "isArray": true,
+            "isTypeReferenceNode": true,
+            "realType": entityImportMap['src/entity/SubProject.ts////SubProject'],
+            "referenceNode": {
+              "type": ObjectTypeEnum.CLASS,
+              "data": {
+                "testcol1b": {
+                  "type": "string",
+                  "isArray": false,
+                  "isTypeReferenceNode": false,
+                  "realType": String
+                },
+                "testcol2b": {
+                  "type": "string",
+                  "isArray": false,
+                  "isTypeReferenceNode": false,
+                  "realType": String
+                },
+                "subStringArray": {
+                  "type": "string",
+                  "isArray": true,
+                  "isTypeReferenceNode": false,
+                  "realType": String
+                },
+                "subNumberArray": {
+                  "type": "number",
+                  "isArray": true,
+                  "isTypeReferenceNode": false,
+                  "realType": Number
+                }
+              },
+              "decorators": []
+            }
           }
         },
         "decorators": [
