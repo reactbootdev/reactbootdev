@@ -823,8 +823,9 @@ const UpdateComponent = () => {
     const [updateEntityList, setUpdateEntityList] = useRecoilState(updateProjectRepository.entityListState);
     updateProjectRepository.init(updateEntityList, setUpdateEntityList);
 
-    console.log(`### getFlattenObjForArray`, getFlattenObjForArray(updateProjectRepository))
+    // console.log(`### getFlattenObjForArray`, getFlattenObjForArray(updateProjectRepository))
 
+    console.log(`### getEntityType`, updateProjectRepository.getEntityType())
 
     // set readDetailProjectRepository by projectApi
     useEffect(() => {
