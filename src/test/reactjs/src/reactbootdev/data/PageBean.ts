@@ -273,6 +273,8 @@ export const pageBeans: TaskBeansType = {
   "src/page/home.tsx": {
     "importPaths": {
       "page": "src/reactbootdev/decorator/Page.ts",
+      "MuiLink": "mui/material/Link.ts",
+      "Link": "src/page/react-router-dom.ts",
       "Welcome": "src/page/home.tsx"
     },
     "objects": {
