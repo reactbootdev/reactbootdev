@@ -9,13 +9,11 @@ import {Box, createTheme, Tooltip} from "@mui/material";
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
 import {BoxPropsExt, prettierLongKey} from "@src/reactbootdev/util/RepositoryUtil";
 
-
 const darkTheme = createTheme({
     palette: {
-        mode: 'dark', // 다크 모드 활성화
+        mode: 'dark',
     },
 });
-
 
 interface TableData {
     name: string;
@@ -29,11 +27,6 @@ interface TableHeader {
     data: TableData[];
 }
 
-interface TableProps<T extends BaseEntity> {
-    repository: BaseRepository<T>;
-    header: TableHeader[];
-}
-
 export function Item(props: BoxPropsExt) {
     const {sx, ...other} = props;
     return (
@@ -44,10 +37,6 @@ export function Item(props: BoxPropsExt) {
                 sx={{
                     p: 1,
                     m: 1,
-                    // bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : 'grey.100'),
-                    // border: '1px solid',
-                    // borderColor: (theme) =>
-                    //     theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
                     color: (theme) => (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800'),
                     fontSize: '0.875rem',
                     fontWeight: '700',
@@ -59,13 +48,11 @@ export function Item(props: BoxPropsExt) {
     );
 }
 
-
 interface TableProps<T extends BaseEntity> {
     repository: BaseRepository<T>;
     header: TableHeader[];
 
 }
-
 
 const DeleteComponent = () => {
     // api
@@ -83,7 +70,6 @@ const DeleteComponent = () => {
         </>
     );
 }
-
 
 @page("/d")
 export class DeletePage {

@@ -32,10 +32,9 @@ import {
 
 const darkTheme = createTheme({
     palette: {
-        mode: 'dark', // 다크 모드 활성화
+        mode: 'dark',
     },
 });
-
 
 interface TableData {
     name: string;
@@ -57,7 +56,6 @@ interface TableProps<T extends BaseEntity> {
 const MyTable = <T extends BaseEntity>(
     props: TableProps<T>
 ) => {
-
     const matrix = props.header.map(header => {
         return header.data.map(data => {
             return data
@@ -122,10 +120,6 @@ export function Item(props: BoxPropsExt) {
                 sx={{
                     p: 1,
                     m: 1,
-                    // bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : 'grey.100'),
-                    // border: '1px solid',
-                    // borderColor: (theme) =>
-                    //     theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
                     color: (theme) => (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800'),
                     fontSize: '0.875rem',
                     fontWeight: '700',
@@ -139,11 +133,8 @@ export function Item(props: BoxPropsExt) {
 
 
 const ReadListComponent = () => {
-
-    // api
     const projectApi = new TestProjectApi()
 
-    // readList
     const readListProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `readList`)
     const [readListEntityList, setReadListEntityList] = useRecoilState(readListProjectRepository.entityListState);
     readListProjectRepository.init(readListEntityList, setReadListEntityList);
@@ -179,12 +170,10 @@ const ReadListComponent = () => {
             <div>
                 {MyTable(tableData)}
             </div>
-            {/*{readListEntity}*/}
         </>
     );
 
 }
-
 
 function getHeader<T extends BaseEntity>(
     readListEntityList: T[],
@@ -238,13 +227,10 @@ function getHeader<T extends BaseEntity>(
     return header
 }
 
-
 interface TableProps<T extends BaseEntity> {
     repository: BaseRepository<T>;
     header: TableHeader[];
-
 }
-
 
 @page("/r")
 export class ReadListPage {

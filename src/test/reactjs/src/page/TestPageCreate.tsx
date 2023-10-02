@@ -27,17 +27,14 @@ import {
     extractShortKeyFromLongKey,
     getFlattenObj,
     prettierLongKey,
-    removeFirstElementFromKey,
-    transposeMatrix
+    removeFirstElementFromKey
 } from "@src/reactbootdev/util/RepositoryUtil";
-
 
 const darkTheme = createTheme({
     palette: {
-        mode: 'dark', // 다크 모드 활성화
+        mode: 'dark',
     },
 });
-
 
 interface TableData {
     name: string;
@@ -56,142 +53,6 @@ interface TableProps<T extends BaseEntity> {
     header: TableHeader[];
 }
 
-const MyTable = <T extends BaseEntity>(
-    props: TableProps<T>
-) => {
-
-    const matrix = props.header.map(header => {
-        return header.data.map(data => {
-            return data
-        })
-    })
-
-    const reverseMatrix = transposeMatrix(matrix)
-
-    return (
-        <ThemeProvider theme={darkTheme}>
-            <TableContainer component={Paper}>
-                <Typography variant="h5" gutterBottom>
-                    My Table
-                </Typography>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            {
-                                props.header.map((header, idx) => {
-                                    return (
-                                        <TableCell key={idx}>
-                                            <Item
-                                                tooltipText={header.desc}
-                                            >
-                                                {header.name}
-                                            </Item>
-                                        </TableCell>
-                                    )
-                                })
-                            }
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {reverseMatrix.map((row, idx) => (
-                            <TableRow key={idx}>
-                                {row.map((d, idx2) => (
-                                    <TableCell key={idx2}>
-                                        <Item
-                                            tooltipText={d.desc}
-                                        >
-                                            {d.value}
-                                        </Item>
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </ThemeProvider>
-    );
-};
-
-const MyTableReverse = <T extends BaseEntity>(
-    props: TableProps<T>
-) => {
-
-    const isRenderTableHead = false
-
-    const matrix = props.header.map(header => {
-        return header.data.map(data => {
-            return data
-        })
-    })
-
-    const maxRowMatrix = matrix.reduce((acc, cur) => {
-        return acc.length > cur.length ? acc : cur
-    }, []).length
-
-    return (
-        <ThemeProvider theme={darkTheme}>
-            <TableContainer component={Paper}>
-                <Typography variant="h5" gutterBottom>
-                    My Table
-                </Typography>
-                <Table>
-                    {isRenderTableHead && (
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>
-                                    <Item
-                                        tooltipText={"속성"}
-                                    >
-                                        속성
-                                    </Item>
-                                </TableCell>
-                                {
-                                    Array(maxRowMatrix).fill(0).map((header, idx) => {
-                                        return (
-                                            <TableCell key={idx}>
-                                                <Item
-                                                    tooltipText={String(idx)}
-                                                >
-                                                    {idx}
-                                                </Item>
-                                            </TableCell>
-                                        )
-                                    })
-                                }
-                            </TableRow>
-                        </TableHead>
-                    )}
-
-                    <TableBody>
-                        {matrix.map((row, idx) => (
-                            <TableRow key={idx}>
-                                <TableCell>
-                                    <Item
-                                        tooltipText={props.header[idx].desc}
-                                    >
-                                        {props.header[idx].name}
-                                    </Item>
-                                </TableCell>
-
-                                {row.map((d, idx2) => (
-                                    <TableCell key={idx2}>
-                                        <Item
-                                            tooltipText={d.desc}
-                                        >
-                                            {d.value}
-                                        </Item>
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </ThemeProvider>
-    );
-};
-
 export function Item(props: BoxPropsExt) {
     const {sx, ...other} = props;
     return (
@@ -202,10 +63,6 @@ export function Item(props: BoxPropsExt) {
                 sx={{
                     p: 1,
                     m: 1,
-                    // bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : 'grey.100'),
-                    // border: '1px solid',
-                    // borderColor: (theme) =>
-                    //     theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
                     color: (theme) => (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800'),
                     fontSize: '0.875rem',
                     fontWeight: '700',
@@ -275,8 +132,6 @@ function getHeader<T extends BaseEntity>(
 const InputMyTableReverse = <T extends BaseEntity>(
     props: TableProps<T>
 ) => {
-
-
     const baseRepository = props.repository
     const entityList = baseRepository.entityList
 
@@ -360,36 +215,19 @@ const InputMyTableReverse = <T extends BaseEntity>(
     );
 };
 
-
 interface TableProps<T extends BaseEntity> {
     repository: BaseRepository<T>;
     header: TableHeader[];
 
 }
 
-
-interface StyledButtonProps {
-    primary?: boolean;
-}
-
-
-
 const CreateComponent = () => {
 
-    // create container style
-    // useStyle
-    const useStyle = () => {
-
-    }
-
-    // api
     const projectApi = new TestProjectApi()
 
-    // create
     const createProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `create`)
     const [createEntityList, setCreateEntityList] = useRecoilState(createProjectRepository.entityListState);
     createProjectRepository.init(createEntityList, setCreateEntityList);
-
 
     useEffect(() => {
         const defaultEntity = new Project()

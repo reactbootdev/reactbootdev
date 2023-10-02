@@ -7,7 +7,6 @@ import {TestProjectApi} from "@src/api/TestProjectApi";
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 import {
     Box,
-    Button,
     createTheme,
     Paper,
     Table,
@@ -16,34 +15,25 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    TextField,
     ThemeProvider,
     Tooltip,
     Typography
 } from "@mui/material";
-import styled from 'styled-components';
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
 import {
     BoxPropsExt,
-    exploreForEachTableData,
     extractShortKeyFromLongKey,
     getFlattenObj,
-    getFlattenObjForArray,
-    isCanOutputType,
     prettierLongKey,
-    removeFirstElementFromKey,
-    TableDataForArray,
-    TableDataForArrayType,
-    transposeMatrix
+    removeFirstElementFromKey
 } from "@src/reactbootdev/util/RepositoryUtil";
 
 
 const darkTheme = createTheme({
     palette: {
-        mode: 'dark', // 다크 모드 활성화
+        mode: 'dark',
     },
 });
-
 
 interface TableData {
     name: string;
@@ -61,63 +51,6 @@ interface TableProps<T extends BaseEntity> {
     repository: BaseRepository<T>;
     header: TableHeader[];
 }
-
-const MyTable = <T extends BaseEntity>(
-    props: TableProps<T>
-) => {
-
-    const matrix = props.header.map(header => {
-        return header.data.map(data => {
-            return data
-        })
-    })
-
-    const reverseMatrix = transposeMatrix(matrix)
-
-    return (
-        <ThemeProvider theme={darkTheme}>
-            <TableContainer component={Paper}>
-                <Typography variant="h5" gutterBottom>
-                    My Table
-                </Typography>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            {
-                                props.header.map((header, idx) => {
-                                    return (
-                                        <TableCell key={idx}>
-                                            <Item
-                                                tooltipText={header.desc}
-                                            >
-                                                {header.name}
-                                            </Item>
-                                        </TableCell>
-                                    )
-                                })
-                            }
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {reverseMatrix.map((row, idx) => (
-                            <TableRow key={idx}>
-                                {row.map((d, idx2) => (
-                                    <TableCell key={idx2}>
-                                        <Item
-                                            tooltipText={d.desc}
-                                        >
-                                            {d.value}
-                                        </Item>
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </ThemeProvider>
-    );
-};
 
 const MyTableReverse = <T extends BaseEntity>(
     props: TableProps<T>
@@ -225,10 +158,8 @@ export function Item(props: BoxPropsExt) {
 
 const ReadDetailComponent = () => {
 
-    // api
     const projectApi = new TestProjectApi()
 
-    // readDetail
     const readDetailProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `readDetail`)
     const [readDetailEntityList, setReadDetailEntityList] = useRecoilState(readDetailProjectRepository.entityListState);
     readDetailProjectRepository.init(readDetailEntityList, setReadDetailEntityList);
@@ -284,9 +215,6 @@ function getHeader<T extends BaseEntity>(
     const flattenObj = getFlattenObj(readListEntityList)
     Object.values(flattenObj).forEach(row => {
         row.forEach(col => {
-
-            const colType = typeof col?.value
-
             if (isWhiteList) {
                 const isWhiteList = whiteList.find(white => removeFirstElementFromKey(white) === col?.fullKey)
                 if (typeof isWhiteList === 'undefined') {
@@ -305,7 +233,6 @@ function getHeader<T extends BaseEntity>(
     Object.values(flattenObj).forEach(row => {
         Object.keys(headerKeyMap).forEach(headerKey => {
             const col = row.find(col => col.fullKey === headerKey)
-
             const tableData = {
                 name: extractShortKeyFromLongKey(col?.fullKey ?? ``),
                 desc: col?.fullKey ?? ``,
@@ -327,276 +254,11 @@ function getHeader<T extends BaseEntity>(
 }
 
 
-const InputMyTableReverse = <T extends BaseEntity>(
-    props: TableProps<T>
-) => {
-
-
-    const baseRepository = props.repository
-    const entityList = baseRepository.entityList
-
-    const isRenderTableHead = false
-
-    const matrix = props.header.map(header => {
-        return header.data.map(data => {
-            return data
-        })
-    })
-
-    const maxRowMatrix = matrix.reduce((acc, cur) => {
-        return acc.length > cur.length ? acc : cur
-    }, []).length
-
-    return (
-        <ThemeProvider theme={darkTheme}>
-            <TableContainer component={Paper}>
-                <Typography variant="h5" gutterBottom>
-                    My Table
-                    {JSON.stringify(entityList)}
-                </Typography>
-                <Table>
-                    {isRenderTableHead && (
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>
-                                    <Item
-                                        tooltipText={"속성"}
-                                    >
-                                        속성
-                                    </Item>
-                                </TableCell>
-                                {
-                                    Array(maxRowMatrix).fill(0).map((header, idx) => {
-                                        return (
-                                            <TableCell key={idx}>
-                                                <Item
-                                                    tooltipText={String(idx)}
-                                                >
-                                                    {idx}
-                                                </Item>
-                                            </TableCell>
-                                        )
-                                    })
-                                }
-                            </TableRow>
-                        </TableHead>
-                    )}
-
-                    <TableBody>
-                        {matrix.map((row, idx) => (
-                            <TableRow key={idx}>
-                                <TableCell>
-                                    <Item
-                                        tooltipText={props.header[idx].desc}
-                                    >
-                                        {props.header[idx].name}
-                                    </Item>
-                                </TableCell>
-
-                                {row.map((d, idx2) => {
-                                    return (
-                                        <TableCell key={idx2}>
-                                            <TextField
-                                                label={d.desc} variant="outlined"
-                                                value={d.value}
-                                                onChange={(e) => {
-                                                    baseRepository.updateEntityByDelimiterKey(0, e.target.value, d.desc)
-                                                }}
-                                            />
-                                        </TableCell>
-                                    )
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </ThemeProvider>
-    );
-};
-
-
 interface TableProps<T extends BaseEntity> {
     repository: BaseRepository<T>;
     header: TableHeader[];
 
 }
-
-const InputMyTableReverseForArray = <T extends BaseEntity>(
-    props: TableProps<T>
-) => {
-
-
-    const baseRepository = props.repository
-    const flattenObjForArray = getFlattenObjForArray(baseRepository)
-    const entityList = baseRepository.entityList
-
-    const [tmpEntityList, setTmpEntityList] = useRecoilState(baseRepository.entityListState);
-
-
-    const isRenderTableHead = false
-
-    const matrix = props.header.map(header => {
-        return header.data.map(data => {
-            return data
-        })
-    })
-
-    const maxRowMatrix = matrix.reduce((acc, cur) => {
-        return acc.length > cur.length ? acc : cur
-    }, []).length
-
-
-    const forEachTableData: TableDataForArray[] = []
-    exploreForEachTableData(flattenObjForArray, (item: TableDataForArray) => {
-        forEachTableData.push(item)
-    })
-
-    const refinedForEachTableData = forEachTableData.filter(item => {
-        return isCanOutputType(item.type)
-    })
-
-    return (
-        <ThemeProvider theme={darkTheme}>
-            <TableContainer component={Paper}>
-                <Typography variant="h5" gutterBottom>
-                    My Table
-                    {JSON.stringify(entityList)}
-                </Typography>
-                <Table>
-                    {isRenderTableHead && (
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>
-                                    <Item
-                                        tooltipText={"속성"}
-                                    >
-                                        속성
-                                    </Item>
-                                </TableCell>
-                                {
-                                    Array(maxRowMatrix).fill(0).map((header, idx) => {
-                                        return (
-                                            <TableCell key={idx}>
-                                                <Item
-                                                    tooltipText={String(idx)}
-                                                >
-                                                    {idx}
-                                                </Item>
-                                            </TableCell>
-                                        )
-                                    })
-                                }
-                            </TableRow>
-                        </TableHead>
-                    )}
-
-                    <TableBody>
-
-
-                        {refinedForEachTableData.map((d, idx2) => {
-                            // {matrix.map((row, idx) => (
-
-                            return (
-                                <TableRow key={idx2}>
-                                    <TableCell>
-                                        <Item
-                                            tooltipText={d.fullKey}
-                                        >
-                                            {d.shortKey}
-                                        </Item>
-                                    </TableCell>
-
-                                    <TableCell key={idx2}>
-
-                                        {
-                                            d.addFunction !== undefined && (
-                                                <>
-                                                    <Button
-                                                        onClick={(e) => {
-                                                            if (d.addFunction === undefined) {
-                                                                return
-                                                            }
-                                                            const addFunc = d.addFunction(undefined)
-                                                            addFunc(e)
-                                                        }}
-                                                    >
-                                                        add
-                                                    </Button>
-                                                </>
-                                            )
-                                        }
-
-                                        {
-                                            d.type !== TableDataForArrayType.ARRAY && (
-
-                                                <TextField
-                                                    label={d.fullKey} variant="outlined"
-                                                    value={d.value}
-                                                    // value={refinedValue}
-                                                    onChange={(e) => {
-                                                        if (d.updateFunction === undefined) {
-                                                            return
-                                                        }
-
-                                                        const updateFunc = d.updateFunction(e.target.value)
-                                                        updateFunc(e)
-
-                                                    }}
-                                                />
-                                            )
-                                        }
-
-                                        {
-                                            d.removeFunction !== undefined && (
-                                                <>
-                                                    <Button
-                                                        onClick={(e) => {
-                                                            if (d.removeFunction === undefined) {
-                                                                return
-                                                            }
-
-                                                            const removeFunc = d.removeFunction(0)
-                                                            removeFunc(e)
-                                                        }}
-                                                    >
-                                                        remove
-                                                    </Button>
-                                                </>
-                                            )
-                                        }
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        })}
-
-
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </ThemeProvider>
-    );
-};
-
-const containerStyle = {
-    backgroundColor: 'lightblue',
-    padding: '20px',
-    border: '1px solid blue',
-    borderRadius: '5px',
-};
-
-
-interface StyledButtonProps {
-    primary?: boolean;
-}
-
-const StyledButton = styled.button<StyledButtonProps>`
-  // 스타일 정의에서 primary prop 사용
-  background-color: ${(props: any) => (props.primary ? 'blue' : 'red')};
-  color: white;
-  padding: 10px 20px;
-`;
-
 
 @page("/rd")
 export class ReadDetailPage {

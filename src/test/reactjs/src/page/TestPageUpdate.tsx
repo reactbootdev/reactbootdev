@@ -38,7 +38,7 @@ import {
 
 const darkTheme = createTheme({
     palette: {
-        mode: 'dark', // 다크 모드 활성화
+        mode: 'dark',
     },
 });
 
@@ -71,10 +71,6 @@ export function Item(props: BoxPropsExt) {
                 sx={{
                     p: 1,
                     m: 1,
-                    // bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : 'grey.100'),
-                    // border: '1px solid',
-                    // borderColor: (theme) =>
-                    //     theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
                     color: (theme) => (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800'),
                     fontSize: '0.875rem',
                     fontWeight: '700',
@@ -85,7 +81,6 @@ export function Item(props: BoxPropsExt) {
         </Tooltip>
     );
 }
-
 
 function getHeader<T extends BaseEntity>(
     readListEntityList: T[],
@@ -142,20 +137,16 @@ function getHeader<T extends BaseEntity>(
 interface TableProps<T extends BaseEntity> {
     repository: BaseRepository<T>;
     header: TableHeader[];
-
 }
 
 const InputMyTableReverseForArray = <T extends BaseEntity>(
     props: TableProps<T>
 ) => {
-
-
     const baseRepository = props.repository
     const flattenObjForArray = getFlattenObjForArray(baseRepository)
     const entityList = baseRepository.entityList
 
     const [tmpEntityList, setTmpEntityList] = useRecoilState(baseRepository.entityListState);
-
 
     const isRenderTableHead = false
 
@@ -302,11 +293,8 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
 
 
 const UpdateComponent = () => {
-
-    // api
     const projectApi = new TestProjectApi()
 
-    // update
     const updateProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `update`)
     const [updateEntityList, setUpdateEntityList] = useRecoilState(updateProjectRepository.entityListState);
     updateProjectRepository.init(updateEntityList, setUpdateEntityList);
