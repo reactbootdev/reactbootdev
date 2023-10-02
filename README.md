@@ -111,13 +111,12 @@ module.exports = {
 ```package.json
   "scripts": {
     "rt": "npx reactbootdev",
-    "rtstart": "npm run rt && env-cmd -f .env.development react-scripts start",
-    "rtbuild": "npm run rt && env-cmd -f .env.production react-scripts build",
+    "rtstart": "npm run rt && npm run start",
+    "rtbuild": "npm run rt && npm run build",
     "rtnodemon": "nodemon -V --watch src --ext js,mjs,cjs,json,jsx,ts,tsx --delay 5000ms --exec \"npm run rt\"",
-    "build": "env-cmd -f .env.production react-scripts build",
-    "start": "env-cmd -f .env.development react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "build": "env-cmd -f .env.production craco build",
+    "start": "env-cmd -f .env.development craco start",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
 ```
