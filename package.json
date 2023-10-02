@@ -11,8 +11,6 @@
     "build": "tsc",
     "clean": "rimraf dist && rimraf src/reactbootdev",
     "start": "npm run clean && npm run build && node dist/Runner.js",
-    "devclean": "rimraf dist && rimraf src/test/target/reactbootdev",
-    "dev": "npm run devclean && npm run build && node dist/Runner.js dev src/test/source src/test/target/reactbootdev",
     "test": "npm run dev && node dist/TestRunner.js test",
     "rtclean": "rimraf src/test/reactjs/src/reactbootdev",
     "rt": "npm run build && node dist/Runner.js dev src/test/reactjs/src src/test/reactjs/src/reactbootdev",

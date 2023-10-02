@@ -179,8 +179,6 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
         return isCanOutputType(item.type)
     })
 
-    console.debug(`refinedForEachTableData`, refinedForEachTableData)
-
     return (
         <ThemeProvider theme={darkTheme}>
             <TableContainer component={Paper}>
@@ -313,14 +311,11 @@ const UpdateComponent = () => {
     const [updateEntityList, setUpdateEntityList] = useRecoilState(updateProjectRepository.entityListState);
     updateProjectRepository.init(updateEntityList, setUpdateEntityList);
 
-    console.debug(`### getEntityType`, updateProjectRepository.getEntityType())
-
     useEffect(() => {
         const updateRes = projectApi.handleReadDetail(undefined)
         const updateResData = updateRes.result.data as Project
         updateProjectRepository.setEntity(updateResData)
     }, [])
-
 
     const whiteList: any[] = [
         // entityKey.testcol1a

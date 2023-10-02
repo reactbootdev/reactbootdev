@@ -1,6 +1,0 @@
-class BeanRepository {
-
-    pageBean: Function[] = [];
-
-
-}

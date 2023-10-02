@@ -637,9 +637,6 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         .filter((v, index) => index > 0 && v.length > 0)
                         .join(NAME_DELIMITER)
 
-                    console.debug(
-                        baseRepository.getValueById(entityNumberInt, entityKey)
-                    )
                     const entityArray =
                         baseRepository.getValueById(entityNumberInt, entityKey) as T[]
                     const entityArrayLength = entityArray.length

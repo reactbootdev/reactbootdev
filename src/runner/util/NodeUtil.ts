@@ -204,7 +204,6 @@ export function resolvePropertyType(member: ts.PropertyDeclaration, sourceFile: 
     if (!node) return undefined
 
     const typeName = node.getText(sourceFile);
-    console.debug(`resolvePropertyType > ${typeName}`)
     const BASIC_TYPES = ['string', 'number', 'boolean', 'any',]
     if (BASIC_TYPES.includes(typeName)) {
         return {
