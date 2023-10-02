@@ -107,7 +107,7 @@ module.exports = {
 
 ### `package.json`
 
-* Edit (`nodemon`, `env-cmd`)
+* Adjust `scripts` for `reactbootdev`, `nodemon`, `env-cmd`, `craco`
 ```package.json
   "scripts": {
     "rt": "npx reactbootdev",
