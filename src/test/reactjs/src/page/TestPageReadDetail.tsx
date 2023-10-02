@@ -32,7 +32,6 @@ import {
 import {BoxPropsExt} from "@src/reactbootdev/component/CreateContainer";
 import styled from 'styled-components';
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
-import {SubProject} from "@src/entity/SubProject";
 import {StringOutputValueType} from "@src/reactbootdev/component/StringOutput";
 import {
     exploreForEachTableData,
@@ -227,69 +226,6 @@ export function Item(props: BoxPropsExt) {
             />
         </Tooltip>
     );
-}
-
-
-const ReadListComponent = () => {
-
-    // api
-    const projectApi = new TestProjectApi()
-
-    // readList
-    const readListProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `readList`)
-    const [readListEntityList, setReadListEntityList] = useRecoilState(readListProjectRepository.entityListState);
-    readListProjectRepository.init(readListEntityList, setReadListEntityList);
-
-    // entityKey
-    const entityKey = useMemo(() => {
-        return readListProjectRepository.getEntityKey()
-    }, [readListProjectRepository])
-
-
-    console.log(`entityKey ###5`, entityKey)
-    console.log(`entityKey ###5a`, entityKey.subProject?.testcol1b)
-
-    useEffect(() => {
-        const readListRes = projectApi.handleReadList(undefined)
-        const resData = readListRes.result.data as Project[]
-        readListProjectRepository.setEntities(resData)
-    }, [])
-
-    const readListEntity = entityRenderer(
-        Project,
-        readListProjectRepository,
-        projectApi,
-        RenderTypeEnum.READ_LIST,
-        {
-            dataCallback: (data) => {
-                console.log(`ReadListComponent.dataCallback`, data)
-            }
-        }
-    )
-
-    const whiteList: any[] = [
-        // entityKey.testcol1a
-    ]
-    const blackList: any[] = [
-        // entityKey.testcol1a
-    ]
-
-    const header = getHeader(readListEntityList, whiteList, blackList)
-
-    const tableData: TableProps<Project> = {
-        repository: readListProjectRepository,
-        header: header,
-    }
-
-    return (
-        <>
-            <div>
-                {MyTable(tableData)}
-            </div>
-            {/*{readListEntity}*/}
-        </>
-    );
-
 }
 
 const ReadDetailComponent = () => {
@@ -543,6 +479,9 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
     const flattenObjForArray = getFlattenObjForArray(baseRepository)
     const entityList = baseRepository.entityList
 
+    const [tmpEntityList, setTmpEntityList] = useRecoilState(baseRepository.entityListState);
+
+
     const isRenderTableHead = false
 
     const matrix = props.header.map(header => {
@@ -725,210 +664,9 @@ const StyledButton = styled.button<StyledButtonProps>`
 `;
 
 
-const CreateComponent = () => {
-
-    // create container style
-    // useStyle
-    const useStyle = () => {
-
-    }
-
-    // api
-    const projectApi = new TestProjectApi()
-
-    // create
-    const createProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `create`)
-    const [createEntityList, setCreateEntityList] = useRecoilState(createProjectRepository.entityListState);
-    createProjectRepository.init(createEntityList, setCreateEntityList);
-
-
-    console.log(`### getEntityType`, createProjectRepository.getEntityType())
-    console.log(`### getFlattenObjForArray`, getFlattenObjForArray(createProjectRepository))
-
-    // {
-    //     "id": 1,
-    //     "name": "test1",
-    //     "description": "test1",
-    //     "startDate": "2021-01-01",
-    //     "endDate": "2021-01-01",
-    //     "testcol1a": "xxxxx1",
-    //     "subProject": {
-    //     "id": 33
-    // }
-    // }
-
-    useEffect(() => {
-
-        const defaultEntity = new Project()
-        defaultEntity.testcol1a = `testcol1a`
-        defaultEntity.testcol2a = `s`
-        defaultEntity.testcol4a = 34
-
-        defaultEntity.subProject = new SubProject()
-        defaultEntity.subProject.testcol1b = `testcol1b`
-
-        const testArray = ["df", "adf"]
-        defaultEntity.testArray = testArray
-
-        // update
-        const updateRes = projectApi.handleReadDetail(undefined)
-        const updateResData = updateRes.result.data as Project
-        // update
-        createProjectRepository.setEntity(defaultEntity)
-    }, [])
-
-
-    const createEntity = entityRenderer(
-        Project,
-        createProjectRepository,
-        projectApi,
-        RenderTypeEnum.CREATE,
-        {
-            itemId: 0,
-        },
-    )
-
-    const whiteList: any[] = [
-        // entityKey.testcol1a
-    ]
-    const blackList: any[] = [
-        // entityKey.testcol1a
-    ]
-
-    const header = getHeader(createEntityList, whiteList, blackList)
-
-    const tableData: TableProps<Project> = {
-        repository: createProjectRepository,
-        header: header,
-    }
-
-    return (
-        <>
-            {InputMyTableReverse(tableData)}
-
-            {/*{createEntity}*/}
-        </>
-    );
-
-};
-
-
-const UpdateComponent = () => {
-
-    // api
-    const projectApi = new TestProjectApi()
-
-    // update
-    const updateProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `update`)
-    const [updateEntityList, setUpdateEntityList] = useRecoilState(updateProjectRepository.entityListState);
-    updateProjectRepository.init(updateEntityList, setUpdateEntityList);
-
-    // console.log(`### getFlattenObjForArray`, getFlattenObjForArray(updateProjectRepository))
-
-    console.log(`### getEntityType`, updateProjectRepository.getEntityType())
-
-    // set readDetailProjectRepository by projectApi
-    useEffect(() => {
-        // update
-        const updateRes = projectApi.handleReadDetail(undefined)
-        const updateResData = updateRes.result.data as Project
-        updateProjectRepository.setEntity(updateResData)
-    }, [])
-
-    // const updateEntity = entityRenderer(
-    //     Project,
-    //     updateProjectRepository,
-    //     projectApi,
-    //     RenderTypeEnum.UPDATE,
-    //     {
-    //         itemId: 0,
-    //     },
-    // )
-
-    const whiteList: any[] = [
-        // entityKey.testcol1a
-    ]
-    const blackList: any[] = [
-        // entityKey.testcol1a
-    ]
-
-    const header = getHeader(updateEntityList, whiteList, blackList)
-
-    const tableData: TableProps<Project> = {
-        repository: updateProjectRepository,
-        header: header,
-    }
-
-    return (
-        <>
-            {/*{InputMyTableReverse(tableData)}*/}
-            {InputMyTableReverseForArray(tableData)}
-            {/*<div>test2</div>*/}
-            {/*{updateEntity}*/}
-        </>
-    );
-
-}
-
-
-const DeleteComponent = () => {
-    // api
-    const projectApi = new TestProjectApi()
-
-    // delete
-    const deleteProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `delete`)
-    const [deleteEntityList, setDeleteEntityList] = useRecoilState(deleteProjectRepository.entityListState);
-    deleteProjectRepository.init(deleteEntityList, setDeleteEntityList);
-
-    const deleteEntity = entityRenderer(
-        Project,
-        deleteProjectRepository,
-        projectApi,
-        RenderTypeEnum.DELETE,
-        {
-            itemId: 0,
-        },
-    )
-
-    return (
-        <>
-            {deleteEntity}
-        </>
-    );
-}
-
-@page("/c")
-export class CreatePage {
-    render() {
-        return <CreateComponent/>;
-    }
-}
-
-@page("/r")
-export class ReadListPage {
-    render() {
-        return <ReadListComponent/>;
-    }
-}
-
 @page("/rd")
 export class ReadDetailPage {
     render() {
         return <ReadDetailComponent/>;
     }
 }
-
-@page("/u")
-export class UpdatePage {
-    render() {
-        return <UpdateComponent/>;
-    }
-}
-
-@page("/d")
-export class DeletePage {
-    render() {
-        return <DeleteComponent/>;
-    }
-}
-

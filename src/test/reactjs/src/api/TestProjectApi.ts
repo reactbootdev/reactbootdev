@@ -2,6 +2,40 @@ import {BASE_URL, BaseApi} from "@src/reactbootdev/api/BaseApi";
 import {Project} from "@src/entity/Project";
 
 
+export interface ReHandleReadListInterface {
+    search: {
+        customSearch: any
+        ops: {
+            eq: any
+            ne: any
+            gt: any
+            ge: any
+            lt: any
+            le: any
+            like: any
+            in: any
+            notIn: any
+            between: any
+            notBetween: any
+            and: any
+            or: any
+            not: any
+            isNull: any
+            isNotNull: any
+        }[]
+    }
+    sort: {
+        name: string
+        direction: string
+    }[]
+    pagination: {
+        page: number
+        size: number
+    }
+    type: any
+    columns: string[]
+}
+
 export class TestProjectApi extends BaseApi {
 
     // TODO :: Test용 MockUp Result Settings > Pagenation, Search 등.
@@ -14,6 +48,23 @@ export class TestProjectApi extends BaseApi {
             .filter((url) => url !== ``)
             .join(`/`)
         return TARGET_URL
+    }
+
+
+    reHandleCreate = (data: any) => {
+
+    }
+    reHandleUpdate = (data: any) => {
+
+    }
+    reHandleDelete = (data: any) => {
+
+    }
+    reHandleReadList = (data: ReHandleReadListInterface) => {
+
+    }
+    reHandleReadDetail = (data: ReHandleReadListInterface) => {
+
     }
 
     handleCreate = (data: any) => {

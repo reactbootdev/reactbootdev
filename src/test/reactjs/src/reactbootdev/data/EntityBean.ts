@@ -9,9 +9,9 @@ import {
 
 
 export const entityImportMap: { [key: string]: any } = {
-  "src/entity/SubProject.ts////SubProject": src_entity_SubProject____SubProject,
-  "src/entity/Project.ts////Project": src_entity_Project____Project,
-  "src/entity/Project.ts////TestEnum": src_entity_Project____TestEnum
+    "src/entity/SubProject.ts////SubProject": src_entity_SubProject____SubProject,
+    "src/entity/Project.ts////Project": src_entity_Project____Project,
+    "src/entity/Project.ts////TestEnum": src_entity_Project____TestEnum
 }
 
 export const entityBeans: TaskBeansType = {
