@@ -1,19 +1,29 @@
 ﻿# reactbootdev
 
-### Install
+## Features
 
-* `bash` > Install typescript, reactjs project
+### Page
+
+* Page
+
+### Repository
+
+* Repository
+
+## Install
+
+### `bash`
+
+* Install typescript, reactjs project
 
 ```bash
 npx create-react-app my-app --template typescript
 ```
 
-* `bash`
+* Install dependencies
 ```bash
 npm i reactbootdev
 ```
-
-* `bash` > Install dependencies
 
 ```bash
 npm i react-router-dom axios recoil uuid env-cmd
@@ -23,32 +33,81 @@ npm i styled-components
 npm i reflect-metadata
 ```
 
-* `bash` > Install dev dependencies
-
+* Install dev dependencies
 ```bash
 npm install -D nodemon
 npm install --save-dev @types/uuid
 ```
 
-* `tscofing.json` > Edit
+### `tsconfig.json`
 
 ```tsconfig.json
 {
+  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "experimentalDecorators": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
       "@src/*": [
-        "src/*"
+        "./*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@utils/*": [
+        "utils/*"
       ]
     },
     // ...
   },
-  // ...
+  "include": [
+    "src",
+    "craco.config.js"
+  ]
+}
+
+```
+
+### `tsconfig.paths.json`
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": [
+        "src/*"
+      ]
+    }
+  }
 }
 ```
 
-* `package.json` > Edit (`nodemon`, `env-cmd`)
+### `craco.config.js`
+
+```js
+const CracoAlias = require("craco-alias");
+
+module.exports = {
+    plugins: [
+        {
+            plugin: CracoAlias,
+            options: {
+                source: "tsconfig",
+                tsConfigPath: "tsconfig.paths.json",
+            },
+        },
+    ],
+};
+```
+
+### `.env.production`, `.env.development`
+
+* Create blank files in root directory
+
+### `package.json`
+
+* Edit (`nodemon`, `env-cmd`)
 ```package.json
   "scripts": {
     "rt": "npx reactbootdev",
@@ -63,9 +122,10 @@ npm install --save-dev @types/uuid
   },
 ```
 
-* `App.tsx` > Edit
+### `App.tsx`
 ```typescript
-import { App } from "reactbootdev";
+import React from 'react';
+import {ReactBoot} from "@src/reactbootdev/component/ReactBoot";
 
 function App() {
     return (
@@ -74,15 +134,19 @@ function App() {
         </div>
     );
 }
+
+export default App;
 ```
 
-* `MyPage.tsx` > Add `@Page("/url")`
+### `MyPage.tsx`
 
+* Add `@page("/url")`
+* Simple page
 ```typescript
 import React from "react";
-import { Page } from "reactbootdev";
+import {page} from "@src/reactbootdev/decorator/Page";
 
-@Page("/url")
+@page("/")
 export class MyPage  {
   render() {
     return (
@@ -94,10 +158,29 @@ export class MyPage  {
 }
 ```
 
+* Page with function component
 
+```typescript
+import React from "react";
+import {page} from "@src/reactbootdev/decorator/Page";
 
+function WelcomeComponent() {
+    return (
+        <div>
+            <h1>Welcome < /h1>
+        < /div>
+    )
+}
 
-* `bash`
+@page("/")
+export class Welcome {
+    render() {
+        return <WelcomeComponent / >;
+    }
+}
+```
+
+### `bash`
 ```bash
 npm run rtstart
 ```

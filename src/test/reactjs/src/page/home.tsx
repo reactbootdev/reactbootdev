@@ -1,6 +1,6 @@
-import {page} from "../reactbootdev/decorator/Page";
 import MuiLink from '@mui/material/Link';
 import {Link} from "react-router-dom";
+import {page} from "@src/reactbootdev/decorator/Page";
 
 
 function WelcomeComponent() {
