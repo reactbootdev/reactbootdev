@@ -47,7 +47,7 @@ export function ReactBoot() {
     }
 
     const routeList = pageClasses
-        .map((page) => {
+        .map((page, idx) => {
             if (page?.class === undefined) {
                 return undefined
             }
@@ -56,7 +56,7 @@ export function ReactBoot() {
                 return undefined
             }
             return (
-                <Route path={page.pageUrl} element={pageClass.render()}></Route>
+                <Route key={idx} path={page.pageUrl} element={pageClass.render()}></Route>
             )
         }).filter((route) => {
             return route !== undefined

@@ -3,7 +3,6 @@ import './App.css';
 import {ReactBoot} from "@src/reactbootdev/component/ReactBoot";
 
 function App() {
-    console.debug(`App`)
     return (
         <div className="App">
             <ReactBoot/>
