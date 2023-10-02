@@ -158,7 +158,6 @@ export class MyPage  {
 ```
 
 * Page with function component
-
 ```typescript
 import React from "react";
 import {page} from "@src/reactbootdev/decorator/Page";
