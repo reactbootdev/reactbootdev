@@ -166,15 +166,15 @@ import {page} from "@src/reactbootdev/decorator/Page";
 function WelcomeComponent() {
     return (
         <div>
-            <h1>Welcome < /h1>
-        < /div>
+            <h1>Welcome</h1>
+        </div>
     )
 }
 
 @page("/")
 export class Welcome {
     render() {
-        return <WelcomeComponent / >;
+        return <WelcomeComponent/>;
     }
 }
 ```
