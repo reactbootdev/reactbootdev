@@ -2,13 +2,12 @@ import React from "react";
 import {useRecoilState} from "recoil";
 import {page} from "@src/reactbootdev/decorator/Page";
 import {Project} from "@src/entity/Project";
-import {entityRenderer, prettierLongKey, RenderTypeEnum} from "@src/reactbootdev/component/BaseComponentManager";
 import {ProjectRepository} from "@src/repository/ProjectRepository";
 import {TestProjectApi} from "@src/api/TestProjectApi";
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 import {Box, createTheme, Tooltip} from "@mui/material";
-import {BoxPropsExt} from "@src/reactbootdev/component/CreateContainer";
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import {BoxPropsExt, prettierLongKey} from "@src/reactbootdev/util/RepositoryUtil";
 
 
 const darkTheme = createTheme({
@@ -77,19 +76,10 @@ const DeleteComponent = () => {
     const [deleteEntityList, setDeleteEntityList] = useRecoilState(deleteProjectRepository.entityListState);
     deleteProjectRepository.init(deleteEntityList, setDeleteEntityList);
 
-    const deleteEntity = entityRenderer(
-        Project,
-        deleteProjectRepository,
-        projectApi,
-        RenderTypeEnum.DELETE,
-        {
-            itemId: 0,
-        },
-    )
 
     return (
         <>
-            {deleteEntity}
+            <div>test</div>
         </>
     );
 }

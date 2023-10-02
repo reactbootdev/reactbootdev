@@ -19,7 +19,6 @@ export default class BaseRepository<T extends BaseEntity> {
     static defaultRepositoryKey: string = uuidv4();
 
     entityClass: new () => T;
-    // entityKey : T;
     repositoryKey: string;
     isDetailRepository: boolean;
     entityListState: RecoilState<T[]>;
@@ -110,26 +109,15 @@ export default class BaseRepository<T extends BaseEntity> {
         return result
     }
 
-    // getFlattenEntityType = () => {
-    //     const result = getEntityTypeyByType(this.entityClass)
-    //
-    //     return flattenBaseEntity(result)
-    // }
-
     constructor(entityClass: new () => T, repositoryKey: string = uuidv4()) {
         this.entityClass = entityClass;
-        // this.entityKey = this.createObjectStructure(entityClass) as unknown as T
-        // console.log(`entityKey: ${JSON.stringify(this.entityKey)}`, this.entityKey, entityClass)
 
         this.repositoryKey = repositoryKey
-        // 상세 값. 관련해서 저장 방법.
         this.isDetailRepository = false;
 
-        // repositoryKeyMap > key 값이 존재할 경우 기존 값에서 참고. static.
         if (BaseRepository.repositoryKeyMap.has(repositoryKey)) {
             this.entityListState = BaseRepository.repositoryKeyMap.get(repositoryKey);
         } else {
-            // 상태를 저장하는 Recoil atom 정의
             this.entityListState = atom<T[]>({
                 key: repositoryKey,
                 default: [],

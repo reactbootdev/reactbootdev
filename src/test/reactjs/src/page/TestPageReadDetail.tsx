@@ -2,14 +2,6 @@ import React, {useEffect, useMemo} from "react";
 import {useRecoilState} from "recoil";
 import {page} from "@src/reactbootdev/decorator/Page";
 import {Project} from "@src/entity/Project";
-import {
-    entityRenderer,
-    extractShortKeyFromLongKey,
-    prettierLongKey,
-    removeFirstElementFromKey,
-    RenderTypeEnum,
-    transposeMatrix
-} from "@src/reactbootdev/component/BaseComponentManager";
 import {ProjectRepository} from "@src/repository/ProjectRepository";
 import {TestProjectApi} from "@src/api/TestProjectApi";
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
@@ -29,17 +21,20 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import {BoxPropsExt} from "@src/reactbootdev/component/CreateContainer";
 import styled from 'styled-components';
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
-import {StringOutputValueType} from "@src/reactbootdev/component/StringOutput";
 import {
+    BoxPropsExt,
     exploreForEachTableData,
+    extractShortKeyFromLongKey,
     getFlattenObj,
     getFlattenObjForArray,
     isCanOutputType,
+    prettierLongKey,
+    removeFirstElementFromKey,
     TableDataForArray,
-    TableDataForArrayType
+    TableDataForArrayType,
+    transposeMatrix
 } from "@src/reactbootdev/util/RepositoryUtil";
 
 
@@ -251,16 +246,6 @@ const ReadDetailComponent = () => {
         readDetailProjectRepository.setEntity(readDetailResData)
     }, [])
 
-    const readDetailEntity = entityRenderer(
-        Project,
-        readDetailProjectRepository,
-        projectApi,
-        RenderTypeEnum.READ_DETAIL,
-        {
-            itemId: 0,
-        },
-    )
-
     const whiteList: any[] = [
         // entityKey.testcol1a
     ]
@@ -300,7 +285,6 @@ function getHeader<T extends BaseEntity>(
     Object.values(flattenObj).forEach(row => {
         row.forEach(col => {
 
-            // TODO :: add element type in Array ?
             const colType = typeof col?.value
 
             if (isWhiteList) {
@@ -410,45 +394,13 @@ const InputMyTableReverse = <T extends BaseEntity>(
                                 </TableCell>
 
                                 {row.map((d, idx2) => {
-                                    // TODO :: type > add el in array
-
-                                    // const createEntity = entityRenderer(
-                                    //     Project,
-                                    //     createProjectRepository,
-                                    //     projectApi,
-                                    //     RenderTypeEnum.CREATE,
-                                    //     {
-                                    //         itemId: 0,
-                                    //     },
-                                    // )
-                                    // const beanInfo = findBean(entity)
-                                    // const beanInfo = findBean(Project)
-                                    // const flattenObj = flattenObject(beanInfo.bean, beanInfo.entityName);
-
-
-                                    // TODO :: remove
-                                    const outputValue = baseRepository.getValueById(idx2, d.desc) as StringOutputValueType
-                                    const valueComponent = Array.isArray(outputValue) ? outputValue.join(", ") : outputValue
-
-                                    // const addEl
-
                                     return (
                                         <TableCell key={idx2}>
-                                            {/*<Item*/}
-                                            {/*    tooltipText={d.desc}*/}
-                                            {/*>*/}
-                                            {/*    {d.value}*/}
-                                            {/*</Item>*/}
-
-                                            {/*{ valueComponent}*/}
-
                                             <TextField
                                                 label={d.desc} variant="outlined"
                                                 value={d.value}
-                                                // value={refinedValue}
                                                 onChange={(e) => {
                                                     baseRepository.updateEntityByDelimiterKey(0, e.target.value, d.desc)
-                                                    // setInputValue(e.target.value);
                                                 }}
                                             />
                                         </TableCell>
@@ -504,8 +456,6 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
         return isCanOutputType(item.type)
     })
 
-    console.log(`refinedForEachTableData`, refinedForEachTableData)
-
     return (
         <ThemeProvider theme={darkTheme}>
             <TableContainer component={Paper}>
@@ -559,7 +509,6 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
 
                                     <TableCell key={idx2}>
 
-                                        {/*    TODO:: 재구현 필요 > 각 하위 요소임. `entity`가 아니라. */}
                                         {
                                             d.addFunction !== undefined && (
                                                 <>
@@ -570,12 +519,6 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
                                                             }
                                                             const addFunc = d.addFunction(undefined)
                                                             addFunc(e)
-
-
-                                                            const typeTest = Project
-                                                            const typeTest2 = new Project()
-                                                            // TODO :: 결국 entitiy Bean으로 불러와야하고, string이 아닌 실제로 설정해야..
-
                                                         }}
                                                     >
                                                         add
@@ -598,14 +541,7 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
 
                                                         const updateFunc = d.updateFunction(e.target.value)
                                                         updateFunc(e)
-                                                        console.log(`updateFunc`, updateFunc)
-                                                        console.log(updateFunc)
-                                                        console.log(JSON.stringify(updateFunc))
 
-                                                        // TODO :: update 시에 `ARRAY` type 데이터 삭제 됨. 덮어쓰기 되는듯.
-                                                        // TODO :: Array가 Object로 바뀌면서 저장. 분기 처리 필요. setByDelimiterKey에서.
-                                                        // baseRepository.updateEntityByDelimiterKey(0, e.target.value, d.desc)
-                                                        // setInputValue(e.target.value);
                                                     }}
                                                 />
                                             )
@@ -619,8 +555,6 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
                                                             if (d.removeFunction === undefined) {
                                                                 return
                                                             }
-                                                            // TODO :: deleteBydelimiterKey 구현
-                                                            // TODO :: UI 위치관련 구현.
 
                                                             const removeFunc = d.removeFunction(0)
                                                             removeFunc(e)

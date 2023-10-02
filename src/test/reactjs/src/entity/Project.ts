@@ -4,25 +4,25 @@ import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 
 export function render(config: { groupName: string, rendererName: string, propName: string }) {
     return function (target: any, key: string) {
-        console.log(`renderer: ${config.rendererName} ${target} ${key}`)
+        console.debug(`renderer: ${config.rendererName} ${target} ${key}`)
     };
 }
 
 export function renderContainer(config: { groupName: string, rendererName: string }) {
     return function (target: any) {
-        console.log(`containerRenderer: ${config.rendererName} ${target}`)
+        console.debug(`containerRenderer: ${config.rendererName} ${target}`)
     };
 }
 
 export function rendererContainer(config: { name: string }) {
     return function (target: any) {
-        console.log(`containerRenderer: ${config.name} ${target}`)
+        console.debug(`containerRenderer: ${config.name} ${target}`)
     };
 }
 
 export function renderer(config: { name: string }) {
     return function (target: any) {
-        console.log(`containerRenderer: ${config.name} ${target}`)
+        console.debug(`containerRenderer: ${config.name} ${target}`)
     };
 }
 

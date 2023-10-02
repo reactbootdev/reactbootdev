@@ -17,22 +17,21 @@ export class BaseApi {
     handleCreate = (data: any) => {
         const ACTION_URL = `create`
         const TARGET_URL = this.getTargetUrl(ACTION_URL)
-        console.log(data);
 
         axios.post(TARGET_URL, data)
         .then((response) => {
-            console.log(response);
+            console.debug(response);
         })
     }
 
     handleUpdate = (data: any) => {
         const ACTION_URL = `update`
         const TARGET_URL = this.getTargetUrl(ACTION_URL)
-        console.log(data);
+        console.debug(data);
 
         axios.put(TARGET_URL, data)
         .then((response) => {
-            console.log(response);
+            console.debug(response);
         })
     }
 

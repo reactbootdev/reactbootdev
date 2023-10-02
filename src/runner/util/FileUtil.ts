@@ -55,7 +55,7 @@ export function copyFileIfChanged(sourceFile: string, targetFile: string) {
 
     if(!hasChanged) {
         // TODO :: verbose option 설정 or log level
-        // console.log('No changes detected. File not copied:', targetFile , `<` , sourceFile);
+        // console.debug('No changes detected. File not copied:', targetFile , `<` , sourceFile);
         return
     }
 
@@ -67,6 +67,6 @@ export function copyFileIfChanged(sourceFile: string, targetFile: string) {
 
     // 변경된 경우 파일을 복사합니다.
     fs.copyFileSync(sourceFile, targetFile);
-    console.log('File copied:', targetFile , `<` , sourceFile);
+    console.debug('File copied:', targetFile, `<`, sourceFile);
 
 }

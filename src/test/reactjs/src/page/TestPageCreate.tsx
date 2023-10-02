@@ -2,14 +2,6 @@ import React, {useEffect} from "react";
 import {useRecoilState} from "recoil";
 import {page} from "@src/reactbootdev/decorator/Page";
 import {Project} from "@src/entity/Project";
-import {
-    entityRenderer,
-    extractShortKeyFromLongKey,
-    prettierLongKey,
-    removeFirstElementFromKey,
-    RenderTypeEnum,
-    transposeMatrix
-} from "@src/reactbootdev/component/BaseComponentManager";
 import {ProjectRepository} from "@src/repository/ProjectRepository";
 import {TestProjectApi} from "@src/api/TestProjectApi";
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
@@ -28,11 +20,16 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import {BoxPropsExt} from "@src/reactbootdev/component/CreateContainer";
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
 import {SubProject} from "@src/entity/SubProject";
-import {StringOutputValueType} from "@src/reactbootdev/component/StringOutput";
-import {getFlattenObj, getFlattenObjForArray} from "@src/reactbootdev/util/RepositoryUtil";
+import {
+    BoxPropsExt,
+    extractShortKeyFromLongKey,
+    getFlattenObj,
+    prettierLongKey,
+    removeFirstElementFromKey,
+    transposeMatrix
+} from "@src/reactbootdev/util/RepositoryUtil";
 
 
 const darkTheme = createTheme({
@@ -233,7 +230,6 @@ function getHeader<T extends BaseEntity>(
     Object.values(flattenObj).forEach(row => {
         row.forEach(col => {
 
-            // TODO :: add element type in Array ?
             const colType = typeof col?.value
 
             if (isWhiteList) {
@@ -343,45 +339,13 @@ const InputMyTableReverse = <T extends BaseEntity>(
                                 </TableCell>
 
                                 {row.map((d, idx2) => {
-                                    // TODO :: type > add el in array
-
-                                    // const createEntity = entityRenderer(
-                                    //     Project,
-                                    //     createProjectRepository,
-                                    //     projectApi,
-                                    //     RenderTypeEnum.CREATE,
-                                    //     {
-                                    //         itemId: 0,
-                                    //     },
-                                    // )
-                                    // const beanInfo = findBean(entity)
-                                    // const beanInfo = findBean(Project)
-                                    // const flattenObj = flattenObject(beanInfo.bean, beanInfo.entityName);
-
-
-                                    // TODO :: remove
-                                    const outputValue = baseRepository.getValueById(idx2, d.desc) as StringOutputValueType
-                                    const valueComponent = Array.isArray(outputValue) ? outputValue.join(", ") : outputValue
-
-                                    // const addEl
-
                                     return (
                                         <TableCell key={idx2}>
-                                            {/*<Item*/}
-                                            {/*    tooltipText={d.desc}*/}
-                                            {/*>*/}
-                                            {/*    {d.value}*/}
-                                            {/*</Item>*/}
-
-                                            {/*{ valueComponent}*/}
-
                                             <TextField
                                                 label={d.desc} variant="outlined"
                                                 value={d.value}
-                                                // value={refinedValue}
                                                 onChange={(e) => {
                                                     baseRepository.updateEntityByDelimiterKey(0, e.target.value, d.desc)
-                                                    // setInputValue(e.target.value);
                                                 }}
                                             />
                                         </TableCell>
@@ -427,23 +391,7 @@ const CreateComponent = () => {
     createProjectRepository.init(createEntityList, setCreateEntityList);
 
 
-    console.log(`### getEntityType`, createProjectRepository.getEntityType())
-    console.log(`### getFlattenObjForArray`, getFlattenObjForArray(createProjectRepository))
-
-    // {
-    //     "id": 1,
-    //     "name": "test1",
-    //     "description": "test1",
-    //     "startDate": "2021-01-01",
-    //     "endDate": "2021-01-01",
-    //     "testcol1a": "xxxxx1",
-    //     "subProject": {
-    //     "id": 33
-    // }
-    // }
-
     useEffect(() => {
-
         const defaultEntity = new Project()
         defaultEntity.testcol1a = `testcol1a`
         defaultEntity.testcol2a = `s`
@@ -461,17 +409,6 @@ const CreateComponent = () => {
         // update
         createProjectRepository.setEntity(defaultEntity)
     }, [])
-
-
-    const createEntity = entityRenderer(
-        Project,
-        createProjectRepository,
-        projectApi,
-        RenderTypeEnum.CREATE,
-        {
-            itemId: 0,
-        },
-    )
 
     const whiteList: any[] = [
         // entityKey.testcol1a

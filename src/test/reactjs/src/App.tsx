@@ -1,10 +1,9 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import {ReactBoot} from "@src/reactbootdev/component/ReactBoot";
 
 function App() {
-    console.log(`App`)
+    console.debug(`App`)
     return (
         <div className="App">
             <ReactBoot/>

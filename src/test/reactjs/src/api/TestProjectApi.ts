@@ -50,23 +50,6 @@ export class TestProjectApi extends BaseApi {
         return TARGET_URL
     }
 
-
-    reHandleCreate = (data: any) => {
-
-    }
-    reHandleUpdate = (data: any) => {
-
-    }
-    reHandleDelete = (data: any) => {
-
-    }
-    reHandleReadList = (data: ReHandleReadListInterface) => {
-
-    }
-    reHandleReadDetail = (data: ReHandleReadListInterface) => {
-
-    }
-
     handleCreate = (data: any) => {
         const testRes = {
             code: 200,
@@ -143,7 +126,6 @@ export class TestProjectApi extends BaseApi {
                     description: "test1",
                     startDate: "2021-01-01",
                 },
-                // TODO :: `Bean` enum 객체 활용으로 변경 고려.
                 type: {
                     "name////adf////": {a:1, b: 2},
                 },
@@ -194,7 +176,6 @@ export class TestProjectApi extends BaseApi {
                     description: "test1",
                     startDate: "2021-01-01",
                 },
-                // TODO :: `Bean` enum 객체 활용으로 변경 고려.
                 type: {
                     "name////adf////": {a:1, b: 2},
                 },

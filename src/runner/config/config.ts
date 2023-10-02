@@ -55,11 +55,11 @@ export const MOVE_TASK_TARGET_FOLDER =
 // 재귀적으로 모든 파일을 탐색하고 싶다면 glob 패턴을 사용하면 된다.
 // glob 패턴
 export function getSourceFileNames(sourcePath: string) {
-    console.log(`---------------------------------`)
-    console.log(`PROCESS_ARGS: ${JSON.stringify(PROCESS_ARGS)}`)
-    console.log(`PROCESS_ARG_PROFILE: ${PROCESS_ARG_PROFILE}`)
-    console.log(`PRE_SOURCE_PATH: ${PRE_SOURCE_PATH}`)
-    console.log(`MOVE_TASK_TARGET_FOLDER: ${MOVE_TASK_TARGET_FOLDER}`)
+    console.debug(`---------------------------------`)
+    console.debug(`PROCESS_ARGS: ${JSON.stringify(PROCESS_ARGS)}`)
+    console.debug(`PROCESS_ARG_PROFILE: ${PROCESS_ARG_PROFILE}`)
+    console.debug(`PRE_SOURCE_PATH: ${PRE_SOURCE_PATH}`)
+    console.debug(`MOVE_TASK_TARGET_FOLDER: ${MOVE_TASK_TARGET_FOLDER}`)
 
     const sourceFileNames = glob.sync(
         sourcePath,
@@ -72,10 +72,10 @@ export function getSourceFileNames(sourcePath: string) {
         }
     );
 
-    console.log(`SOURCE_PATH: ${sourcePath}`)
-    console.log(`SOURCE_FILE_NAMES:`)
-    console.log(sourceFileNames)
-    console.log(`---------------------------------`)
+    console.debug(`SOURCE_PATH: ${sourcePath}`)
+    console.debug(`SOURCE_FILE_NAMES:`)
+    console.debug(sourceFileNames)
+    console.debug(`---------------------------------`)
 
     return sourceFileNames;
 }

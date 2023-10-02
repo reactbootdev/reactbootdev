@@ -35,7 +35,7 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
 
     const objects: ObjectsType = {};
     const importPaths: ImportPathType = {};
-    // console.log(111 + `sourceFile.fileName: ${sourceFile.fileName} || path.resolve(__dirname): ${path.resolve(__dirname)}`)
+    // console.debug(111 + `sourceFile.fileName: ${sourceFile.fileName} || path.resolve(__dirname): ${path.resolve(__dirname)}`)
 
     // Check if any decorator has the target name
     const TARGET_DECORATOR_NAME = taskArgs.decoratorNames;
@@ -88,7 +88,6 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
 
             const decorators = ts.canHaveDecorators(node) ? ts.getDecorators(node) : [];
             if (!decorators) return
-            // 데코레이터
             const tobeDecorators: any[] = []
             decorators.forEach(d => {
                 let decoratorInfo = getDecoratorInfo(d, checker, sourceFile)
@@ -103,14 +102,10 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
             node.members.forEach((member: ts.ClassElement) => {
 
                 const propertyNameTmp = member?.name?.getText(sourceFile);
-                console.log(`222 propertyName: ${propertyNameTmp} || property: ${JSON.stringify(propertyNameTmp)}`)
-
 
                 if (ts.isPropertyDeclaration(member)) {
                     const propertyName = member.name.getText(sourceFile);
                     const property = resolvePropertyType(member, sourceFile, program);
-                    console.log(`333 propertyName: ${propertyName} || property: ${JSON.stringify(property)}`)
-
 
                     if (!property) return;
                     properties[propertyName] = property;
@@ -129,7 +124,6 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
                     property.decorators = tobeMemberDecorators;
                 }
             });
-            console.log(`555 : ${JSON.stringify(properties)}`)
 
             // classInfo[targetName] = properties;
 
@@ -144,7 +138,6 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
         if (ts.isImportDeclaration(node)) {
             let importPath = node.moduleSpecifier.getText(sourceFile);
             importPath = importPath.replace(/['"]/g, '');
-            // console.log(222 + `currFileAbsolutePath: ${currFileAbsolutePath} || importPath: ${importPath}`)
 
             // importPath = convertToAbsolutePath(importPath, getDirectoryPath(currFileAbsolutePath));
             // importPath = convertToAbsolutePath(importPath, getDirectoryPathByDelimiter(currFileAbsolutePath, '/'))
@@ -158,7 +151,7 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
             }
             // remove before `@` string in importPath
             importPath = importPath.replace(/.*@/, '');
-            console.log(`importPath: ${importPath}`)
+            console.debug(`importPath: ${importPath}`)
 
             let importName = node.importClause?.getText(sourceFile);
 
@@ -183,29 +176,17 @@ export function commonDecoratorPreTask(sourceFile: ts.SourceFile, program: ts.Pr
     }
 
     if (Object.keys(objects).length == 0) return taskBeans;
-
-    console.log(`currFileAbsolutePath: ${currFileAbsolutePath} || sourceFile.fileName: ${sourceFile.fileName} || baseDir: ${path.resolve(__dirname)}`)
-    // how to get only absolute path
-
+    console.debug(`currFileAbsolutePath: ${currFileAbsolutePath} || sourceFile.fileName: ${sourceFile.fileName} || baseDir: ${path.resolve(__dirname)}`)
     const srcDir = path.resolve(__dirname, '../src');
-    console.log(`srcDir: ${srcDir}`)
+    console.debug(`srcDir: ${srcDir}`)
 
-
-    // fileObjects[currFileAbsolutePath] = fileType;
-    // get after src in filepath by sourceFile.fileName
-
-    // fileObjects[reFileName] = fileType;
     taskBeans[currFileAbsolutePath] = fileType;
-
-
-    // TODO :: 모든 Path 절대경로 치환.
-    // TODO :: importPaths 데이터 형태 유효성 확인
     return taskBeans;
 }
 
 
 export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | undefined, maxDepth: number = 2, depth: number = 0, taskArgs: TaskArgsInterface): any {
-    console.log(`depth : ${depth} / maxDepth : ${maxDepth} / joinKey : ${joinKey}`)
+    console.debug(`depth : ${depth} / maxDepth : ${maxDepth} / joinKey : ${joinKey}`)
     const resultFileName = taskArgs.resultFileName
 
     depth++
@@ -245,7 +226,7 @@ export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | un
         maxDepth != -1
         && depth > maxDepth
     ) {
-        console.log((`depth exceeded : depth > maxDepth : ${depth} > ${maxDepth} `))
+        console.debug((`depth exceeded : depth > maxDepth : ${depth} > ${maxDepth} `))
         // throw new Error
         return
     }
@@ -259,16 +240,16 @@ export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | un
 
     if (!joinKeys || joinKeys.length === 0) return
 
-    console.log(`joinKeys : ${joinKeys}`)
+    console.debug(`joinKeys : ${joinKeys}`)
 
     joinKeys.forEach(joinKey => {
         const classInfoObject = filePathClassNameObjects[joinKey];
         const importPaths = classInfoObject?.importPaths;
         if (!importPaths) return
-        console.log(`classInfoObject : ${JSON.stringify(classInfoObject)}`)
+        console.debug(`classInfoObject : ${JSON.stringify(classInfoObject)}`)
 
         Object.keys(classInfoObject.classObject.data).forEach(propertyName => {
-            console.log(`propertyName : ${propertyName}`)
+            console.debug(`propertyName : ${propertyName}`)
             // @ts-ignore
             const classProperty: ClassPropertyType = classInfoObject.classObject.data[propertyName];
             const typeName = classProperty.type
@@ -283,8 +264,8 @@ export function recursiveUpdate(fileObjects: TaskBeansType, joinKey: string | un
             const targetFileObjectKey = `${targetFilePath}${KEY_DELIMITER}${typeName}`
             const filePathClassNameObject = filePathClassNameObjects[targetFileObjectKey]
 
-            console.log(`targetFileObjectKey : ${targetFileObjectKey}`)
-            console.log(`filePathClassNameObject : ${filePathClassNameObject}`)
+            console.debug(`targetFileObjectKey : ${targetFileObjectKey}`)
+            console.debug(`filePathClassNameObject : ${filePathClassNameObject}`)
 
             classProperty.realType = classProperty.type
 

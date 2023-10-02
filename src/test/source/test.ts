@@ -38,7 +38,7 @@ class Test extends TestAAAA {
 
 function page(pageUrl: string) {
     return function (target: any) {
-        console.log(`${pageUrl} - 클래스명: ${target.name}`);
+        console.debug(`${pageUrl} - 클래스명: ${target.name}`);
         return target;
     };
 }
@@ -50,13 +50,13 @@ function page2(option: { value: string, callback: (x: any, y: any) => any }) {
 
         // 새로운 getter 함수 정의
         const getter = function () {
-            console.log(`Getting value of ${key}: ${value}`);
+            console.debug(`Getting value of ${key}: ${value}`);
             return value;
         };
 
         // 새로운 setter 함수 정의
         const setter = function (newValue: any) {
-            console.log(`Setting value of ${key} to: ${newValue}`);
+            console.debug(`Setting value of ${key} to: ${newValue}`);
             value = newValue;
         };
 
@@ -76,9 +76,9 @@ function page3(option: { value: string, callback: (x: any, y: any) => any }) {
         const originalMethod = descriptor.objectValue;
 
         descriptor.value = function (...args: any[]) {
-            console.log(`Calling method ${key} with arguments:`, args);
+            console.debug(`Calling method ${key} with arguments:`, args);
             const result = originalMethod.apply(this, args);
-            console.log(`Method ${key} returned:`, result);
+            console.debug(`Method ${key} returned:`, result);
             return result;
         };
 

@@ -27,11 +27,11 @@ function copyFilesRecursively(sourceDir: string, targetDir: string) {
                 });
 
                 fs.copyFileSync(sourcePath, newPath);
-                console.log(`파일 복사 및 확장자 추가: ${sourcePath} -> ${newPath}`);
+                console.debug(`파일 복사 및 확장자 추가: ${sourcePath} -> ${newPath}`);
             } else { // 3. 확장자 유지 폴더
                 // interface 폴더 내 파일인 경우 그냥 복사
                 fs.copyFileSync(sourcePath, targetPath);
-                console.log(`파일 복사: ${sourcePath} -> ${targetPath}`);
+                console.debug(`파일 복사: ${sourcePath} -> ${targetPath}`);
             }
         } else if (stat.isDirectory()) {
             // 폴더인 경우 재귀적으로 복사합니다.

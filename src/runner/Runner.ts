@@ -51,7 +51,7 @@ export function runner(args: string[]) {
             return
         }
 
-        console.log(`sourceFile: ${sourceFile.fileName}`)
+        console.debug(`sourceFile: ${sourceFile.fileName}`)
         decoratorTasks.forEach((decoratorTask) => {
             commonDecoratorPreTask(sourceFile, program, checker, decoratorTask)
         })

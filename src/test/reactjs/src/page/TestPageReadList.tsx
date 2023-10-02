@@ -2,14 +2,6 @@ import React, {useEffect, useMemo} from "react";
 import {useRecoilState} from "recoil";
 import {page} from "@src/reactbootdev/decorator/Page";
 import {Project} from "@src/entity/Project";
-import {
-    entityRenderer,
-    extractShortKeyFromLongKey,
-    prettierLongKey,
-    removeFirstElementFromKey,
-    RenderTypeEnum,
-    transposeMatrix
-} from "@src/reactbootdev/component/BaseComponentManager";
 import {ProjectRepository} from "@src/repository/ProjectRepository";
 import {TestProjectApi} from "@src/api/TestProjectApi";
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
@@ -27,9 +19,15 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import {BoxPropsExt} from "@src/reactbootdev/component/CreateContainer";
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
-import {getFlattenObj} from "@src/reactbootdev/util/RepositoryUtil";
+import {
+    BoxPropsExt,
+    extractShortKeyFromLongKey,
+    getFlattenObj,
+    prettierLongKey,
+    removeFirstElementFromKey,
+    transposeMatrix
+} from "@src/reactbootdev/util/RepositoryUtil";
 
 
 const darkTheme = createTheme({
@@ -156,26 +154,11 @@ const ReadListComponent = () => {
     }, [readListProjectRepository])
 
 
-    console.log(`entityKey ###5`, entityKey)
-    console.log(`entityKey ###5a`, entityKey.subProject?.testcol1b)
-
     useEffect(() => {
         const readListRes = projectApi.handleReadList(undefined)
         const resData = readListRes.result.data as Project[]
         readListProjectRepository.setEntities(resData)
     }, [])
-
-    const readListEntity = entityRenderer(
-        Project,
-        readListProjectRepository,
-        projectApi,
-        RenderTypeEnum.READ_LIST,
-        {
-            dataCallback: (data) => {
-                console.log(`ReadListComponent.dataCallback`, data)
-            }
-        }
-    )
 
     const whiteList: any[] = [
         // entityKey.testcol1a
@@ -215,9 +198,6 @@ function getHeader<T extends BaseEntity>(
     const flattenObj = getFlattenObj(readListEntityList)
     Object.values(flattenObj).forEach(row => {
         row.forEach(col => {
-
-            // TODO :: add element type in Array ?
-            const colType = typeof col?.value
 
             if (isWhiteList) {
                 const isWhiteList = whiteList.find(white => removeFirstElementFromKey(white) === col?.fullKey)
