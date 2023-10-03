@@ -103,6 +103,12 @@ module.exports = {
 
 * Create blank files in root directory
 
+### `.gitignore`
+```gitignore
+# reactbootdev
+src/reactbootdev
+```
+
 ### `package.json`
 
 * Adjust `scripts` for `reactbootdev`, `nodemon`, `env-cmd`, `craco`
