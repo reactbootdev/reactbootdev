@@ -9,9 +9,9 @@ import {
 
 
 export const entityImportMap: { [key: string]: any } = {
-    "src/entity/SubProject.ts////SubProject": src_entity_SubProject____SubProject,
-    "src/entity/Project.ts////Project": src_entity_Project____Project,
-    "src/entity/Project.ts////TestEnum": src_entity_Project____TestEnum
+  "src/entity/SubProject.ts////SubProject": src_entity_SubProject____SubProject,
+  "src/entity/Project.ts////Project": src_entity_Project____Project,
+  "src/entity/Project.ts////TestEnum": src_entity_Project____TestEnum
 }
 
 export const entityBeans: TaskBeansType = {
@@ -106,23 +106,6 @@ export const entityBeans: TaskBeansType = {
             "type": "string",
             "isArray": false,
             "isTypeReferenceNode": false,
-            "decorators": [
-              {
-                "name": "render",
-                "definition": "(config: { groupName: string; rendererName: string; propName: string; }) => (target: any, key: string) => void",
-                "arguments": [
-                  {
-                    "type": "any",
-                    "value": {
-                      "groupName": "testrenderer",
-                      "rendererName": "testrenderer",
-                      "propName": "testcol1a"
-                    },
-                    "txt": "{groupName: \"testrenderer\", rendererName: \"testrenderer\", propName: \"testcol1a\"}"
-                  }
-                ]
-              }
-            ],
             "realType": "string"
           },
           "testcol3a": {
@@ -244,22 +227,7 @@ export const entityBeans: TaskBeansType = {
             }
           }
         },
-        "decorators": [
-          {
-            "name": "renderContainer",
-            "definition": "(config: { groupName: string; rendererName: string; }) => (target: any) => void",
-            "arguments": [
-              {
-                "type": "any",
-                "value": {
-                  "groupName": "testrenderer",
-                  "rendererName": "testrenderer"
-                },
-                "txt": "{groupName: \"testrenderer\", rendererName: \"testrenderer\"}"
-              }
-            ]
-          }
-        ]
+        "decorators": []
       },
       "TestEnum": {
         "type": ObjectTypeEnum.ENUM,

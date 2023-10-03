@@ -3,7 +3,7 @@ import * as path from "path";
 
 export function createFolderSync(targetFolder: string) {
     if (!fs.existsSync(targetFolder)) {
-        fs.mkdirSync(targetFolder, { recursive: true });
+        fs.mkdirSync(targetFolder, {recursive: true});
     }
 }
 
@@ -15,7 +15,7 @@ export function copyFolderRecursiveSync(source: string, target: string) {
     // check if folder needs to be created or integrated
     let targetFolder = path.join(target, path.basename(source));
     if (!fs.existsSync(targetFolder)) {
-        fs.mkdirSync(targetFolder, { recursive: true });
+        fs.mkdirSync(targetFolder, {recursive: true});
     }
 
     // copy
@@ -53,7 +53,7 @@ export function copyFileIfChanged(sourceFile: string, targetFile: string) {
     const currentSize = fs.statSync(sourceFile).size;
     const hasChanged = previousSize !== currentSize;
 
-    if(!hasChanged) {
+    if (!hasChanged) {
         // TODO :: verbose option 설정 or log level
         // console.debug('No changes detected. File not copied:', targetFile , `<` , sourceFile);
         return
@@ -61,7 +61,7 @@ export function copyFileIfChanged(sourceFile: string, targetFile: string) {
 
     // if ext is `.txt`, remove `.txt` extension
     const ext = path.extname(targetFile)
-    if(ext === BACKUP_EXT){
+    if (ext === BACKUP_EXT) {
         targetFile = targetFile.replace(ext, '')
     }
 

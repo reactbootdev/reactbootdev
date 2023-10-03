@@ -25,9 +25,9 @@ export const PROCESS_ARG_TARGET_FOLDER = PROCESS_ARGS[2]
 
 export const PRE_SOURCE_PATH =
     PROCESS_ARG_SOURCE_FOLDER !== undefined ? PROCESS_ARG_SOURCE_FOLDER :
-    PROCESS_PROFILE_ENUM.PROD === PROCESS_ARG_PROFILE
-        ? './src'
-        : './src/test/source'
+        PROCESS_PROFILE_ENUM.PROD === PROCESS_ARG_PROFILE
+            ? './src'
+            : './src/test/source'
 
 export const SOURCE_PATH = `${PRE_SOURCE_PATH}/**/*.ts?(x)`
 
@@ -47,9 +47,9 @@ export const MOVE_TASK_SOURCE_DIST_FOLDER_NAMES = [
 ]
 export const MOVE_TASK_TARGET_FOLDER =
     PROCESS_ARG_TARGET_FOLDER !== undefined ? PROCESS_ARG_TARGET_FOLDER :
-    PROCESS_PROFILE_ENUM.PROD === PROCESS_ARG_PROFILE
-        ? `.\\src\\reactbootdev\\`
-        : `.\\src\\test\\reactjs\\src\\reactbootdev\\`
+        PROCESS_PROFILE_ENUM.PROD === PROCESS_ARG_PROFILE
+            ? `.\\src\\reactbootdev\\`
+            : `.\\src\\test\\reactjs\\src\\reactbootdev\\`
 
 // 프로젝트 내 모든 TypeScript 파일 경로 설정
 // 재귀적으로 모든 파일을 탐색하고 싶다면 glob 패턴을 사용하면 된다.

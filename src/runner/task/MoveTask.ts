@@ -3,7 +3,7 @@ import {copyFolderRecursiveSync} from "../util/FileUtil";
 import * as path from "path";
 
 
-export function moveTask(){
+export function moveTask() {
     // move all folders
     MOVE_TASK_SOURCE_DIST_FOLDER_NAMES.forEach((folder: string): any => {
         const source = `${path.resolve(__dirname, '..')}\\${folder}`.replace(/\\/g, `/`)

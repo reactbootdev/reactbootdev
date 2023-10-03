@@ -57,7 +57,7 @@ export function Item(props: BoxPropsExt) {
     const {sx, ...other} = props;
     return (
         <Tooltip
-            title={prettierLongKey(props.tooltipText)}
+            title={prettierLongKey(props.tooltiptext)}
         >
             <Box
                 sx={{
@@ -160,7 +160,7 @@ const InputMyTableReverse = <T extends BaseEntity>(
                             <TableRow>
                                 <TableCell>
                                     <Item
-                                        tooltipText={"속성"}
+                                        tooltiptext={"속성"}
                                     >
                                         속성
                                     </Item>
@@ -170,7 +170,7 @@ const InputMyTableReverse = <T extends BaseEntity>(
                                         return (
                                             <TableCell key={idx}>
                                                 <Item
-                                                    tooltipText={String(idx)}
+                                                    tooltiptext={String(idx)}
                                                 >
                                                     {idx}
                                                 </Item>
@@ -187,7 +187,7 @@ const InputMyTableReverse = <T extends BaseEntity>(
                             <TableRow key={idx}>
                                 <TableCell>
                                     <Item
-                                        tooltipText={props.header[idx].desc}
+                                        tooltiptext={props.header[idx].desc}
                                     >
                                         {props.header[idx].name}
                                     </Item>

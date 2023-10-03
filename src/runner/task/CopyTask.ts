@@ -3,7 +3,7 @@ import * as path from "path";
 import fs from "fs";
 import {COPY_TASK_PREFIX_FOLDER_PATH} from "../config/config";
 
-export function copyTask(){
+export function copyTask() {
     // `dist` folder
     const WORKSPACE_FOLDER = `${path.resolve(__dirname, '..')}`
     const ABSOLUT_COPY_TASK_FOLDER_PATH = `${path.resolve(__dirname, '..\\..')}${COPY_TASK_PREFIX_FOLDER_PATH}`

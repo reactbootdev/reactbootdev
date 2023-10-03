@@ -1,5 +1,5 @@
 export default class BaseEntity {
 
-  id: number | null = null;
+    id: number | null = null;
 
 }

@@ -746,7 +746,7 @@ export function removeFirstElementFromKey(longKey: string) {
 }
 
 export type BoxPropsExt = BoxProps & {
-    tooltipText: string
+    tooltiptext: string
 }
 
 export type StringOutputValueType = string | string[]

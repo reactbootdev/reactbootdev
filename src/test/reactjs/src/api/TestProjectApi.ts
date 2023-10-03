@@ -84,7 +84,7 @@ export class TestProjectApi extends BaseApi {
             code: 200,
             message: "success",
             result: {
-                data : [
+                data: [
                     {
                         id: 1,
                         name: "test1",
@@ -127,7 +127,7 @@ export class TestProjectApi extends BaseApi {
                     startDate: "2021-01-01",
                 },
                 type: {
-                    "name////adf////": {a:1, b: 2},
+                    "name////adf////": {a: 1, b: 2},
                 },
             }
         }
@@ -177,7 +177,7 @@ export class TestProjectApi extends BaseApi {
                     startDate: "2021-01-01",
                 },
                 type: {
-                    "name////adf////": {a:1, b: 2},
+                    "name////adf////": {a: 1, b: 2},
                 },
             }
         }

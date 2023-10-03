@@ -23,7 +23,7 @@ function copyFilesRecursively(sourceDir: string, targetDir: string) {
                 const parsedPath = path.parse(targetPath);
                 const newPath = path.format({
                     ...parsedPath,
-                    base: parsedPath.name  + parsedPath.ext + '.txt',
+                    base: parsedPath.name + parsedPath.ext + '.txt',
                 });
 
                 fs.copyFileSync(sourcePath, newPath);
@@ -35,7 +35,7 @@ function copyFilesRecursively(sourceDir: string, targetDir: string) {
             }
         } else if (stat.isDirectory()) {
             // 폴더인 경우 재귀적으로 복사합니다.
-            fs.mkdirSync(targetPath, { recursive: true }); // 폴더 생성
+            fs.mkdirSync(targetPath, {recursive: true}); // 폴더 생성
             copyFilesRecursively(sourcePath, targetPath); // 재귀 호출
         }
     }

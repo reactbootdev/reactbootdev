@@ -4,9 +4,15 @@
     "experimentalDecorators": true,
     "baseUrl": "src",
     "paths": {
-      "@src/*": ["./*"],
-      "@components/*": ["components/*"],
-      "@utils/*": ["utils/*"]
+      "@src/*": [
+        "./*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ]
     },
     "target": "es5",
     "lib": [

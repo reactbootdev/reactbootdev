@@ -1,10 +1,10 @@
 {
   "name": "reactbootdev",
-  "version": "1.0.27",
+  "version": "1.0.31",
   "description": "@ReactBootDev",
   "main": "index.js",
   "bin": {
-    "reactbootdev": "dist/pre-processor/Decorator.js"
+    "reactbootdev": "dist/Runner.js"
   },
   "scripts": {
     "reverseCopy": "npm run build && node dist/ReverseCopy.js",

@@ -1,5 +1,3 @@
-// craco.config.js
-
 const CracoAlias = require("craco-alias");
 
 module.exports = {

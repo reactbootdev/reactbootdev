@@ -19,9 +19,9 @@ export class BaseApi {
         const TARGET_URL = this.getTargetUrl(ACTION_URL)
 
         axios.post(TARGET_URL, data)
-        .then((response) => {
-            console.debug(response);
-        })
+            .then((response) => {
+                console.debug(response);
+            })
     }
 
     handleUpdate = (data: any) => {
@@ -30,9 +30,9 @@ export class BaseApi {
         console.debug(data);
 
         axios.put(TARGET_URL, data)
-        .then((response) => {
-            console.debug(response);
-        })
+            .then((response) => {
+                console.debug(response);
+            })
     }
 
 

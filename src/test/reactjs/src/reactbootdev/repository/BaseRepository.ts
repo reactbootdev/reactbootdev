@@ -66,11 +66,11 @@ export default class BaseRepository<T extends BaseEntity> {
         const updatedList = addItems(this.entityList, newItems);
         this.setEntityList(updatedList);
     }
-    updateEntity =  (itemId: number, newItem: T) => {
+    updateEntity = (itemId: number, newItem: T) => {
         const updatedList = updateItem(this.entityList, itemId, newItem);
         this.setEntityList(updatedList);
     };
-    updateEntityByDelimiterKey =  (itemId: number, newItem: unknown, multiKeys: string) => {
+    updateEntityByDelimiterKey = (itemId: number, newItem: unknown, multiKeys: string) => {
         const updatedList = updateByDelimiterKey(this.entityList, itemId, newItem, multiKeys);
         this.setEntityList(updatedList);
     };

@@ -78,7 +78,7 @@ const MyTable = <T extends BaseEntity>(
                                     return (
                                         <TableCell key={idx}>
                                             <Item
-                                                tooltipText={header.desc}
+                                                tooltiptext={header.desc}
                                             >
                                                 {header.name}
                                             </Item>
@@ -94,7 +94,7 @@ const MyTable = <T extends BaseEntity>(
                                 {row.map((d, idx2) => (
                                     <TableCell key={idx2}>
                                         <Item
-                                            tooltipText={d.desc}
+                                            tooltiptext={d.desc}
                                         >
                                             {d.value}
                                         </Item>
@@ -114,7 +114,7 @@ export function Item(props: BoxPropsExt) {
     const {sx, ...other} = props;
     return (
         <Tooltip
-            title={prettierLongKey(props.tooltipText)}
+            title={prettierLongKey(props.tooltiptext)}
         >
             <Box
                 sx={{

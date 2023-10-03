@@ -31,7 +31,7 @@ export function Item(props: BoxPropsExt) {
     const {sx, ...other} = props;
     return (
         <Tooltip
-            title={prettierLongKey(props.tooltipText)}
+            title={prettierLongKey(props.tooltiptext)}
         >
             <Box
                 sx={{
