@@ -717,10 +717,10 @@ export function transposeMatrix(matrix: any[][]) {
     const numRows = matrix.length;
     const numCols = matrix[0].length;
 
-    const transposedMatrix = [];
+    const transposedMatrix: any[] = [];
 
     for (let j = 0; j < numCols; j++) {
-        const newRow = [];
+        const newRow: any[] = [];
         for (let i = 0; i < numRows; i++) {
             newRow.push(matrix[i][j]);
         }
