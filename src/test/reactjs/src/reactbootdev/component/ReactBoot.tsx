@@ -55,12 +55,31 @@ export function ReactBoot() {
             if (pageClass.render === undefined) {
                 return undefined
             }
+
             return (
                 <Route key={idx} path={page.pageUrl} element={pageClass.render()}></Route>
             )
         }).filter((route) => {
             return route !== undefined
         })
+
+    // TODO :: only `dev` env
+    console.table(pageClasses.map((page) => {
+        if (page?.class === undefined) {
+            return undefined
+        }
+        const pageClass = new page.class()
+        if (pageClass.render === undefined) {
+            return undefined
+        }
+        const renderedClass = pageClass.render()
+
+        return {
+            path: page.pageUrl,
+            class: pageClass,
+            render: renderedClass.type.name,
+        }
+    }).filter((route) => { return route !== undefined }))
 
     return (
         <RecoilRoot>

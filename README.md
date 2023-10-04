@@ -1,4 +1,9 @@
-﻿# reactbootdev
+﻿reactbootdev
+=========================
+
+[![npm](https://img.shields.io/badge/npm-reactbootdev-brightgreen.svg?style=flat-square)]()
+[![npm version](https://img.shields.io/npm/v/reactbootdev.svg?style=flat-square)](https://www.npmjs.com/package/reactbootdev)
+[![npm downloads](https://img.shields.io/npm/dm/reactbootdev.svg?style=flat-square)](https://www.npmjs.com/package/reactbootdev)
 
 ## Features
 
@@ -7,7 +12,7 @@
 * Repository
 * Api
 
-  
+
 ## Install
 
 ### `bash`
@@ -134,7 +139,7 @@ function App() {
     return (
         <div className="App">
             <ReactBoot/>
-        </div>
+            </div>
     );
 }
 
@@ -151,13 +156,13 @@ import {page} from "@src/reactbootdev/decorator/Page";
 
 @page("/")
 export class MyPage  {
-  render() {
-    return (
-      <div>
-        <h1>My Page</h1>
-      </div>
+    render() {
+        return (
+            <div>
+                <h1>My Page</h1>
+        </div>
     );
-  }
+    }
 }
 ```
 
