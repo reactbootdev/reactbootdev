@@ -11,6 +11,7 @@
 * [Entity](#entity)
 * [Repository](#repository)
 * [Api](#api)
+* [Form](#form)
 
 
 ## Install
@@ -148,11 +149,12 @@ export default App;
 
 ## Usage
 
-### `@page`
+### Page
 
-#### `MyPage.tsx`
+#### `@page`
+* Add `@page("/url")` to class
 
-* Add `@page("/url")`
+##### `MyPage.tsx`
 * Simple page
 ```typescript
 import React from "react";
@@ -170,12 +172,13 @@ export class MyPage  {
 }
 ```
 
+##### `WelcomePage.tsx`
 * Page with function component
 ```typescript
 import React from "react";
 import {page} from "@src/reactbootdev/decorator/page";
 
-function WelcomeComponent() {
+export function WelcomeComponent() {
     return (
         <div>
             <h1>Welcome</h1>
@@ -191,7 +194,12 @@ export class Welcome {
 }
 ```
 
-### `@entity`
+### Entity
+
+#### `@entity`
+* Add `@entity` to class
+
+##### `src/entity/ProjectEntity.ts`
 ```ts
 import {entity} from "@src/reactbootdev/decorator/Entity";
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
@@ -207,8 +215,9 @@ export class ProjectEntity extends BaseEntity {
 ```
 
 ### Repository
-* Recoil
+* Recoil Based Repository
 
+##### `src/repository/ProjectRepository.ts`
 ```ts
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
 import {v4 as uuidv4} from 'uuid';
@@ -220,6 +229,8 @@ export class ProjectRepository extends BaseRepository<ProjectEntity> {
 }
 ```
 
+##### `src/component/CreateComponent.tsx`
+* Single Entity
 ```ts
 import {ProjectRepository} from "@src/repository/ProjectRepository";
 import {ProjectEntity} from "@src/entity/Project";
@@ -241,9 +252,35 @@ const CreateComponent = () => {
     );
 }
 ```
+* Multiple Entity
+```ts
+import {ProjectRepository} from "@src/repository/ProjectRepository";
+import {ProjectEntity} from "@src/entity/Project";
+
+const CreateComponent = () => {
+    const repo = useRepository(ProjectRepository);
+
+    useEffect(() => {
+        const defaultEntity = new ProjectEntity()
+        defaultEntity.name = "test"
+        const defaultList = [defaultEntity, defaultEntity]
+        
+        repo.setList(defaultList)
+    }, [])
+    
+    return (
+        <>
+            {JSON.stringify(repo.getList())}
+        </>
+    );
+}
+```
 
 ### Api
-* ReactQuery
+* ReactQuery Based Api
+
+### Form
+* ReactHookForm Based Form
 
 ### `bash`
 ```bash
