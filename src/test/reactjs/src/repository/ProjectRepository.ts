@@ -4,4 +4,5 @@ import {Project} from "@src/entity/Project";
 
 export class ProjectRepository extends BaseRepository<Project> {
     static defaultRepositoryKey = uuidv4()
+    static defaultEntityClass = Project;
 }

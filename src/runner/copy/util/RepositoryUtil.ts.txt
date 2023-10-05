@@ -518,7 +518,7 @@ export interface TableDataForArray {
 
 export function getFlattenObjForArray<T extends BaseEntity>(baseRepository: BaseRepository<T>): TableDataForArray[] {
 
-    const baseEntityList = baseRepository.entityList
+    const baseEntityList = baseRepository.state
     const flattenObj = baseEntityList.map((entity: T, idx: number) => {
         return flattenBaseEntityForArray(baseRepository, entity, String(idx))
     }).filter((entity: T) => typeof entity !== 'undefined') as TableDataForArray[]
@@ -551,7 +551,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         .filter((v, index) => index > 0 && v.length > 0)
                         .join(NAME_DELIMITER)
 
-                    baseRepository.updateEntityByDelimiterKeyForArray(entityNumberInt, value, entityKey)
+                    baseRepository.updateListByKey(entityNumberInt, value, entityKey)
                 }
             },
             removeFunction: (idx: number) => (e) => {
@@ -565,7 +565,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                     .filter((v, index) => index > 0 && v.length > 0)
                     .join(NAME_DELIMITER)
 
-                baseRepository.updateEntityByDelimiterKeyForArray(Number(entityNumber), undefined, entityKey)
+                baseRepository.updateListByKey(Number(entityNumber), undefined, entityKey)
             }
         }
         return tableData
@@ -596,7 +596,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                             .filter((v, index) => index > 0 && v.length > 0)
                             .join(NAME_DELIMITER)
 
-                        baseRepository.updateEntityByDelimiterKey(entityNumberInt, value, entityKey)
+                        baseRepository.updateListByKey(entityNumberInt, value, entityKey)
 
                     }
                 },
@@ -612,7 +612,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         .filter((v, index) => index > 0 && v.length > 0)
                         .join(NAME_DELIMITER)
 
-                    baseRepository.updateEntityByDelimiterKey(Number(entityNumber), undefined, entityKey)
+                    baseRepository.updateListByKey(Number(entityNumber), undefined, entityKey)
                 }
             }
             return tableData
@@ -638,7 +638,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         .join(NAME_DELIMITER)
 
                     const entityArray =
-                        baseRepository.getValueById(entityNumberInt, entityKey) as T[]
+                        baseRepository.getListValueByKey(entityNumberInt, entityKey) as T[]
                     const entityArrayLength = entityArray.length
                     const entityTypeMap = baseRepository.getEntityType()
 
@@ -659,7 +659,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                             return
                         }
 
-                        baseRepository.updateEntityByDelimiterKeyForArray(
+                        baseRepository.updateListByKey(
                             entityNumberInt
                             , realTypeInstanceDefaultValue
                             , `${entityKey}${NAME_DELIMITER}${entityArrayLength}`
@@ -675,7 +675,7 @@ export function flattenBaseEntityForArray<T extends BaseEntity>(
                         .filter((v, index) => index > 0 && v.length > 0)
                         .join(NAME_DELIMITER)
 
-                    baseRepository.updateEntityByDelimiterKey(idx, undefined, entityKey)
+                    baseRepository.updateListByKey(idx, undefined, entityKey)
                 }
             }
 

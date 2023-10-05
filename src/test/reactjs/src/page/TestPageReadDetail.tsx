@@ -1,5 +1,4 @@
 import React, {useEffect, useMemo} from "react";
-import {useRecoilState} from "recoil";
 import {page} from "@src/reactbootdev/decorator/Page";
 import {Project} from "@src/entity/Project";
 import {ProjectRepository} from "@src/repository/ProjectRepository";
@@ -19,7 +18,7 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import BaseRepository, {useRepository} from "@src/reactbootdev/repository/BaseRepository";
 import {
     BoxPropsExt,
     extractShortKeyFromLongKey,
@@ -159,22 +158,19 @@ export function Item(props: BoxPropsExt) {
 const ReadDetailComponent = () => {
 
     const projectApi = new TestProjectApi()
-
-    const readDetailProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `readDetail`)
-    const [readDetailEntityList, setReadDetailEntityList] = useRecoilState(readDetailProjectRepository.entityListState);
-    readDetailProjectRepository.init(readDetailEntityList, setReadDetailEntityList);
+    const repo = useRepository(ProjectRepository,  `readDetail`)
 
     // entityKey
     const entityKey = useMemo(() => {
-        return readDetailProjectRepository.getEntityKey()
-    }, [readDetailProjectRepository])
+        return repo.getEntityKey()
+    }, [repo])
 
     // set readDetailProjectRepository by projectApi
     useEffect(() => {
         // readDetail
         const readDetailRes = projectApi.handleReadDetail(undefined)
         const readDetailResData = readDetailRes.result.data as Project
-        readDetailProjectRepository.setEntity(readDetailResData)
+        repo.setEntity(readDetailResData)
     }, [])
 
     const whiteList: any[] = [
@@ -184,10 +180,10 @@ const ReadDetailComponent = () => {
         // entityKey.testcol1a
     ]
 
-    const header = getHeader(readDetailEntityList, whiteList, blackList)
+    const header = getHeader(repo.state, whiteList, blackList)
 
     const tableData: TableProps<Project> = {
-        repository: readDetailProjectRepository,
+        repository: repo,
         header: header,
     }
 

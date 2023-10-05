@@ -1,5 +1,4 @@
 import React, {useEffect, useMemo} from "react";
-import {useRecoilState} from "recoil";
 import {page} from "@src/reactbootdev/decorator/Page";
 import {Project} from "@src/entity/Project";
 import {ProjectRepository} from "@src/repository/ProjectRepository";
@@ -19,7 +18,7 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import BaseRepository, {useRepository} from "@src/reactbootdev/repository/BaseRepository";
 import {
     BoxPropsExt,
     extractShortKeyFromLongKey,
@@ -91,7 +90,10 @@ const MyTable = <T extends BaseEntity>(
                     <TableBody>
                         {reverseMatrix.map((row, idx) => (
                             <TableRow key={idx}>
-                                {row.map((d, idx2) => (
+                                {row.map((
+                                    d: { desc: string; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }
+                                    , idx2: React.Key | null | undefined
+                                ) => (
                                     <TableCell key={idx2}>
                                         <Item
                                             tooltiptext={d.desc}
@@ -133,22 +135,20 @@ export function Item(props: BoxPropsExt) {
 
 
 const ReadListComponent = () => {
-    const projectApi = new TestProjectApi()
 
-    const readListProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `readList`)
-    const [readListEntityList, setReadListEntityList] = useRecoilState(readListProjectRepository.entityListState);
-    readListProjectRepository.init(readListEntityList, setReadListEntityList);
+    const projectApi = new TestProjectApi()
+    const repo = useRepository(ProjectRepository,  `readList`)
 
     // entityKey
     const entityKey = useMemo(() => {
-        return readListProjectRepository.getEntityKey()
-    }, [readListProjectRepository])
+        return repo.getEntityKey()
+    }, [repo])
 
 
     useEffect(() => {
         const readListRes = projectApi.handleReadList(undefined)
         const resData = readListRes.result.data as Project[]
-        readListProjectRepository.setEntities(resData)
+        repo.setList(resData)
     }, [])
 
     const whiteList: any[] = [
@@ -158,10 +158,10 @@ const ReadListComponent = () => {
         // entityKey.testcol1a
     ]
 
-    const header = getHeader(readListEntityList, whiteList, blackList)
+    const header = getHeader(repo.state, whiteList, blackList)
 
     const tableData: TableProps<Project> = {
-        repository: readListProjectRepository,
+        repository: repo,
         header: header,
     }
 

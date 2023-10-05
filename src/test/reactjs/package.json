@@ -16,6 +16,7 @@
     "@types/react-dom": "^18.2.7",
     "axios": "^1.4.0",
     "craco-alias": "^3.0.1",
+    "env-cmd": "^10.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.2",
@@ -27,8 +28,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+    "build": "env-cmd -f .env.production craco build",
+    "start": "env-cmd -f .env.development craco start",
     "test": "craco test",
     "eject": "react-scripts eject"
   },

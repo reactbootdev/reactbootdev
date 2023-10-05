@@ -1,12 +1,10 @@
 import React from "react";
-import {useRecoilState} from "recoil";
 import {page} from "@src/reactbootdev/decorator/Page";
-import {Project} from "@src/entity/Project";
 import {ProjectRepository} from "@src/repository/ProjectRepository";
 import {TestProjectApi} from "@src/api/TestProjectApi";
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 import {Box, createTheme, Tooltip} from "@mui/material";
-import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import BaseRepository, {useRepository} from "@src/reactbootdev/repository/BaseRepository";
 import {BoxPropsExt, prettierLongKey} from "@src/reactbootdev/util/RepositoryUtil";
 
 const darkTheme = createTheme({
@@ -59,10 +57,7 @@ const DeleteComponent = () => {
     const projectApi = new TestProjectApi()
 
     // delete
-    const deleteProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `delete`)
-    const [deleteEntityList, setDeleteEntityList] = useRecoilState(deleteProjectRepository.entityListState);
-    deleteProjectRepository.init(deleteEntityList, setDeleteEntityList);
-
+    const repo = useRepository(ProjectRepository,  `delete`)
 
     return (
         <>

@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import {useRecoilState} from "recoil";
 import {page} from "@src/reactbootdev/decorator/Page";
 import {Project} from "@src/entity/Project";
 import {ProjectRepository} from "@src/repository/ProjectRepository";
@@ -20,7 +19,7 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import BaseRepository, {useRepository} from "@src/reactbootdev/repository/BaseRepository";
 import {SubProject} from "@src/entity/SubProject";
 import {
     BoxPropsExt,
@@ -133,7 +132,7 @@ const InputMyTableReverse = <T extends BaseEntity>(
     props: TableProps<T>
 ) => {
     const baseRepository = props.repository
-    const entityList = baseRepository.entityList
+    const entityList = baseRepository.state
 
     const isRenderTableHead = false
 
@@ -200,7 +199,7 @@ const InputMyTableReverse = <T extends BaseEntity>(
                                                 label={d.desc} variant="outlined"
                                                 value={d.value}
                                                 onChange={(e) => {
-                                                    baseRepository.updateEntityByDelimiterKey(0, e.target.value, d.desc)
+                                                    baseRepository.updateListByKey(0, e.target.value, d.desc)
                                                 }}
                                             />
                                         </TableCell>
@@ -224,10 +223,7 @@ interface TableProps<T extends BaseEntity> {
 const CreateComponent = () => {
 
     const projectApi = new TestProjectApi()
-
-    const createProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `create`)
-    const [createEntityList, setCreateEntityList] = useRecoilState(createProjectRepository.entityListState);
-    createProjectRepository.init(createEntityList, setCreateEntityList);
+    const repo = useRepository(ProjectRepository,  `create`)
 
     useEffect(() => {
         const defaultEntity = new Project()
@@ -245,7 +241,7 @@ const CreateComponent = () => {
         const updateRes = projectApi.handleReadDetail(undefined)
         const updateResData = updateRes.result.data as Project
         // update
-        createProjectRepository.setEntity(defaultEntity)
+        repo.setEntity(defaultEntity)
     }, [])
 
     const whiteList: any[] = [
@@ -255,10 +251,10 @@ const CreateComponent = () => {
         // entityKey.testcol1a
     ]
 
-    const header = getHeader(createEntityList, whiteList, blackList)
+    const header = getHeader(repo.state, whiteList, blackList)
 
     const tableData: TableProps<Project> = {
-        repository: createProjectRepository,
+        repository: repo,
         header: header,
     }
 

@@ -7,10 +7,10 @@
 
 ## Features
 
-* Page
-* Entity
-* Repository
-* Api
+* [Page](#page)
+* [Entity](#entity)
+* [Repository](#repository)
+* [Api](#api)
 
 
 ## Install
@@ -139,20 +139,24 @@ function App() {
     return (
         <div className="App">
             <ReactBoot/>
-            </div>
+        </div>
     );
 }
 
 export default App;
 ```
 
-### `MyPage.tsx`
+## Usage
+
+### `@page`
+
+#### `MyPage.tsx`
 
 * Add `@page("/url")`
 * Simple page
 ```typescript
 import React from "react";
-import {page} from "@src/reactbootdev/decorator/Page";
+import {page} from "@src/reactbootdev/decorator/page";
 
 @page("/")
 export class MyPage  {
@@ -160,8 +164,8 @@ export class MyPage  {
         return (
             <div>
                 <h1>My Page</h1>
-        </div>
-    );
+            </div>
+        );
     }
 }
 ```
@@ -169,7 +173,7 @@ export class MyPage  {
 * Page with function component
 ```typescript
 import React from "react";
-import {page} from "@src/reactbootdev/decorator/Page";
+import {page} from "@src/reactbootdev/decorator/page";
 
 function WelcomeComponent() {
     return (
@@ -186,6 +190,60 @@ export class Welcome {
     }
 }
 ```
+
+### `@entity`
+```ts
+import {entity} from "@src/reactbootdev/decorator/Entity";
+import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
+
+@entity
+export class ProjectEntity extends BaseEntity {
+    id: number | null = null;
+    name?: string
+    description?: string
+    startDate?: string
+    endDate?: string
+}
+```
+
+### Repository
+* Recoil
+
+```ts
+import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import {v4 as uuidv4} from 'uuid';
+import {ProjectEntity} from "@src/entity/Project";
+
+export class ProjectRepository extends BaseRepository<ProjectEntity> {
+    static defaultRepositoryKey = uuidv4()
+    static defaultEntityClass = ProjectEntity;
+}
+```
+
+```ts
+import {ProjectRepository} from "@src/repository/ProjectRepository";
+import {ProjectEntity} from "@src/entity/Project";
+
+const CreateComponent = () => {
+    const repo = useRepository(ProjectRepository);
+
+    useEffect(() => {
+        const defaultEntity = new ProjectEntity()
+        defaultEntity.name = "test"
+        
+        repo.setEntity(defaultEntity)
+    }, [])
+    
+    return (
+        <>
+            {JSON.stringify(repo.getEntity())}
+        </>
+    );
+}
+```
+
+### Api
+* ReactQuery
 
 ### `bash`
 ```bash

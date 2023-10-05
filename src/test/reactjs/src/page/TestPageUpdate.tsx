@@ -21,7 +21,7 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
+import BaseRepository, {useRepository} from "@src/reactbootdev/repository/BaseRepository";
 import {
     BoxPropsExt,
     exploreForEachTableData,
@@ -144,9 +144,9 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
 ) => {
     const baseRepository = props.repository
     const flattenObjForArray = getFlattenObjForArray(baseRepository)
-    const entityList = baseRepository.entityList
+    const entityList = baseRepository.state
 
-    const [tmpEntityList, setTmpEntityList] = useRecoilState(baseRepository.entityListState);
+    const [tmpEntityList, setTmpEntityList] = useRecoilState(baseRepository.recoilState);
 
     const isRenderTableHead = false
 
@@ -293,16 +293,14 @@ const InputMyTableReverseForArray = <T extends BaseEntity>(
 
 
 const UpdateComponent = () => {
-    const projectApi = new TestProjectApi()
 
-    const updateProjectRepository = new ProjectRepository(Project, ProjectRepository.defaultRepositoryKey + `update`)
-    const [updateEntityList, setUpdateEntityList] = useRecoilState(updateProjectRepository.entityListState);
-    updateProjectRepository.init(updateEntityList, setUpdateEntityList);
+    const projectApi = new TestProjectApi()
+    const repo = useRepository(ProjectRepository,  `update`)
 
     useEffect(() => {
         const updateRes = projectApi.handleReadDetail(undefined)
         const updateResData = updateRes.result.data as Project
-        updateProjectRepository.setEntity(updateResData)
+        repo.setEntity(updateResData)
     }, [])
 
     const whiteList: any[] = [
@@ -312,10 +310,10 @@ const UpdateComponent = () => {
         // entityKey.testcol1a
     ]
 
-    const header = getHeader(updateEntityList, whiteList, blackList)
+    const header = getHeader(repo.state, whiteList, blackList)
 
     const tableData: TableProps<Project> = {
-        repository: updateProjectRepository,
+        repository: repo,
         header: header,
     }
 

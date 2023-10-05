@@ -1,6 +1,5 @@
 import BaseEntity from "../entity/BaseEntity";
-import {atom, RecoilState} from 'recoil';
-import {v4 as uuidv4} from 'uuid';
+import {atom, RecoilState, useRecoilState} from 'recoil';
 import {
     addItem,
     addItems,
@@ -12,118 +11,162 @@ import {
     updateByDelimiterKeyForArray,
     updateItem
 } from "@src/reactbootdev/util/RepositoryUtil";
+import {v4} from "uuid";
 
 
 export default class BaseRepository<T extends BaseEntity> {
 
-    static defaultRepositoryKey: string = uuidv4();
+    static defaultRepositoryKey: string = v4();
+    static defaultEntityClass: new () => BaseEntity = BaseEntity;
 
-    entityClass: new () => T;
     repositoryKey: string;
-    isDetailRepository: boolean;
-    entityListState: RecoilState<T[]>;
-    entityList: any;
-    setEntityList: any;
-
     static repositoryKeyMap: Map<string, any> = new Map<string, any>();
+    state: any;
+    setState: any;
+    recoilState: RecoilState<T[]>;
 
-    init(entityList: any, setEntityList: any) {
-        this.entityList = entityList;
-        this.setEntityList = setEntityList;
+    constructor(repositoryKey: string = v4()) {
+        this.repositoryKey = repositoryKey
+
+        if (BaseRepository.repositoryKeyMap.has(repositoryKey)) {
+            this.recoilState = BaseRepository.repositoryKeyMap.get(repositoryKey);
+        } else {
+            this.recoilState = atom<T[]>({
+                key: repositoryKey,
+                default: [],
+            })
+            BaseRepository.repositoryKeyMap.set(repositoryKey, this.recoilState);
+        }
     }
-
     getRepositoryKey = () => {
         return this.repositoryKey;
     }
 
+    init(entityList: any, setEntityList: any) {
+        this.state = entityList;
+        this.setState = setEntityList;
+    }
+
     truncate = () => {
         const updatedList = addItem([], {} as T);
-        this.setEntityList([]);
+        this.setState([]);
     }
+
     setEntity = (entity: T) => {
         const updatedList = addItem([], entity);
-        this.setEntityList([entity]);
+        this.setState([entity]);
     }
-    setEntities = (entities: T[]) => {
-        const updatedList = addItems([], entities);
-        this.setEntityList(updatedList);
-    }
+
     getEntity = () => {
-        return this.entityList[0] ?? undefined;
-    }
-    getEntityById = (itemId: number) => {
-        return this.entityList[itemId];
-    }
-    getEntities = () => {
-        return this.entityList;
+        return this.state[0] ?? undefined;
     }
 
-    addEntity = (newItem: T) => {
-        const updatedList = addItem(this.entityList, newItem);
-        this.setEntityList(updatedList);
-    };
-    addEntities = (newItems: T[]) => {
-        const updatedList = addItems(this.entityList, newItems);
-        this.setEntityList(updatedList);
+    deleteEntity = () => {
+        return this.truncate();
     }
-    updateEntity = (itemId: number, newItem: T) => {
-        const updatedList = updateItem(this.entityList, itemId, newItem);
-        this.setEntityList(updatedList);
-    };
-    updateEntityByDelimiterKey = (itemId: number, newItem: unknown, multiKeys: string) => {
-        const updatedList = updateByDelimiterKey(this.entityList, itemId, newItem, multiKeys);
-        this.setEntityList(updatedList);
+
+    updateEntity = (newItem: T) => {
+        const updatedList = updateItem(this.state, 0, newItem);
+        this.setState(updatedList);
+    }
+
+    updateEntityByKey = (newItem: unknown, multiKeys: string) => {
+        const updatedList = updateByDelimiterKey(this.state, 0, newItem, multiKeys);
+        this.setState(updatedList);
+    }
+
+    getEntityValueByKey = (multiKeys: string) => {
+        const itemId = 0;
+        return getByDelimiterKey(this.state, itemId, multiKeys);
+    }
+
+    setList = (entities: T[]) => {
+        const updatedList = addItems([], entities);
+        this.setState(updatedList);
+    }
+
+    getList = () => {
+        return this.state;
+    }
+
+    addList = (newItems: T[]) => {
+        const updatedList = addItems(this.state, newItems);
+        this.setState(updatedList);
+    }
+
+    deleteList = (itemId: number) => {
+        const updatedList = deleteItem(this.state, itemId);
+        this.setState(updatedList);
     };
 
-    updateEntityByDelimiterKeyForArray = (itemId: number, newItem: unknown, multiKeys: string) => {
-        const updatedList = updateByDelimiterKeyForArray(this.entityList, itemId, newItem, multiKeys);
-        this.setEntityList(updatedList);
+    updateList = (itemId: number, newItem: T) => {
+        const updatedList = updateItem(this.state, itemId, newItem);
+        this.setState(updatedList);
     };
 
-    deleteEntity = (itemId: number) => {
-        const updatedList = deleteItem(this.entityList, itemId);
-        this.setEntityList(updatedList);
+    updateListByKey = (itemId: number, newItem: unknown, multiKeys: string) => {
+        const updatedList = updateByDelimiterKeyForArray(this.state, itemId, newItem, multiKeys);
+        this.setState(updatedList);
     };
-    getValue = (multiKeys: string) => {
-        const itemId = 0
-        return getByDelimiterKey(this.entityList, itemId, multiKeys);
+
+    getListValueByKey = (itemId: number, multiKeys: string) => {
+        return getByDelimiterKey(this.state, itemId, multiKeys);
     }
-    getValueById = (itemId: number, multiKeys: string) => {
-        return getByDelimiterKey(this.entityList, itemId, multiKeys);
-    }
-    getValues = (multiKeys: string) => {
-        let idxs = this.entityList.map((item: any, idx: number) => idx);
+
+    // TODO :: check if this is needed
+    // updateEntityByDelimiterKey = (itemId: number, newItem: unknown, multiKeys: string) => {
+    //     const updatedList = updateByDelimiterKey(this.state, itemId, newItem, multiKeys);
+    //     this.setState(updatedList);
+    // };
+
+    getListValuesByKey = (multiKeys: string) => {
+        let idxs = this.state.map((item: any, idx: number) => idx);
         let result = idxs.map((idx: number) => {
             let itemId = idx;
-            return getByDelimiterKey(this.entityList, itemId, multiKeys);
+            return getByDelimiterKey(this.state, itemId, multiKeys);
         })
         return result;
     }
+
     getEntityKey = () => {
-        const result = getEntitiKeyByType(this.entityClass) as T
+        const entityClass
+            = (this.constructor as typeof BaseRepository).defaultEntityClass
+        const result = getEntitiKeyByType(entityClass) as T
         return result
     }
 
     getEntityType = () => {
-        const result = getEntityTypeyByType(this.entityClass)
+        const entityClass
+            = (this.constructor as typeof BaseRepository).defaultEntityClass
+        const result = getEntityTypeyByType(entityClass)
         return result
     }
 
-    constructor(entityClass: new () => T, repositoryKey: string = uuidv4()) {
-        this.entityClass = entityClass;
+}
 
-        this.repositoryKey = repositoryKey
-        this.isDetailRepository = false;
+export function useRepository
+<
+    T extends BaseEntity
+    , U extends BaseRepository<T>
+>
+(
+    RepositoryClass: RepositoryType<T, U>
+    , additionalRepositoryKey: string = ``
+):
+    U
+{
+    const repoUtil = new RepositoryClass(
+        RepositoryClass.defaultRepositoryKey + additionalRepositoryKey
+    )
+    const [state, setState] = useRecoilState(repoUtil.recoilState);
+    repoUtil.init(state, setState);
 
-        if (BaseRepository.repositoryKeyMap.has(repositoryKey)) {
-            this.entityListState = BaseRepository.repositoryKeyMap.get(repositoryKey);
-        } else {
-            this.entityListState = atom<T[]>({
-                key: repositoryKey,
-                default: [],
-            })
-            BaseRepository.repositoryKeyMap.set(repositoryKey, this.entityListState);
-        }
-    }
+    return repoUtil;
+}
 
+export interface RepositoryType<T extends BaseEntity, U extends BaseRepository<T>> {
+    defaultRepositoryKey: string;
+    defaultEntityClass: new () => T;
+
+    new (repositoryKey: string): U;
 }
