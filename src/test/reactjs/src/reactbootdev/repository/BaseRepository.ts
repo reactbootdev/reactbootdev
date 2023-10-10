@@ -7,9 +7,7 @@ import {
     getByDelimiterKey,
     getEntitiKeyByType,
     getEntityTypeyByType,
-    updateByDelimiterKey,
-    updateByDelimiterKeyForArray,
-    updateItem
+    updateByDelimiterKeyForArray
 } from "@src/reactbootdev/util/RepositoryUtil";
 import {v4} from "uuid";
 
@@ -25,6 +23,10 @@ export default class BaseRepository<T extends BaseEntity> {
     setState: any;
     recoilState: RecoilState<T[]>;
 
+    init(entityList: any, setEntityList: any) {
+        this.state = entityList;
+        this.setState = setEntityList;
+    }
     constructor(repositoryKey: string = v4()) {
         this.repositoryKey = repositoryKey
 
@@ -38,43 +40,29 @@ export default class BaseRepository<T extends BaseEntity> {
             BaseRepository.repositoryKeyMap.set(repositoryKey, this.recoilState);
         }
     }
-    getRepositoryKey = () => {
-        return this.repositoryKey;
-    }
-
-    init(entityList: any, setEntityList: any) {
-        this.state = entityList;
-        this.setState = setEntityList;
-    }
-
     truncate = () => {
         const updatedList = addItem([], {} as T);
         this.setState([]);
     }
-
     setEntity = (entity: T) => {
         const updatedList = addItem([], entity);
         this.setState([entity]);
     }
-
     getEntity = () => {
         return this.state[0] ?? undefined;
     }
-
     deleteEntity = () => {
         return this.truncate();
     }
 
+    getRepositoryKey = () => {
+        return this.repositoryKey;
+    }
+
     updateEntity = (newItem: T) => {
-        const updatedList = updateItem(this.state, 0, newItem);
-        this.setState(updatedList);
+        const multiKeys = ``
+        this.updateEntityByKey(newItem, multiKeys)
     }
-
-    updateEntityByKey = (newItem: unknown, multiKeys: string) => {
-        const updatedList = updateByDelimiterKey(this.state, 0, newItem, multiKeys);
-        this.setState(updatedList);
-    }
-
     getEntityValueByKey = (multiKeys: string) => {
         const itemId = 0;
         return getByDelimiterKey(this.state, itemId, multiKeys);
@@ -84,41 +72,29 @@ export default class BaseRepository<T extends BaseEntity> {
         const updatedList = addItems([], entities);
         this.setState(updatedList);
     }
-
     getList = () => {
         return this.state;
     }
-
     addList = (newItems: T[]) => {
         const updatedList = addItems(this.state, newItems);
         this.setState(updatedList);
     }
-
     deleteList = (itemId: number) => {
         const updatedList = deleteItem(this.state, itemId);
         this.setState(updatedList);
     };
 
-    updateList = (itemId: number, newItem: T) => {
-        const updatedList = updateItem(this.state, itemId, newItem);
+    updateEntityByKey = (newItem: unknown, multiKeys: string) => {
+        const updatedList = updateByDelimiterKeyForArray(this.state, 0, newItem, multiKeys);
         this.setState(updatedList);
-    };
-
+    }
     updateListByKey = (itemId: number, newItem: unknown, multiKeys: string) => {
         const updatedList = updateByDelimiterKeyForArray(this.state, itemId, newItem, multiKeys);
         this.setState(updatedList);
     };
-
     getListValueByKey = (itemId: number, multiKeys: string) => {
         return getByDelimiterKey(this.state, itemId, multiKeys);
     }
-
-    // TODO :: check if this is needed
-    // updateEntityByDelimiterKey = (itemId: number, newItem: unknown, multiKeys: string) => {
-    //     const updatedList = updateByDelimiterKey(this.state, itemId, newItem, multiKeys);
-    //     this.setState(updatedList);
-    // };
-
     getListValuesByKey = (multiKeys: string) => {
         let idxs = this.state.map((item: any, idx: number) => idx);
         let result = idxs.map((idx: number) => {
@@ -134,13 +110,17 @@ export default class BaseRepository<T extends BaseEntity> {
         const result = getEntitiKeyByType(entityClass) as T
         return result
     }
-
     getEntityType = () => {
         const entityClass
             = (this.constructor as typeof BaseRepository).defaultEntityClass
         const result = getEntityTypeyByType(entityClass)
         return result
     }
+
+    updateList = (itemId: number, newItem: T) => {
+        const multiKeys = ``
+        this.updateListByKey(itemId, newItem, multiKeys)
+    };
 
 }
 
@@ -165,8 +145,7 @@ export function useRepository
 }
 
 export interface RepositoryType<T extends BaseEntity, U extends BaseRepository<T>> {
+    new (repositoryKey: string): U;
     defaultRepositoryKey: string;
     defaultEntityClass: new () => T;
-
-    new (repositoryKey: string): U;
 }

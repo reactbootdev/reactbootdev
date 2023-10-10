@@ -7,7 +7,6 @@ import {
     getByDelimiterKey,
     getEntitiKeyByType,
     getEntityTypeyByType,
-    updateByDelimiterKey,
     updateByDelimiterKeyForArray,
     updateItem
 } from "@src/reactbootdev/util/RepositoryUtil";
@@ -47,11 +46,11 @@ export default class BaseRepository<T extends BaseEntity> {
         return this.truncate();
     }
     updateEntity = (newItem: T) => {
-        const updatedList = updateItem(this.state, 0, newItem);
-        this.setState(updatedList);
+        const multiKeys = ``
+        this.updateEntityByKey(newItem, multiKeys)
     }
     updateEntityByKey = (newItem: unknown, multiKeys: string) => {
-        const updatedList = updateByDelimiterKey(this.state, 0, newItem, multiKeys);
+        const updatedList = updateByDelimiterKeyForArray(this.state, 0, newItem, multiKeys);
         this.setState(updatedList);
     }
     getEntityValueByKey = (multiKeys: string) => {
@@ -75,8 +74,8 @@ export default class BaseRepository<T extends BaseEntity> {
         this.setState(updatedList);
     };
     updateList = (itemId: number, newItem: T) => {
-        const updatedList = updateItem(this.state, itemId, newItem);
-        this.setState(updatedList);
+        const multiKeys = ``
+        this.updateListByKey(itemId, newItem, multiKeys)
     };
     updateListByKey = (itemId: number, newItem: unknown, multiKeys: string) => {
         const updatedList = updateByDelimiterKeyForArray(this.state, itemId, newItem, multiKeys);
@@ -93,12 +92,6 @@ export default class BaseRepository<T extends BaseEntity> {
         })
         return result;
     }
-
-    // TODO :: check if this is needed
-    // updateEntityByDelimiterKey = (itemId: number, newItem: unknown, multiKeys: string) => {
-    //     const updatedList = updateByDelimiterKey(this.state, itemId, newItem, multiKeys);
-    //     this.setState(updatedList);
-    // };
 
     getEntityKey = () => {
         const entityClass

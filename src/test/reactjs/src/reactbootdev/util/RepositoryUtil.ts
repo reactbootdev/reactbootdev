@@ -97,36 +97,18 @@ export function getNestedProperty<T, K extends keyof T>(
     return current[keys[keys.length - 1]]
 }
 
-
-export const updateByDelimiterKey = <T extends BaseEntity>(
-    list: T[],
-    idx: number,
-    newValue: unknown,
-    multiKeys: string,
-): T[] => {
-
-    if (list.length === 0) {
-        const newItem = createOrSetProperty({} as T, multiKeys, newValue);
-        return [newItem];
-    }
-
-    const updatedList = list.map((item, listIdx) => {
-        if (listIdx === idx) {
-            const newItem = createOrSetProperty(item, multiKeys, newValue);
-            return newItem;
-        }
-        return item;
-    });
-    return updatedList;
-}
-
 export const updateByDelimiterKeyForArray = <T extends BaseEntity>(
     list: T[],
     idx: number,
     newValue: unknown,
     multiKeys: string,
 ): T[] => {
+    if (multiKeys === "") {
+        const newItem = newValue as T
+        return [newItem];
+    }
 
+    multiKeys = multiKeys.split(PRETTER_DELIMITER).join(NAME_DELIMITER)
     if (list.length === 0) {
         const newItem = createOrSetPropertyForArray({} as T, multiKeys, newValue);
         return [newItem];
@@ -164,7 +146,6 @@ export function updateNestedPropertyForArray<T, K extends keyof T>(
     keys: string[],
     value: unknown
 ): T {
-
     const result = {...draft};
     let current: any = result;
     for (let i = 0; i < keys.length - 1; i++) {
@@ -172,15 +153,19 @@ export function updateNestedPropertyForArray<T, K extends keyof T>(
 
         if (i === keys.length - 2) {
             const currentKey = current[key]
-            current[key] = [...current[key]]
-            if (typeof value === `undefined`) {
-                current[key][keys[keys.length - 1]] = undefined
-                current[key] = [...(current[key].filter((v: undefined) => v !== undefined))]
-                return result
+            if (Array.isArray(currentKey)) {
+                current[key] = [...current[key]]
+
+                if (typeof value === `undefined`) {
+                    current[key][keys[keys.length - 1]] = undefined
+                    current[key] = [...(current[key].filter((v: undefined) => v !== undefined))]
+                    return result
+                }
+                current = current[key];
+                break
             }
-            current = current[key];
-            break
         }
+
         current[key] = {...current[key]};
         current = current[key];
     }
@@ -517,6 +502,7 @@ export interface TableDataForArray {
 }
 
 export function getFlattenObjForArray<T extends BaseEntity>(baseRepository: BaseRepository<T>): TableDataForArray[] {
+
     const baseEntityList = baseRepository.state
     const flattenObj = baseEntityList.map((entity: T, idx: number) => {
         return flattenBaseEntityForArray(baseRepository, entity, String(idx))
