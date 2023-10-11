@@ -49,6 +49,7 @@ npm install --save-dev @types/uuid
 {
   "extends": "./tsconfig.paths.json",
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "baseUrl": "src",
     "paths": {

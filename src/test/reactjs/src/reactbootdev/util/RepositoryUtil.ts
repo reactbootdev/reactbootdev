@@ -1,5 +1,5 @@
 import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
-import {DOUBLE_NAME_DELIMITER, NAME_DELIMITER, PRETTER_DELIMITER} from "@src/reactbootdev/config/config";
+import {DOUBLE_NAME_DELIMITER, NAME_DELIMITER, PRETTIER_DELIMITER} from "@src/reactbootdev/config/config";
 import {produce} from "immer";
 import {ObjectType, ObjectTypeEnum} from "@src/reactbootdev/interface/TaskBeansType";
 import {entityBeans, entityImportMap} from "@src/reactbootdev/data/EntityBean";
@@ -108,7 +108,7 @@ export const updateByDelimiterKeyForArray = <T extends BaseEntity>(
         return [newItem];
     }
 
-    multiKeys = multiKeys.split(PRETTER_DELIMITER).join(NAME_DELIMITER)
+    multiKeys = multiKeys.split(PRETTIER_DELIMITER).join(NAME_DELIMITER)
     if (list.length === 0) {
         const newItem = createOrSetPropertyForArray({} as T, multiKeys, newValue);
         return [newItem];
@@ -279,7 +279,34 @@ export function getEntitiKeyByType<T extends BaseEntity>(entityType: new () => T
 
     const entityKeyMap = result[toFindKey]
 
-    return mergeSubObjects(entityKeyMap) as T
+    return transform(mergeSubObjects(entityKeyMap)) as unknown as T
+}
+
+export function prettierKey(ressult?: any){
+    if (typeof ressult === 'undefined') {
+        return undefined
+    }
+    return ressult.split(NAME_DELIMITER).filter((v: string | any[]) => v.length > 0)
+        .splice(1)
+        .join(PRETTIER_DELIMITER)
+}
+
+export type RecursiveObject = {
+    [key: string]: string | RecursiveObject;
+};
+
+export function transform(obj: RecursiveObject): RecursiveObject {
+    const newObj: RecursiveObject = {};
+
+    for (const key in obj) {
+        if (typeof obj[key] === 'string') {
+            newObj[key] = prettierKey(obj[key]);
+        } else {
+            newObj[key] = transform(obj[key] as RecursiveObject);
+        }
+    }
+
+    return newObj;
 }
 
 export function mergeSubObjects(obj: any): any {
@@ -721,7 +748,7 @@ export function extractShortKeyFromLongKey(longKey: string) {
 }
 
 export function prettierLongKey(longKey: string) {
-    const prettierLongKey = longKey.replaceAll(NAME_DELIMITER, PRETTER_DELIMITER)
+    const prettierLongKey = longKey.replaceAll(NAME_DELIMITER, PRETTIER_DELIMITER)
     return prettierLongKey
 }
 
