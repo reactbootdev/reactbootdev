@@ -27,18 +27,8 @@ export default class BaseRepository<T extends BaseEntity> {
         this.state = entityList;
         this.setState = setEntityList;
     }
-    constructor(repositoryKey: string = v4()) {
-        this.repositoryKey = repositoryKey
-
-        if (BaseRepository.repositoryKeyMap.has(repositoryKey)) {
-            this.recoilState = BaseRepository.repositoryKeyMap.get(repositoryKey);
-        } else {
-            this.recoilState = atom<T[]>({
-                key: repositoryKey,
-                default: [],
-            })
-            BaseRepository.repositoryKeyMap.set(repositoryKey, this.recoilState);
-        }
+    getRepositoryKey = () => {
+        return this.repositoryKey;
     }
     truncate = () => {
         const updatedList = addItem([], {} as T);
@@ -54,14 +44,13 @@ export default class BaseRepository<T extends BaseEntity> {
     deleteEntity = () => {
         return this.truncate();
     }
-
-    getRepositoryKey = () => {
-        return this.repositoryKey;
-    }
-
     updateEntity = (newItem: T) => {
         const multiKeys = ``
         this.updateEntityByKey(newItem, multiKeys)
+    }
+    updateEntityByKey = (newItem: unknown, multiKeys: string) => {
+        const updatedList = updateByDelimiterKeyForArray(this.state, 0, newItem, multiKeys);
+        this.setState(updatedList);
     }
     getEntityValueByKey = (multiKeys: string) => {
         const itemId = 0;
@@ -83,11 +72,10 @@ export default class BaseRepository<T extends BaseEntity> {
         const updatedList = deleteItem(this.state, itemId);
         this.setState(updatedList);
     };
-
-    updateEntityByKey = (newItem: unknown, multiKeys: string) => {
-        const updatedList = updateByDelimiterKeyForArray(this.state, 0, newItem, multiKeys);
-        this.setState(updatedList);
-    }
+    updateList = (itemId: number, newItem: T) => {
+        const multiKeys = ``
+        this.updateListByKey(itemId, newItem, multiKeys)
+    };
     updateListByKey = (itemId: number, newItem: unknown, multiKeys: string) => {
         const updatedList = updateByDelimiterKeyForArray(this.state, itemId, newItem, multiKeys);
         this.setState(updatedList);
@@ -117,10 +105,19 @@ export default class BaseRepository<T extends BaseEntity> {
         return result
     }
 
-    updateList = (itemId: number, newItem: T) => {
-        const multiKeys = ``
-        this.updateListByKey(itemId, newItem, multiKeys)
-    };
+    constructor(repositoryKey: string = v4()) {
+        this.repositoryKey = repositoryKey
+
+        if (BaseRepository.repositoryKeyMap.has(repositoryKey)) {
+            this.recoilState = BaseRepository.repositoryKeyMap.get(repositoryKey);
+        } else {
+            this.recoilState = atom<T[]>({
+                key: repositoryKey,
+                default: [],
+            })
+            BaseRepository.repositoryKeyMap.set(repositoryKey, this.recoilState);
+        }
+    }
 
 }
 
