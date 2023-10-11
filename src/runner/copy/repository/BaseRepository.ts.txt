@@ -7,8 +7,7 @@ import {
     getByDelimiterKey,
     getEntitiKeyByType,
     getEntityTypeyByType,
-    updateByDelimiterKeyForArray,
-    updateItem
+    updateByDelimiterKeyForArray
 } from "@src/reactbootdev/util/RepositoryUtil";
 import {v4} from "uuid";
 
