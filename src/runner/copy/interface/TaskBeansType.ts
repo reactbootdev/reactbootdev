@@ -3,7 +3,7 @@ export type DecoratorType = {
     definition: string,
     arguments: {
         type: string,
-        value: any,
+        value?: any,
         txt: string,
     }[],
 }
