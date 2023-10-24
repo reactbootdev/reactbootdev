@@ -20,6 +20,6 @@ export interface BeanInterface extends BaseTaskResultInterface {
 export interface DecoratorInfoInterface {
     name: string;
     definition: string;
-    arguments: { txt: string; type: string; value: any }[];
+    arguments: { txt: string; type: string; value?: any }[];
 }
 

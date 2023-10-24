@@ -80,6 +80,25 @@ export default class BaseRepository<T extends BaseEntity> {
         const updatedList = updateByDelimiterKeyForArray(this.state, itemId, newItem, multiKeys);
         this.setState(updatedList);
     };
+    updateAllListByKey = (dataArray: {
+        itemId: number, newItem: unknown, multiKeys: string
+    }[]) => {
+
+        const updatedList = this.state.map((item: any, idx: number) => {
+            return item;
+        })
+
+        dataArray.forEach((data) => {
+            const {itemId, newItem, multiKeys} = data;
+            if (updatedList[itemId] == undefined) {
+                updatedList[itemId] = {};
+            }
+            const updatedEl = updateByDelimiterKeyForArray(updatedList, itemId, newItem, multiKeys);
+
+            updatedList[itemId] = updatedEl[itemId];
+        })
+        this.setState(updatedList);
+    };
     getListValueByKey = (itemId: number, multiKeys: string) => {
         return getByDelimiterKey(this.state, itemId, multiKeys);
     }
