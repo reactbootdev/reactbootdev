@@ -52,6 +52,15 @@ export default class BaseRepository<T extends BaseEntity> {
         const updatedList = updateByDelimiterKeyForArray(this.state, 0, newItem, multiKeys);
         this.setState(updatedList);
     }
+    updateEntityByKeyArray = (param: {newItem: unknown, multiKeys: string}[]) => {
+        const initialList = this.state;
+        const updatedList = param.reduce((acc, cur) => {
+            const {newItem, multiKeys} = cur;
+            const updatedEl = updateByDelimiterKeyForArray(acc, 0, newItem, multiKeys);
+            return updatedEl;
+        }, initialList);
+        this.setState(updatedList);
+    }
     getEntityValueByKey = (multiKeys: string) => {
         const itemId = 0;
         return getByDelimiterKey(this.state, itemId, multiKeys);
@@ -80,7 +89,7 @@ export default class BaseRepository<T extends BaseEntity> {
         const updatedList = updateByDelimiterKeyForArray(this.state, itemId, newItem, multiKeys);
         this.setState(updatedList);
     };
-    updateAllListByKey = (dataArray: {
+    updateListByKeyArray = (dataArray: {
         itemId: number, newItem: unknown, multiKeys: string
     }[]) => {
 
