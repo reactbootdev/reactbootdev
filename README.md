@@ -34,7 +34,15 @@ npm i react-router-dom axios recoil uuid env-cmd
 npm i @mui/material @emotion/react @emotion/styled
 npm i @craco/craco craco-alias
 npm i styled-components 
-npm i reflect-metadata
+
+# `@tanstack/react-query`
+npm i @tanstack/react-query
+# `react-hook-form`
+npm i react-hook-form
+# `class-transformer`
+npm i class-transformer reflect-metadata es6-shim
+# `class-validator`
+npm i class-validator
 ```
 
 * Install dev dependencies
