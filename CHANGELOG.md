@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.39] - 2023-12-04
+
+### Added
+- Utils for validation, transformation (ClassValidatorUtil.ts)
 
 ## [1.0.32] - 2023-10-04
 

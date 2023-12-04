@@ -1,0 +1,259 @@
+import React from "react";
+import {UseQueryResult} from "react-query";
+import 'reflect-metadata';
+import {ClassConstructor, instanceToPlain, plainToInstance} from "class-transformer";
+import {validate} from "class-validator";
+import {UnpackNestedValue} from "react-hook-form";
+import {ValidationError} from "class-validator/types/validation/ValidationError";
+import _ from 'lodash';
+
+function flatValidationErrors(validationErrors: ValidationError[], fieldErrors: {
+    [p: string]: {
+        type?: string;
+        message?: string;
+    };
+}) {
+    validationErrors.forEach((error) => {
+        const { property, constraints, children } = error;
+
+        if (constraints) {
+            fieldErrors[property] = {
+                type: constraints && Object.keys(constraints)[0],
+                message: constraints && Object.values(constraints)[0],
+            };
+        }
+
+        if (children && children.length > 0) {
+            flatValidationErrors(children, fieldErrors);
+        }
+    });
+}
+
+export function classValidatorResolver<T extends object>(
+    data: UnpackNestedValue<T>,
+    formData: ClassConstructor<T>,
+    groups: string[]
+) {
+    async function extracted() {
+        const instance = plainToInstance(formData, data, {
+            groups: groups, strategy: 'excludeAll'
+        });
+        const defaultRes = {
+            values: data,
+            errors: {},
+        }
+        if (!(instance instanceof Object)) {
+            return defaultRes
+        }
+
+        const validationErrors = await validate(instance);
+        if (!(validationErrors.length > 0)) {
+            return defaultRes
+        }
+
+        const fieldErrors: {
+            [key: string]: {
+                type?: string,
+                message?: string,
+            }
+        } = {};
+        flatValidationErrors(validationErrors, fieldErrors);
+        const res = {
+            values: {},
+            errors: fieldErrors,
+        };
+
+        return res;
+    }
+    return extracted();
+}
+
+export function getFirstError(errors: Record<string, any>): string | undefined {
+    for (const key in errors) {
+        const error = errors[key];
+
+        if (typeof error?.message === 'string') {
+            return error?.message;
+        }
+
+        if (typeof error === 'object') {
+            const errorMessage = getFirstError(error);
+            if (!!errorMessage) {
+                return errorMessage;
+            }
+        }
+    }
+    return undefined;
+}
+
+export function objectToPlain(formData: ClassConstructor<unknown>, value: unknown, groups: string[]) {
+    const instance = plainToInstance(formData, value, {
+        groups: groups, strategy: 'excludeAll'
+    });
+    const plain = instanceToPlain(instance, {
+        groups: groups, strategy: 'excludeAll'
+    })
+    return plain as object;
+}
+
+export function objectToQueryString(obj: any) {
+    const keyValuePairs = [];
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+        }
+    }
+    return keyValuePairs.join('&');
+}
+
+export function extractedByQueries<T>(queriesList: [UseQueryResult<T[], unknown>] ) {
+    const res = queriesList?.[0];
+    const isLoading = res?.isLoading ?? true;
+    const select = res?.data;
+    select && logger.debug(`select`, select)
+    const comp = (
+        <>
+            <div>{JSON.stringify(select)}</div>
+            <hr/>
+        </>
+    );
+    return { res, isLoading, select, comp };
+}
+
+export function extractedOneByQueries<T>(queriesList: [UseQueryResult<T, unknown>]) {
+    const res = queriesList?.[0];
+    const isLoading = res?.isLoading ?? true;
+    const select = res?.data;
+    select && logger.debug(`select`, select)
+    const comp = (
+        <>
+            <div>{JSON.stringify(select)}</div>
+            <hr/>
+        </>
+    );
+    return { res, isLoading, select, comp };
+}
+
+export class BaseClass {
+
+    getHash(): string {
+        return JSON.stringify(this);
+    }
+
+    equals(other: BaseClass): boolean {
+        return this.getHash() === other.getHash();
+    }
+
+    getNextIsUpdated(other: any): {
+        nextIsUpdated: boolean,
+        isUpdateRequired: boolean
+    } {
+        const nextIsUpdated = !this.equals(other)
+        const isUpdateRequired = other.isUpdated !== nextIsUpdated
+        return {
+            nextIsUpdated: nextIsUpdated,
+            isUpdateRequired: isUpdateRequired
+        }
+    }
+
+}
+
+export const logger = {
+    debug: (message?: any, ...optionalParams: any[]) => {
+        if (`development` === process.env.REACT_APP_DEPLOY_TYPE) {
+            console.debug(message, optionalParams)
+        }
+    },
+    log: (message?: any, ...optionalParams: any[]) => {
+        if (`development` === process.env.REACT_APP_DEPLOY_TYPE) {
+            console.log(message, optionalParams)
+        }
+    },
+}
+
+export function findDiffs(obj1: any, obj2: any, keysToIgnore: string[] = []): any {
+    const rawDiffs = findRawDiffs(obj1, obj2, keysToIgnore);
+    return cleanObject(rawDiffs);
+}
+
+export function findRawDiffs(obj1: any, obj2: any, keysToIgnore: string[] = []): any {
+    if (_.isEqual(obj1, obj2)) {
+        return undefined;
+    }
+
+    if (_.isArray(obj1) && _.isArray(obj2)) {
+        const maxLength = Math.max(obj1.length, obj2.length);
+        const diffArray: any[] = [];
+
+        for (let i = 0; i < maxLength; i++) {
+            const element1 = obj1[i];
+            const element2 = obj2[i];
+
+            const diff = findDiffs(element1, element2, keysToIgnore);
+            if (diff !== undefined) {
+                diffArray[i] = diff;
+            }
+        }
+
+        return diffArray.length > 0 ? diffArray : undefined;
+    }
+
+    if (_.isObject(obj1) && _.isObject(obj2)) {
+        const result: any = {};
+
+        for (const key in obj1) {
+            if (obj1.hasOwnProperty(key) && keysToIgnore.includes(key)) {
+                // @ts-ignore
+                result[key] = obj1[key];
+            }
+
+            if (Object.prototype.hasOwnProperty.call(obj1, key)) {
+                // @ts-ignore
+                const value1 = obj1[key];
+                // @ts-ignore
+                const value2 = obj2[key];
+
+                const diff = findDiffs(value1, value2, keysToIgnore);
+                if (diff !== undefined) {
+                    result[key] = diff;
+                }
+            }
+        }
+
+        for (const key in obj2) {
+            if (Object.prototype.hasOwnProperty.call(obj2, key) && !obj1.hasOwnProperty(key)) {
+                // @ts-ignore
+                result[key] = obj2[key];
+            }
+        }
+
+        return _.isEmpty(result) ? undefined : result;
+    }
+
+    return obj1;
+}
+
+export function cleanObject(obj: any): any {
+    if (_.isArray(obj)) {
+        const cleanedArray = obj.map((item: any) => cleanObject(item)).filter((item: any) => item !== null && item !== undefined);
+        return cleanedArray.length > 0 ? cleanedArray : undefined;
+    }
+
+    if (_.isObject(obj)) {
+        const cleanedObject: any = {};
+
+        for (const key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                // @ts-ignore
+                const cleanedValue = cleanObject(obj[key]);
+                if (cleanedValue !== undefined) {
+                    cleanedObject[key] = cleanedValue;
+                }
+            }
+        }
+
+        return !_.isEmpty(cleanedObject) ? cleanedObject : undefined;
+    }
+
+    return obj;
+}
