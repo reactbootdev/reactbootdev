@@ -5,7 +5,12 @@
 [![npm version](https://img.shields.io/npm/v/reactbootdev.svg?style=flat-square)](https://www.npmjs.com/package/reactbootdev)
 [![npm downloads](https://img.shields.io/npm/dm/reactbootdev.svg?style=flat-square)](https://www.npmjs.com/package/reactbootdev)
 
-## Features
+## Project Overview
+
+The objective is to develop Reactjs with a focus on entity-centric architectures, boosting productivity and smoothly linking it with JPA to facilitate effective CRUD operations.
+This project manages validation, transformation, and communication with the server through entities.
+
+## Features[⬆](#project-overview)
 
 * [Page](#page)
 * [Entity](#entity)
@@ -14,7 +19,7 @@
 * [Form](#form)
 
 
-## Install
+## Installation[⬆](#project-overview)
 
 ### `bash`
 
@@ -295,3 +300,14 @@ const CreateComponent = () => {
 ```bash
 npm run rtstart
 ```
+
+
+
+## Samples[⬆](#project-overview)
+
+Take a look on samples in [./src/test/reactjs](https://github.com/reactbootdev/reactbootdev/tree/main/src/test/reactjs) for more examples of
+usages.
+
+## Release notes[⬆](#project-overview)
+
+See information about breaking changes and release notes [here](https://github.com/reactbootdev/reactbootdev/blob/main/CHANGELOG.md).
