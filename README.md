@@ -35,7 +35,7 @@ npm i reactbootdev
 ```
 
 ```bash
-npm i react-router-dom axios recoil uuid env-cmd
+npm i react-router-dom axios recoil uuid env-cmd lodash
 npm i @mui/material @emotion/react @emotion/styled
 npm i @craco/craco craco-alias
 npm i styled-components 
