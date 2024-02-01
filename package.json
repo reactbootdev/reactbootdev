@@ -1,6 +1,6 @@
 {
   "name": "reactbootdev",
-  "version": "1.0.39",
+  "version": "1.0.40",
   "description": "@ReactBootDev",
   "main": "index.js",
   "bin": {
@@ -33,6 +33,7 @@
     "react-router-dom": "^6.14.0"
   },
   "devDependencies": {
+    "@types/node": "^20.11.5",
     "nodemon": "^3.0.1",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",

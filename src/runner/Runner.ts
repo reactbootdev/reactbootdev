@@ -24,15 +24,6 @@ export function runner(args: string[]) {
             maxDepthRecursiveConnection: 0,
             taskBeans: {},
         },
-        {
-            decoratorNames: [
-                `@entity`
-            ],
-            resultFileName: `entity`,
-            isRecursiveConnection: true,
-            maxDepthRecursiveConnection: 3,
-            taskBeans: {},
-        },
     ]
 
     const sourceFileNames = getSourceFileNames(SOURCE_PATH)

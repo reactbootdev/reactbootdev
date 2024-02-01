@@ -5,8 +5,6 @@ import {
     addItems,
     deleteItem,
     getByDelimiterKey,
-    getEntitiKeyByType,
-    getEntityTypeyByType,
     updateByDelimiterKeyForArray
 } from "@src/reactbootdev/util/RepositoryUtil";
 import {v4} from "uuid";
@@ -118,19 +116,6 @@ export default class BaseRepository<T extends BaseEntity> {
             return getByDelimiterKey(this.state, itemId, multiKeys);
         })
         return result;
-    }
-
-    getEntityKey = () => {
-        const entityClass
-            = (this.constructor as typeof BaseRepository).defaultEntityClass
-        const result = getEntitiKeyByType(entityClass) as T
-        return result
-    }
-    getEntityType = () => {
-        const entityClass
-            = (this.constructor as typeof BaseRepository).defaultEntityClass
-        const result = getEntityTypeyByType(entityClass)
-        return result
     }
 
     constructor(repositoryKey: string = v4()) {

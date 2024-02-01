@@ -2,7 +2,6 @@ import BaseEntity from "@src/reactbootdev/entity/BaseEntity";
 import {DOUBLE_NAME_DELIMITER, NAME_DELIMITER, PRETTIER_DELIMITER} from "@src/reactbootdev/config/config";
 import {produce} from "immer";
 import {ObjectType, ObjectTypeEnum} from "@src/reactbootdev/interface/TaskBeansType";
-import {entityBeans, entityImportMap} from "@src/reactbootdev/data/EntityBean";
 import BaseRepository from "@src/reactbootdev/repository/BaseRepository";
 import {BoxProps} from "@mui/material";
 
@@ -250,38 +249,6 @@ export function extractEntityKey(
     return result
 }
 
-export function extractEntityKeyWithFullPath(result: any = {}, parentKey: string, depth: number = 0, maxDepth: number = 5) {
-    Object.entries(entityBeans).map((entry) => {
-        const [fullFilePath, fileDetail] = entry;
-        const objects = fileDetail.objects
-        Object.entries(objects).map((entry) => {
-            const [objectName, objectDetail] = entry;
-            const newFileNameQentity = `${fullFilePath}${DOUBLE_NAME_DELIMITER}${objectName}`
-
-            result[newFileNameQentity] = extractEntityKey(objectDetail, objectName, objectName)
-        })
-
-    })
-    return result
-}
-
-export function getEntitiKeyByType<T extends BaseEntity>(entityType: new () => T): T {
-    const result = extractEntityKeyWithFullPath({}, "")
-    const toFind = Object.entries(entityImportMap).filter((entry) => {
-        const [key, value] = entry
-
-        return value === entityType
-    })
-    if (toFind.length === 0) {
-        throw new Error(`entityType not found in entityImportMap`)
-    }
-    const toFindKey = toFind[0][0]
-
-    const entityKeyMap = result[toFindKey]
-
-    return transform(mergeSubObjects(entityKeyMap)) as unknown as T
-}
-
 export function prettierKey(ressult?: any){
     if (typeof ressult === 'undefined') {
         return undefined
@@ -321,38 +288,6 @@ export function mergeSubObjects(obj: any): any {
     return result;
 }
 
-
-export function getEntityTypeyByType<T extends BaseEntity>(entityType: new () => T): Record<string, new () => any | undefined> {
-    const result = extractEntityTypeWithFullPath({}, "")
-
-
-    const toFind = Object.entries(entityImportMap).filter((entry) => {
-        const [key, value] = entry
-
-        return value === entityType
-    })
-    if (toFind.length === 0) {
-        throw new Error(`entityType not found in entityImportMap`)
-    }
-    const toFindKey = toFind[0][0]
-
-    const entityKeyMap = result[toFindKey]
-
-
-    return entityKeyMap
-}
-
-export function extractEntityTypeWithFullPath(result: any = {}, parentKey: string, depth: number = 0, maxDepth: number = 5) {
-    Object.entries(entityBeans).map(([fullFilePath, fileDetail]) => {
-        const objects = fileDetail.objects
-        Object.entries(objects).map(([objectName, objectDetail]) => {
-            const newFileNameQEntity = `${fullFilePath}${DOUBLE_NAME_DELIMITER}${objectName}`
-            result[newFileNameQEntity] = extractEntityType(objectDetail, objectName, objectName)
-        })
-    })
-
-    return result
-}
 
 
 export function extractEntityType(
@@ -526,190 +461,6 @@ export interface TableDataForArray {
     addFunction?: (value: any) => (e: any) => void;
     removeFunction?: (value: any) => (e: any) => void;
     updateFunction?: (value: any) => (e: any) => void;
-}
-
-export function getFlattenObjForArray<T extends BaseEntity>(baseRepository: BaseRepository<T>): TableDataForArray[] {
-
-    const baseEntityList = baseRepository.state
-    const flattenObj = baseEntityList.map((entity: T, idx: number) => {
-        return flattenBaseEntityForArray(baseRepository, entity, String(idx))
-    }).filter((entity: T) => typeof entity !== 'undefined') as TableDataForArray[]
-    return flattenObj
-}
-
-export function flattenBaseEntityForArray<T extends BaseEntity>(
-    baseRepository: BaseRepository<T>
-    , obj: T
-    , objName: string
-): TableDataForArray | undefined {
-    if (typeof obj === 'undefined') {
-        return undefined
-    }
-
-    if (isPrimtiveType(typeof obj)) {
-        const tableData: TableDataForArray = {
-            fullKey: objName,
-            shortKey: extractShortKeyFromLongKey(objName),
-            type: convertTableDataForArrayType(obj),
-            value: obj,
-            valueString: String(obj),
-            tableData: undefined,
-            updateFunction: function (value: any) {
-                return function (e) {
-                    const entityNumber = objName.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
-                    const entityNumberInt = Number(entityNumber)
-                    const entityKey = objName
-                        .split(NAME_DELIMITER)
-                        .filter((v, index) => index > 0 && v.length > 0)
-                        .join(NAME_DELIMITER)
-
-                    baseRepository.updateListByKey(entityNumberInt, value, entityKey)
-                }
-            },
-            removeFunction: (idx: number) => (e) => {
-                const entityNumber = objName.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
-                if (entityNumber === undefined) {
-                    console.error(`entityNumber === undefined`)
-                    return
-                }
-                const entityKey = objName
-                    .split(NAME_DELIMITER)
-                    .filter((v, index) => index > 0 && v.length > 0)
-                    .join(NAME_DELIMITER)
-
-                baseRepository.updateListByKey(Number(entityNumber), undefined, entityKey)
-            }
-        }
-        return tableData
-    }
-
-    const mainTableData: TableDataForArray[] = Object.entries(obj).map(([propertyName, propertyInfo]) => {
-        if (propertyInfo === null) {
-            return undefined
-        }
-
-        const flattenedKey =
-            typeof objName !== 'undefined' ? `${objName}${NAME_DELIMITER}${propertyName}` : propertyName
-
-        if (isPrimtiveType(typeof propertyInfo)) {
-            const tableData: TableDataForArray = {
-                fullKey: flattenedKey,
-                shortKey: extractShortKeyFromLongKey(flattenedKey),
-                type: convertTableDataForArrayType(propertyInfo),
-                value: propertyInfo,
-                valueString: String(propertyInfo),
-                tableData: undefined,
-                updateFunction: function (value: any) {
-                    return function (e) {
-                        const entityNumber = flattenedKey.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
-                        const entityNumberInt = Number(entityNumber)
-                        const entityKey = flattenedKey
-                            .split(NAME_DELIMITER)
-                            .filter((v, index) => index > 0 && v.length > 0)
-                            .join(NAME_DELIMITER)
-
-                        baseRepository.updateListByKey(entityNumberInt, value, entityKey)
-
-                    }
-                },
-
-                removeFunction: (idx: number) => (e) => {
-                    const entityNumber = flattenedKey.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
-                    if (entityNumber === undefined) {
-                        console.error(`entityNumber === undefined`)
-                        return
-                    }
-                    const entityKey = flattenedKey
-                        .split(NAME_DELIMITER)
-                        .filter((v, index) => index > 0 && v.length > 0)
-                        .join(NAME_DELIMITER)
-
-                    baseRepository.updateListByKey(Number(entityNumber), undefined, entityKey)
-                }
-            }
-            return tableData
-        } else if (Array.isArray(propertyInfo)) {
-            const subTableData = propertyInfo.map((entity, idx) => {
-                const subFlattenedKey = `${flattenedKey}${NAME_DELIMITER}${idx}`
-                return flattenBaseEntityForArray(baseRepository, entity, subFlattenedKey)
-            }).filter((entity) => typeof entity !== 'undefined') as TableDataForArray[]
-
-            const tableData: TableDataForArray = {
-                fullKey: flattenedKey,
-                shortKey: extractShortKeyFromLongKey(flattenedKey),
-                type: TableDataForArrayType.ARRAY,
-                value: undefined,
-                valueString: String(undefined),
-                tableData: subTableData,
-                addFunction: (value: any) => (e) => {
-                    const entityNumber = flattenedKey.split(NAME_DELIMITER).filter((v) => v.length > 0).shift()
-                    const entityNumberInt = Number(entityNumber)
-                    const entityKey = flattenedKey
-                        .split(NAME_DELIMITER)
-                        .filter((v, index) => index > 0 && v.length > 0)
-                        .join(NAME_DELIMITER)
-
-                    const entityArray =
-                        baseRepository.getListValueByKey(entityNumberInt, entityKey) as T[]
-                    const entityArrayLength = entityArray.length
-                    const entityTypeMap = baseRepository.getEntityType()
-
-                    try {
-                        const refinedEntityKey = `Project//${entityKey}`
-                            .split(NAME_DELIMITER)
-                            .filter((v, index) => {
-                                // `v` > remove number type
-                                return Number.isNaN(Number(v)) && v.length > 0
-                            })
-                            .join(NAME_DELIMITER)
-                        const realType = entityTypeMap[refinedEntityKey]
-                        const realTypeInstance = realType ? (new realType()) : undefined
-                        const realTypeInstanceDefaultValue = realTypeInstance?.defaultValue ?? realTypeInstance
-
-                        if (typeof realTypeInstanceDefaultValue === 'undefined') {
-                            console.error(`realTypeInstanceDefaultValue === 'undefined'`)
-                            return
-                        }
-
-                        baseRepository.updateListByKey(
-                            entityNumberInt
-                            , realTypeInstanceDefaultValue
-                            , `${entityKey}${NAME_DELIMITER}${entityArrayLength}`
-                        )
-                    } catch (e) {
-                        console.error(e)
-                    }
-
-                },
-                removeFunction: (idx: number) => (e) => {
-                    const entityKey = flattenedKey
-                        .split(NAME_DELIMITER)
-                        .filter((v, index) => index > 0 && v.length > 0)
-                        .join(NAME_DELIMITER)
-
-                    baseRepository.updateListByKey(idx, undefined, entityKey)
-                }
-            }
-
-            return tableData
-        } else {
-            const baseEntityForArray = flattenBaseEntityForArray(baseRepository, propertyInfo, flattenedKey)
-            if (typeof baseEntityForArray !== 'undefined') {
-                baseEntityForArray.type = TableDataForArrayType.OBJECT
-            }
-            return baseEntityForArray
-        }
-    }).filter((entity) => typeof entity !== 'undefined') as TableDataForArray[]
-
-    const mainTableDataForArray = {
-        fullKey: objName,
-        shortKey: extractShortKeyFromLongKey(objName),
-        value: undefined,
-        valueString: String(undefined),
-        tableData: mainTableData,
-    } as TableDataForArray
-
-    return mainTableDataForArray
 }
 
 export function exploreForEachTableData(data: TableDataForArray[], callback: (item: TableDataForArray) => void) {
