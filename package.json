@@ -18,7 +18,7 @@
     "rtbuild": "npm run rt && cd src/test/reactjs && npm run build",
     "rttest": "npm run rt && cd src/test/reactjs && npm run test",
     "rtnodemon": "nodemon -V --watch src/test/reactjs/src --ext js,mjs,cjs,json,jsx,ts,tsx --delay 5000ms --exec \"npm run rt\"",
-    "pub": "npm run clean && npm run build && npm publish"
+    "pub": "npm run clean && npm run build && npm run minor && npm publish"
   },
   "keywords": [
     "reactbootdev",
