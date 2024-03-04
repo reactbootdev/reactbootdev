@@ -49,7 +49,9 @@ export function ReactBoot() {
     const hasDuplicates = pageUrls.length !== new Set(pageUrls).size;
 
     if (hasDuplicates) {
-        throw new Error(`pageUrl is not unique`)
+        let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) !== index)
+        const msg = JSON.stringify(findDuplicates(pageUrls))
+        throw new Error(`pageUrl is not unique : ${msg}`)
     }
 
     const routeList = pageClasses
